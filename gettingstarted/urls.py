@@ -18,4 +18,8 @@ urlpatterns = [
     path("", hello.views.index, name="index"),
     #path("db/", hello.views.db, name="db"),
     path("admin/", admin.site.urls),
+    path('accounts/', include('accounts.urls')),
+    #najpierw szuka sb w aplikacji accounts
+    path('accounts/', include('django.contrib.auth.urls')),
+    #a dopiero potem we wbudowanym auth
 ]
