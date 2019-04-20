@@ -7,3 +7,4 @@ from .models import Greeting
 def index(request):
      #return HttpResponse('Hello Karol!')
      return render(request, "home.html")
+
