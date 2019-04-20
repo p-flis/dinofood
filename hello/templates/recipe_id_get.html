@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+
+    
+    <h2>Recipe</h2>
+    
+    
+    
+    <p>{{ recipe.name }} <br/> {{ recipe.description }}</p>
+        
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Del</button>
+    </form>
+
+
+</div>
+
+
+{% endblock %}
