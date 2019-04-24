@@ -5,6 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 import hello.views
+import hello.test_views
 import hello.dish_views
 
 # To add a new path, first import the app:
@@ -34,4 +35,6 @@ urlpatterns = [
     path("category/", hello.dish_views.category, name="category"),
     path("category/new", hello.dish_views.add_category, name="add_category"),
     path("category/<int:cat_id>", hello.dish_views.category_id, name="category_id"),
+    path("test/empty", hello.test_views.test_empty_database, name="test_empty_database"),
+    path("test/default", hello.test_views.test_default_database, name="test_default_database"),
 ]
