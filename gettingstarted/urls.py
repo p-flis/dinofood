@@ -1,6 +1,7 @@
 from django.urls import path, include
 
 from django.contrib import admin
+from django.views.generic import RedirectView
 
 admin.autodiscover()
 
@@ -29,6 +30,7 @@ urlpatterns = [
     path("recipe/", hello.dish_views.recipe, name="recipe"),
     path("recipe/new", hello.dish_views.add_recipe, name="add_recipe"),
     path("recipe/<int:dish_id>", hello.dish_views.recipe_id, name="recipe_id"),
+    path("", hello.views.index, name="search_recipe"),
     path("ingredient/", hello.dish_views.ingredient, name="ingredient"),
     path("ingredient/new", hello.dish_views.add_ingredient, name="add_ingredient"),
     path("ingredient/<int:ing_id>", hello.dish_views.ingredient_id, name="ingredient_id"),

@@ -1,12 +1,57 @@
+
+
 <html>
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+  <title>{% block title %}Dino Food{% endblock %}</title>
+
+  {% load static %}
+  <link href="{% static 'css/MenuStyle.css' %}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
+
+  <div class="navbar">
+    <a href="{% url 'index' %}">Home</a>
+    <div class="subnav">
+      <button class="subnavbtn">Recipe <i class="fa fa-caret-down"></i></button>
+      <div class="subnav-content">
+        <a href="{% url 'recipe' %}">All</a>
+        <a href="{% url 'add_recipe' %}">New</a>
+        <a href="{% url 'search_recipe' %}">Search</a>
+      </div>
+    </div>
+    <div class="subnav">
+      <button class="subnavbtn">Ingredient <i class="fa fa-caret-down"></i></button>
+      <div class="subnav-content">
+        <a href="{% url 'ingredient' %}">All</a>
+        <a href="{% url 'add_ingredient' %}">New</a>
+      </div>
+    </div>
+    <div class="subnav">
+      <button class="subnavbtn">Category <i class="fa fa-caret-down"></i></button>
+      <div class="subnav-content">
+        <a href="{% url 'category' %}">All</a>
+        <a href="{% url 'add_category' %}">New</a>
+      </div>
+    </div>
+    <div class="subnav">
+      <button class="subnavbtn">Test <i class="fa fa-caret-down"></i></button>
+      <div class="subnav-content">
+        <a href="{% url 'test_default_database' %}">Default db</a>
+        <a href="{% url 'test_empty_database' %}">Empty db</a>
+      </div>
+    </div>
+    <a class="right" href="{% url 'index' %}">Log in</a>
+    <a class="right" href="{% url 'index' %}">Sign in</a>
+    <a class="right" href="{% url 'index' %}">Log out</a>
+  </div>
+
+
   <main>
     {% block content %}
     {% endblock %}
   </main>
+
 </body>
 </html>
