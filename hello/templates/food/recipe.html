@@ -1,26 +1,19 @@
-{% extends "base.html" %}
+{% extends "baselist.html" %}
 {% load staticfiles %}
 
-{% block content %}
-  <div class="container">
-
-
-<h2>All dishes</h2>
-
-
-<ul>
-    {% for dish in dishes %}
-    <li>{{ dish.id }}: {{ dish.name }}, description: {{ dish.description }} <br/>
-        <ul>
-            {% for ing in dish.ingredients.all %}
-            <li>{{ ing.name }}</li>
-            {% endfor %}
-        </ul>
-    </li>
-    {% endfor %}
-</ul>
-
-</div>
-
-
+{% block smalltitle %}
+All dishes
 {% endblock %}
+
+{% block itemlink %}
+{% url 'recipe_id' item.id %}
+{% endblock %}
+
+{% block itemcontent %}
+    <ul>
+    {% for ing in item.ingredients.all %}
+        <li>{{ ing.name }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+

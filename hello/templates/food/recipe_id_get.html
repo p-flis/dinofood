@@ -1,24 +1,20 @@
-{% extends "base.html" %}
+{% extends "baseitem.html" %}
 {% load staticfiles %}
 
-{% block content %}
-<div class="container">
-
-    
-    <h2>Recipe</h2>
-    
-    
-    
-    <p>{{ recipe.name }} <br/> {{ recipe.description }}</p>
-        
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Del</button>
-    </form>
-
-
-</div>
-
-
+{% block smalltitle %}
+Dish
 {% endblock %}
+
+{% block deletelink %}
+{% url 'recipe_delete' item.id %}
+{% endblock %}
+
+{% block itemcontent %}
+    Ingredients:
+    <ul>
+    {% for ing in item.ingredients.all %}
+        <li>{{ ing.name }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+

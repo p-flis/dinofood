@@ -1,24 +1,10 @@
-{% extends "base.html" %}
+{% extends "baseitem.html" %}
 {% load staticfiles %}
 
-{% block content %}
-<div class="container">
+{% block smalltitle %}
+Category
+{% endblock %}
 
-
-    <h2>Category</h2>
-
-
-
-    <p>{{ category.name }}</p>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Del</button>
-    </form>
-
-
-</div>
-
-
+{% block deletelink %}
+{% url 'category_delete' item.id %}
 {% endblock %}

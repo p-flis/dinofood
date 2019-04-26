@@ -1,19 +1,18 @@
-{% extends 'base.html' %}
+{% extends "baseform.html" %}
+{% load staticfiles %}
 
-{% block title %}New ingredient{% endblock %}
+{% block smalltitle %}
+New Ingredient
+{% endblock %}
 
-{% block content %}
-    <h2>New ingredient</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input name="name" type="text"/>
-        <input name="price" type="number"/>
-        <select name="categories">
-        {% for cat in categories %}
-            <option>{{ cat.name }}</option>
-        {% endfor %}
-        </select>
-        <button type="submit">Submit</button>
-    </form>
+{% block itemcontent %}
+    <label for="price">Price:</label>
+    <input id="price" name="price" type="number"/>
+
+    <label for="categories">Category:</label>
+    <select id="categories" name="categories">
+    {% for cat in categories %}
+        <option>{{ cat.name }}</option>
+    {% endfor %}
+    </select>
 {% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+<link href="{% static 'css/ListStyle.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+
+
+    <h2>{% block smalltitle %}{% endblock %}</h2>
+
+
+    <ul>
+        {% for item in itemlist %}
+        <li class="listitem">
+          <a class="listitembtn" href="{% block itemlink %}{% endblock %}">
+            {% block itemname %}{{ item.name }}{% endblock %}
+          </a>
+          <div class="listitem-content">
+            {% block itemcontent %}{% endblock %}
+          </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+  </div>
+
+
+{% endblock %}

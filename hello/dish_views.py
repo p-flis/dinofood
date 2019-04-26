@@ -10,7 +10,7 @@ from .models import *
 def recipe(request):
     dishes = Dish.objects.all()
 
-    return render(request, "food/recipe.html", {"dishes": dishes})
+    return render(request, "food/recipe.html", {"itemlist": dishes})
 
 
 def add_recipe(request):
@@ -35,18 +35,18 @@ def add_recipe(request):
 
 def recipe_id(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
-    if request.method == 'GET':
-        return render(request, "food/recipe_id_get.html", {"recipe": dish.get(id=dish_id)})
-    elif request.method == 'POST':
-        dish.delete()
-        return redirect('/recipe')
-    raise Http404
+    return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
+
+
+def recipe_id_delete(request, dish_id):
+    dish = Dish.objects.filter(id=dish_id)
+    dish.delete()
+    redirect('/recipe')
 
 
 def ingredient(request):
     ingredients = Ingredient.objects.all()
-
-    return render(request, "food/ingredients.html", {"ingredients": ingredients})
+    return render(request, "food/ingredients.html", {"itemlist": ingredients})
 
 
 def add_ingredient(request):
@@ -65,18 +65,18 @@ def add_ingredient(request):
 
 def ingredient_id(request, ing_id):
     ing = Ingredient.objects.filter(id=ing_id)
-    if request.method == 'GET':
-        return render(request, "food/ingredient_id_get.html", {"ingredient": ing.get(id=ing_id)})
-    elif request.method == 'POST':
-        ing.delete()
-        return redirect('/ingredients')
-    raise Http404
+    return render(request, "food/ingredient_id_get.html", {"item": ing.get(id=ing_id)})
+
+
+def ingredient_id_delete(request, ing_id):
+    ing = Ingredient.objects.filter(id=ing_id)
+    ing.delete()
+    return redirect('/ingredients')
 
 
 def category(request):
     categories = Category.objects.all()
-
-    return render(request, "food/category.html", {"categories": categories})
+    return render(request, "food/category.html", {"itemlist": categories})
 
 
 def add_category(request):
@@ -93,9 +93,10 @@ def add_category(request):
 
 def category_id(request, cat_id):
     cat = Category.objects.filter(id=cat_id)
-    if request.method == 'GET':
-        return render(request, "food/category_id_get.html", {"recipe": cat.get(id=cat_id)})
-    elif request.method == 'POST':
-        cat.delete()
-        return redirect('/recipe')
-    raise Http404
+    return render(request, "food/category_id_get.html", {"item": cat.get(id=cat_id)})
+
+
+def category_id_delete(request, cat_id):
+    cat = Category.objects.filter(id=cat_id)
+    cat.delete()
+    return redirect('/category')

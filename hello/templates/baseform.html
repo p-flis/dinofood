@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+<link href="{% static 'css/FormStyle.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+
+    <h2>{% block smalltitle %}{% endblock %}</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% block itemname %}
+        <label for="name">Name:</label>
+        <input id="name" name="name" type="text"/>
+      {% endblock %}
+      {% block itemcontent %}{% endblock %}
+      <button type="submit">Submit</button>
+    </form>
+
+  </div>
+
+{% endblock %}

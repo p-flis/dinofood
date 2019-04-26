@@ -1,0 +1,33 @@
+
+
+.listitem{
+  overflow: hidden;
+  background-color: #333;
+}
+
+.listitembtn{
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.listitem:hover{
+  background-color: Grey;
+}
+
+.listitem-content{
+  display: none;
+  float: left;
+  left: 0;
+  background-color: Grey;
+  width: 100%;
+  z-index: 1;
+}
+
+
+.listitem:hover .listitem-content{
+  display: block;
+}

@@ -1,20 +1,14 @@
-{% extends "base.html" %}
+{% extends "baselist.html" %}
 {% load staticfiles %}
 
-{% block content %}
-  <div class="container">
+{% block smalltitle %}
+All ingredients
+{% endblock %}
 
+{% block itemlink %}
+{% url 'ingredient_id' item.id %}
+{% endblock %}
 
-<h2>Ingredients Report</h2>
-
-
-<ul>
-{% for ing in ingredients %}
-    <li>{{ ing.id }}: {{ ing.name }}, price: {{ ing.price }}</li>
-{% endfor %}
-</ul>
-
-</div>
-
-
+{% block itemcontent %}
+  <p>Price: {{item.price}}</p>
 {% endblock %}
