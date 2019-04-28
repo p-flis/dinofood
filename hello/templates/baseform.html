@@ -13,11 +13,17 @@
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      {% block itemname %}
-        <label for="name">Name:</label>
-        <input id="name" name="name" type="text"/>
-      {% endblock %}
-      {% block itemcontent %}{% endblock %}
+      <div class="item">
+        <div class="itemname">
+        {% block itemname %}
+          <label for="name">Name:</label>
+          <input id="name" name="name" type="text"/>
+        {% endblock %}
+        </div>
+        <div class="listitem-content">
+          {% block itemcontent %}{% endblock %}
+        </div>
+      </div>
       <button type="submit">Submit</button>
     </form>
 

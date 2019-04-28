@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="container">
+
+    <h2>Search for a perfect dish</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <select id="ingredients" name="ingredients" multiple>
+        {% for ing in ingredients %}
+            <option>{{ ing.name }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit">Submit</button>
+    </form>
+
+  </div>
+{% endblock %}

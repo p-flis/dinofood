@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
+from django.db.models import Count
 
 from .models import *
 
@@ -19,7 +20,7 @@ def add_recipe(request):
         return render(request, "food/new_recipe_form.html", {"ingredients": ingredients})
     elif request.method == 'POST':
         data = request.POST.copy()
-        print(data)
+        # print(data)
         d = Dish(name=data["name"], description=data["description"])
         d.save()
         # print(data["ingredients"])
@@ -41,7 +42,22 @@ def recipe_id(request, dish_id):
 def recipe_id_delete(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
     dish.delete()
-    redirect('/recipe')
+    return redirect('/recipe')
+
+
+def recipe_search(request):
+    if request.method == 'GET':
+        ingredients = Ingredient.objects.all()
+        return render(request, "food/search_recipe.html", {"ingredients": ingredients})
+    elif request.method == 'POST':
+        data = request.POST.copy()
+        ings = data.getlist("ingredients")
+        lin = len(ings)
+        d = Dish.objects\
+            .filter(ingredients__name__in=ings)\
+            .annotate(ing_num=Count('ingredients'))\
+            .filter(ing_num=lin)
+        return render(request, "food/recipe.html", {"itemlist": d.all()})
 
 
 def ingredient(request):

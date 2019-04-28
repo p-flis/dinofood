@@ -29,9 +29,9 @@ urlpatterns = [
 
     path("recipe/", hello.dish_views.recipe, name="recipe"),
     path("recipe/new", hello.dish_views.add_recipe, name="add_recipe"),
+    path("recipe/search", hello.dish_views.recipe_search, name="search_recipe"),
     path("recipe/<int:dish_id>", hello.dish_views.recipe_id, name="recipe_id"),
     path("recipe/<int:dish_id>/delete", hello.dish_views.recipe_id_delete, name="recipe_delete"),
-    path("", hello.views.index, name="search_recipe"),
     path("ingredient/", hello.dish_views.ingredient, name="ingredient"),
     path("ingredient/new", hello.dish_views.add_ingredient, name="add_ingredient"),
     path("ingredient/<int:ing_id>", hello.dish_views.ingredient_id, name="ingredient_id"),

@@ -11,6 +11,7 @@
   {% block head %}{% endblock %}
 
   <link href="{% static 'css/MenuStyle.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/BaseStyle.css' %}" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -57,5 +58,7 @@
     {% endblock %}
   </main>
 
+
+  {% block custom_js %}{% endblock %}
 </body>
 </html>

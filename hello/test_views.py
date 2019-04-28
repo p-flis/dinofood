@@ -71,6 +71,12 @@ def test_default_database(request):
         ("Żeberka",
             "Głównie z woła",
             ["Wół", "Ketchup", "Majonez", "Sól", "Pieprz", "Marchewka", "Kartofle", "Pies"]),
+        ("Ciasto",
+            "Smakuje jak opona",
+            ["Sól", "Pieprz", "Marchewka", "Pomidor"]),
+        ("Warzywa na patelni",
+            "Trochę różnorodności",
+            ["Kartofle"]),
     ]
     for n in dish_data:
         d = Dish(name=n[0], description=n[1])
