@@ -76,8 +76,15 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'dinofood'
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dinofood',
+        'USER': 'postgres',
+        'PASSWORD': 'cebula123',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c search_path=myschema'
+        }
 
     }
 }
