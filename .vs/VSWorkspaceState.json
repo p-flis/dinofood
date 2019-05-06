@@ -1,8 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\hello"
+    "\\base"
   ],
-  "SelectedNode": "\\hello\\models.py",
+  "SelectedNode": "\\base\\models.py",
   "PreviewInSolutionExplorer": false
 }
