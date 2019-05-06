@@ -20,15 +20,22 @@ def add_recipe(request):
         return render(request, "food/new_recipe_form.html", {"ingredients": ingredients})
     elif request.method == 'POST':
         data = request.POST.copy()
-        # print(data)
+        print(data)
         d = Dish(name=data["name"], description=data["description"])
         d.save()
         # print(data["ingredients"])
         # print(data.get("ingredients"))
         # print(data.getlist("ingredients"))
-        i_list = Ingredient.objects.filter(name__in=data.getlist("ingredients")).all()
-        for i in i_list:
-            d.ingredients.add(i, through_defaults={'quantity': 1})
+        #i_list = Ingredient.objects.filter(name__in=data.getlist("ingredients")).all()
+        i_list = [Ingredient.objects.get(name=ing) for ing in data.getlist("ingredients")]
+        q_list = data.getlist("quantities")
+        for i in range(1,len(i_list)):
+            try:
+                q = int(q_list[i])
+                d.ingredients.add(i_list[i], through_defaults={'quantity': q})
+            except ValueError:
+                pass
+           
         d.save()
         return redirect('/recipe')
     raise Http404

@@ -12,8 +12,8 @@ Dish
 {% block itemcontent %}
     Ingredients:
     <ul>
-    {% for ing in item.ingredients.all %}
-        <li>{{ ing.name }}</li>
+    {% for ing in item.dishdetails_set.all %}
+        <li>{{ ing.ingredient.name }}, {{ ing.quantity }}</li>
     {% endfor %}
     </ul>
 {% endblock %}
