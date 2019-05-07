@@ -1,7 +1,26 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404
+from django.shortcuts import render
+from django.test import TestCase
+from django.urls import reverse
 
-from .models import *
+from base.models import *
+
+class AddRecipeViewTest(TestCase):
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/recipe/new')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('add_recipe'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('add_recipe'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'food/new_recipe_form.html')
+
+
+
 
 
 def empty_database():
@@ -85,3 +104,6 @@ def test_default_database(request):
             d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
 
     return render(request, "default_database.html")
+
+
+

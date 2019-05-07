@@ -5,3 +5,5 @@ staticfiles
 db.sqlite3
 getting-started/*
 *.pyc
+*.idea
+*.vs
