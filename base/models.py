@@ -1,5 +1,5 @@
 from django.db import models
-
+from accounts import models as accounts_models
 
 # Create your models here.
 class Greeting(models.Model):
@@ -35,7 +35,7 @@ class DishDetails(models.Model):
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(accounts.User, on_delete=models.CASCADE)
+    user = models.ForeignKey(accounts_models.User, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     rating = models.IntegerField(blank=True,null=True)
     favourite = models.BooleanField(default=False)
