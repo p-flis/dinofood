@@ -33,16 +33,9 @@ class DishDetails(models.Model):
     quantity = models.IntegerField()
 
 
-class User(models.Model):
-    nick = models.CharField(max_length=30)
-    password = models.CharField(max_length=30)
-    email = models.CharField(max_length=30)
-    admin = models.BooleanField(default=False)
-
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     rating = models.IntegerField(blank=True,null=True)
     favourite = models.BooleanField(default=False)
-
