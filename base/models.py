@@ -35,7 +35,7 @@ class DishDetails(models.Model):
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(accounts.User, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     rating = models.IntegerField(blank=True,null=True)
     favourite = models.BooleanField(default=False)
