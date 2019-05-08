@@ -53,10 +53,20 @@
   </div>
 
 
-  <main>
-    {% block content %}
-    {% endblock %}
-  </main>
+  <div class="main-grid">
+    <div class="main-row left-row">
+
+    </div>
+
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
+
+    <div class="main-row right-row">
+
+    </div>
+  </div>
 
 
   {% block custom_js %}{% endblock %}

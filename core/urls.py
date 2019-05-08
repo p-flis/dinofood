@@ -1,13 +1,12 @@
 from django.urls import path, include
 
 from django.contrib import admin
-from django.views.generic import RedirectView
 
 admin.autodiscover()
 
 import base.views
-import base.test_views
 import base.dish_views
+import base.tests.test_views
 
 # To add a new path, first import the app:
 # import blog
@@ -40,6 +39,6 @@ urlpatterns = [
     path("category/new", base.dish_views.add_category, name="add_category"),
     path("category/<int:cat_id>", base.dish_views.category_id, name="category_id"),
     path("category/<int:cat_id>/delete", base.dish_views.category_id_delete, name="category_delete"),
-    path("test/empty", base.test_views.test_empty_database, name="test_empty_database"),
-    path("test/default", base.test_views.test_default_database, name="test_default_database"),
+    path("test/empty", base.tests.test_views.test_empty_database, name="test_empty_database"),
+    path("test/default", base.tests.test_views.test_default_database, name="test_default_database"),
 ]
