@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "base",
-    'accounts.apps.AccountsConfig',
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -77,9 +77,9 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dinofood',
+        'NAME': 'galaktykakurwix',
         'USER': 'postgres',
-        'PASSWORD': 'cebula123',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '5432',
         'OPTIONS': {
@@ -112,6 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+AUTH_USER_MODEL = 'accounts.user'
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
