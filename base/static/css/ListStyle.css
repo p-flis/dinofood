@@ -24,10 +24,16 @@
   left: 0;
   background-color: Grey;
   width: 100%;
+	margin-bottom: 1em;
   z-index: 1;
 }
 
 
 .listitem:hover .listitem-content{
   display: block;
+}
+
+ul.nomargin{
+	margin: 0;
+	padding: 0;
 }
