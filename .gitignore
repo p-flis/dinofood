@@ -3,9 +3,9 @@ venv
 staticfiles
 .env
 db.sqlite3
-getting-started/*
-*.pyc
-Include
 Include/
 Scripts/
 Lib/
+*.idea
+*.vs
+getting-started/*
