@@ -19,7 +19,10 @@
 
         {% block itemcontent %}{% endblock %}
       </div>
-      <a class="delete" href="{% block deletelink %}{% endblock %}">
+      <a class="delete right" href="{% block updatelink %}{% endblock %}">
+        Update
+      </a>
+      <a class="delete right" href="{% block deletelink %}{% endblock %}">
         Delete
       </a>
     </div>

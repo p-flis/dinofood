@@ -25,8 +25,10 @@ class AddRecipeViewTest(TestCase):
 
 def empty_database():
     Category.objects.all().delete()
-    User.objects.all().delete()
+    # User.objects.all().delete() #idk where it is and if it is safe to remove users
+
     # two of above should be enough if relations were configured properly
+    # but now it is safer to delete everything
     Ingredient.objects.all().delete()
     Dish.objects.all().delete()
     DishDetails.objects.all().delete()
