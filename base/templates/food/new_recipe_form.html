@@ -38,7 +38,10 @@
             {% endfor %}
           </select>
           <label for="quantity">Quantity</label>
-          <input id="quantity" type="number" name="quantities"></input>
+          <input id="quantity" type="number" name="quantities" step="0.1" min="0.1"
+	onkeydown="return event.keyCode !== 69" 	required ></input>
+	<!-- onkeydown="return event.keyCode !== 69" skips e and E, as we don't want
+	scientific notation -->
         </div>
       </div>
       <div class="col-6">

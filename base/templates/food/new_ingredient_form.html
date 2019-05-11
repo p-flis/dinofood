@@ -7,8 +7,10 @@ New Ingredient
 
 {% block itemcontent %}
     <label for="price">Price:</label>
-    <input id="price" name="price" type="number"/>
-
+    <input id="price" name="price" type="number" step="0.01" min="0"
+	onkeydown="return event.keyCode !== 69" 	required />
+	<!-- onkeydown="return event.keyCode !== 69" skips e and E, as we don't want
+	scientific notation -->
     <label for="categories">Category:</label>
     <select id="categories" name="categories">
     {% for cat in categories %}

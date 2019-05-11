@@ -42,13 +42,16 @@ def add_recipe(request):
 
 def recipe_id(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
-    if dish:
-        return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
-    raise Http404
+    if not dish:
+        raise Http404
+    return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
+
 
 
 def recipe_id_delete(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
+    if not dish:
+        raise Http404
     dish.delete()
     return redirect('/recipe')
 
@@ -92,13 +95,17 @@ def add_ingredient(request):
 
 def ingredient_id(request, ing_id):
     ing = Ingredient.objects.filter(id=ing_id)
+    if not ing:
+        raise Http404
     return render(request, "food/ingredient_id_get.html", {"item": ing.get(id=ing_id)})
 
 
 def ingredient_id_delete(request, ing_id):
     ing = Ingredient.objects.filter(id=ing_id)
+    if not ing:
+        raise Http404
     ing.delete()
-    return redirect('/ingredients')
+    return redirect('/ingredient')
 
 
 def category(request):
@@ -120,10 +127,14 @@ def add_category(request):
 
 def category_id(request, cat_id):
     cat = Category.objects.filter(id=cat_id)
+    if not cat:
+        raise Http404
     return render(request, "food/category_id_get.html", {"item": cat.get(id=cat_id)})
 
 
 def category_id_delete(request, cat_id):
     cat = Category.objects.filter(id=cat_id)
+    if not cat:
+        raise Http404
     cat.delete()
     return redirect('/category')
