@@ -44,7 +44,7 @@ def recipe_id(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
     if dish:
         return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
-    return Http404("hello");
+    raise Http404
 
 
 def recipe_id_delete(request, dish_id):
