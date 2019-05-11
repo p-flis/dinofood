@@ -10,7 +10,6 @@ from .models import *
 # Create your views here.
 def recipe(request):
     dishes = Dish.objects.all()
-
     return render(request, "food/recipe.html", {"itemlist": dishes})
 
 
@@ -35,7 +34,7 @@ def add_recipe(request):
                 d.ingredients.add(i_list[i], through_defaults={'quantity': q})
             except ValueError:
                 pass
-           
+
         d.save()
         return redirect('/recipe')
     raise Http404
@@ -43,7 +42,9 @@ def add_recipe(request):
 
 def recipe_id(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
-    return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
+    if dish:
+        return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
+    return HttpResponseNotFound("hello");
 
 
 def recipe_id_delete(request, dish_id):
