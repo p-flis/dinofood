@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.test import TestCase
 from django.urls import reverse
+from django.test import Client
 
 from base.models import *
 
@@ -19,6 +20,94 @@ class AddRecipeViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'food/new_recipe_form.html')
 
+    def test_view_adds_recipe(self):
+        category_names = [
+            "Liquids",
+            "Fruits"
+        ]
+        ingredient_data = [
+            ("Water", 2, "Liquids"),
+            ("Lemon", 8, "Fruits"),
+
+        ]
+        Category.objects.bulk_create([Category(name=n) for n in category_names])
+        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
+                                        for n in ingredient_data])
+        ingredients_list = []
+        ingredients_list.append('Water')
+        ingredients_list.append('Lemon')
+        quantities_list = []
+        quantities_list.append('1')
+        quantities_list.append('1')
+        response = self.client.post('/recipe/new', {'name':'Lemonade',
+                                                    'description':'water, but sour',
+                                                    'ingredients':ingredients_list,
+                                                    'quantities':quantities_list})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Dish.objects.get(name='Lemonade'))
+        self.assertEqual(response.url, '/recipe')
+
+class AddIngredientViewTest(TestCase):
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/ingredient/new')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('add_ingredient'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template_db_empty(self):
+        response = self.client.get(reverse('add_ingredient'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'food/no_categories.html')
+
+    def test_view_uses_correct_template_db_nonempty(self):
+        category_names = [
+            "Spices",
+        ]
+        Category.objects.bulk_create([Category(name=n) for n in category_names])
+        response = self.client.get(reverse('add_ingredient'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'food/new_ingredient_form.html')
+
+    def test_view_adds_ingredient(self):
+        category_names = [
+            "Liquids",
+        ]
+        Category.objects.bulk_create([Category(name=n) for n in category_names])
+        response = self.client.post('/ingredient/new', {'name':'water', 'price':'2', 'categories':'Liquids'})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Ingredient.objects.get(name='water'))
+        self.assertEqual(response.url, '/ingredient')
+
+
+class AddCategoryViewTest(TestCase):
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/category/new')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('add_category'))
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_view_uses_correct_template(self):
+        category_names = [
+            "Spices",
+        ]
+        Category.objects.bulk_create([Category(name=n) for n in category_names])
+        response = self.client.get(reverse('add_category'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'food/new_category_form.html')
+
+
+    def test_view_adds_category(self):
+        response = self.client.post('/category/new', {'name': 'Spices'})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Category.objects.get(name='Spices'))
+        self.assertEqual(response.url, '/category')
 
 
 
