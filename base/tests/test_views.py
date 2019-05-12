@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.test import TestCase
 from django.urls import reverse
-from django.test import Client
+# from django.test import Client
 import json
 
 from base.models import *
@@ -61,14 +61,14 @@ class RecipeSearchViewTest(TestCase):
         ingredients_list.append('Water')
         ingredients_list.append('Lemon')
         response = self.client.post('/recipe/search', {"ingredients": ingredients_list})
-        self.assertEqual(response.context['itemlist'].count(), 1)
-        self.assertEqual(response.context['itemlist'][0].name, 'Lemonade')
+        self.assertEqual(response.context['list_items'].count(), 1)
+        self.assertEqual(response.context['list_items'][0].name, 'Lemonade')
 
     def test_view_finds_two_dishes(self):
         ingredients_list = []
         ingredients_list.append('Water')
         response = self.client.post('/recipe/search', {"ingredients": ingredients_list})
-        self.assertEqual(response.context['itemlist'].count(), 2)
+        self.assertEqual(response.context['list_items'].count(), 2)
 
 
 #region DeleteViews
@@ -99,9 +99,7 @@ class DeleteCategoryViewTest(TestCase):
                 for ing_name in n[2]:
                     d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
 
-
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-
         response = self.client.get('/category/999/delete')
         self.assertEqual(response.status_code, 404)
 
@@ -119,10 +117,11 @@ class DeleteCategoryViewTest(TestCase):
         item = Category.objects.only('id').get(name='Liquids').id
         response = self.client.get(reverse('category_delete', kwargs={'cat_id': item}))
         self.assertEqual(response.status_code, 302)
-        #things should be deleted cascade
+        # things should be deleted cascade
         self.assertFalse(Category.objects.filter(name='Liquids').exists())
         self.assertFalse(Ingredient.objects.filter(name='Water').exists())
         self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
+
 
 class DeleteRecipeViewTest(TestCase):
     @classmethod
@@ -377,10 +376,11 @@ class AddRecipeViewTest(TestCase):
         quantities_list = []
         quantities_list.append('1')
         quantities_list.append('1')
-        response = self.client.post('/recipe/new', {'name':'Lemonade',
-                                                    'description':'water, but sour',
-                                                    'ingredients':ingredients_list,
-                                                    'quantities':quantities_list})
+        response = self.client.post('/recipe/new', {'name': 'Lemonade',
+                                                    'description': 'water, but sour',
+                                                    'recipe': '',
+                                                    'ingredients': ingredients_list,
+                                                    'quantities': quantities_list})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
         self.assertEqual(response.url, '/recipe')
