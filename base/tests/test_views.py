@@ -7,8 +7,10 @@ import json
 from base.models import *
 
 
-class RecipeSearchViewTest(TestCase):
+# region SearchViews
 
+
+class RecipeSearchViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         category_names = [
@@ -51,53 +53,52 @@ class RecipeSearchViewTest(TestCase):
         self.assertTemplateUsed(response, 'food/search_recipe.html')
 
     def test_view_uses_correct_template_post(self):
-        ingredients_list = []
-        ingredients_list.append('Water')
+        ingredients_list = ['Water']
         response = self.client.post('/recipe/search', {"ingredients": ingredients_list})
         self.assertTemplateUsed(response, 'food/recipe.html')
 
     def test_view_finds_single_dish(self):
-        ingredients_list = []
-        ingredients_list.append('Water')
-        ingredients_list.append('Lemon')
+        ingredients_list = ['Water', 'Lemon']
         response = self.client.post('/recipe/search', {"ingredients": ingredients_list})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemonade')
 
     def test_view_finds_two_dishes(self):
-        ingredients_list = []
-        ingredients_list.append('Water')
+        ingredients_list = ['Water']
         response = self.client.post('/recipe/search', {"ingredients": ingredients_list})
         self.assertEqual(response.context['list_items'].count(), 2)
 
 
-#region DeleteViews
+# endregion
+
+# region DeleteViews
+
 
 class DeleteCategoryViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-            category_names = [
-                "Liquids",
-                "Fruits"
-            ]
-            ingredient_data = [
-                ("Water", 2, "Liquids"),
-                ("Lemon", 8, "Fruits")
+        category_names = [
+            "Liquids",
+            "Fruits"
+        ]
+        ingredient_data = [
+            ("Water", 2, "Liquids"),
+            ("Lemon", 8, "Fruits")
 
-            ]
-            Category.objects.bulk_create([Category(name=n) for n in category_names])
-            Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
-                                            for n in ingredient_data])
-            dish_data = [
-                ("Lemonade",
-                 "water, but sour",
-                 ["Water", "Lemon"]),
-            ]
-            for n in dish_data:
-                d = Dish(name=n[0], description=n[1])
-                d.save()
-                for ing_name in n[2]:
-                    d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
+        ]
+        Category.objects.bulk_create([Category(name=n) for n in category_names])
+        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
+                                        for n in ingredient_data])
+        dish_data = [
+            ("Lemonade",
+             "water, but sour",
+             ["Water", "Lemon"]),
+        ]
+        for n in dish_data:
+            d = Dish(name=n[0], description=n[1])
+            d.save()
+            for ing_name in n[2]:
+                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/category/999/delete')
@@ -126,29 +127,28 @@ class DeleteCategoryViewTest(TestCase):
 class DeleteRecipeViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-            category_names = [
-                "Liquids",
-                "Fruits"
-            ]
-            ingredient_data = [
-                ("Water", 2, "Liquids"),
-                ("Lemon", 8, "Fruits")
+        category_names = [
+            "Liquids",
+            "Fruits"
+        ]
+        ingredient_data = [
+            ("Water", 2, "Liquids"),
+            ("Lemon", 8, "Fruits")
 
-            ]
-            Category.objects.bulk_create([Category(name=n) for n in category_names])
-            Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
-                                            for n in ingredient_data])
-            dish_data = [
-                ("Lemonade",
-                 "water, but sour",
-                 ["Water", "Lemon"]),
-            ]
-            for n in dish_data:
-                d = Dish(name=n[0], description=n[1])
-                d.save()
-                for ing_name in n[2]:
-                    d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
-
+        ]
+        Category.objects.bulk_create([Category(name=n) for n in category_names])
+        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
+                                        for n in ingredient_data])
+        dish_data = [
+            ("Lemonade",
+             "water, but sour",
+             ["Water", "Lemon"]),
+        ]
+        for n in dish_data:
+            d = Dish(name=n[0], description=n[1])
+            d.save()
+            for ing_name in n[2]:
+                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/recipe/999/delete')
@@ -168,37 +168,37 @@ class DeleteRecipeViewTest(TestCase):
         item = Dish.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_delete', kwargs={'dish_id': item}))
         self.assertEqual(response.status_code, 302)
-        #things should be deleted cascade
+        # things should be deleted cascade
         self.assertTrue(Category.objects.filter(name='Liquids').exists())
         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
         self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
 
+
 class DeleteIngredientViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-            category_names = [
-                "Liquids",
-                "Fruits"
-            ]
-            ingredient_data = [
-                ("Water", 2, "Liquids"),
-                ("Lemon", 8, "Fruits")
+        category_names = [
+            "Liquids",
+            "Fruits"
+        ]
+        ingredient_data = [
+            ("Water", 2, "Liquids"),
+            ("Lemon", 8, "Fruits")
 
-            ]
-            Category.objects.bulk_create([Category(name=n) for n in category_names])
-            Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
-                                            for n in ingredient_data])
-            dish_data = [
-                ("Lemonade",
-                 "water, but sour",
-                 ["Water", "Lemon"]),
-            ]
-            for n in dish_data:
-                d = Dish(name=n[0], description=n[1])
-                d.save()
-                for ing_name in n[2]:
-                    d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
-
+        ]
+        Category.objects.bulk_create([Category(name=n) for n in category_names])
+        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
+                                        for n in ingredient_data])
+        dish_data = [
+            ("Lemonade",
+             "water, but sour",
+             ["Water", "Lemon"]),
+        ]
+        for n in dish_data:
+            d = Dish(name=n[0], description=n[1])
+            d.save()
+            for ing_name in n[2]:
+                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/ingredient/999/delete')
@@ -218,14 +218,16 @@ class DeleteIngredientViewTest(TestCase):
         item = Ingredient.objects.only('id').get(name='Water').id
         response = self.client.get(reverse('ingredient_delete', kwargs={'ing_id': item}))
         self.assertEqual(response.status_code, 302)
-        #things should be deleted cascade
+        # things should be deleted cascade
         self.assertTrue(Category.objects.filter(name='Liquids').exists())
         self.assertFalse(Ingredient.objects.filter(name='Water').exists())
         self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
 
-#endregion
 
-#region GetIDViews
+# endregion
+
+# region GetIDViews
+
 
 class IngredientIDViewTest(TestCase):
 
@@ -251,13 +253,14 @@ class IngredientIDViewTest(TestCase):
 
     def test_view_url_accessible_by_name(self):
         item = Ingredient.objects.only('id').get(name='Water').id
-        response = self.client.get(reverse('ingredient_id', kwargs={'ing_id':item}))
+        response = self.client.get(reverse('ingredient_id', kwargs={'ing_id': item}))
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
         item = Ingredient.objects.only('id').get(name='Water').id
         response = self.client.get(reverse('ingredient_id', kwargs={'ing_id': item}))
         self.assertTemplateUsed(response, 'food/ingredient_id_get.html')
+
 
 class CategoryIDViewTest(TestCase):
     @classmethod
@@ -269,11 +272,11 @@ class CategoryIDViewTest(TestCase):
         ingredient_data = [
             ("Water", 2, "Liquids"),
             ("Lemon", 8, "Fruits")
-
         ]
         Category.objects.bulk_create([Category(name=n) for n in category_names])
         Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
                                         for n in ingredient_data])
+
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/category/999')
         self.assertEqual(response.status_code, 404)
@@ -291,6 +294,7 @@ class CategoryIDViewTest(TestCase):
         item = Category.objects.only('id').get(name='Liquids').id
         response = self.client.get(reverse('category_id', kwargs={'cat_id': item}))
         self.assertTemplateUsed(response, 'food/category_id_get.html')
+
 
 class RecipeIDViewTest(TestCase):
     @classmethod
@@ -318,7 +322,6 @@ class RecipeIDViewTest(TestCase):
             for ing_name in n[2]:
                 d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
 
-
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/recipe/999')
         self.assertEqual(response.status_code, 404)
@@ -338,12 +341,13 @@ class RecipeIDViewTest(TestCase):
         response = self.client.get(reverse('recipe_id', kwargs={'dish_id': item}))
         self.assertTemplateUsed(response, 'food/recipe_id_get.html')
 
-#endregion
 
-#region AddViews
+# endregion
+
+# region AddViews
+
 
 class AddRecipeViewTest(TestCase):
-
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/recipe/new')
         self.assertEqual(response.status_code, 200)
@@ -370,12 +374,8 @@ class AddRecipeViewTest(TestCase):
         Category.objects.bulk_create([Category(name=n) for n in category_names])
         Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
                                         for n in ingredient_data])
-        ingredients_list = []
-        ingredients_list.append('Water')
-        ingredients_list.append('Lemon')
-        quantities_list = []
-        quantities_list.append('1')
-        quantities_list.append('1')
+        ingredients_list = ['Water', 'Lemon']
+        quantities_list = ['1', '1']
         response = self.client.post('/recipe/new', {'name': 'Lemonade',
                                                     'description': 'water, but sour',
                                                     'recipe': '',
@@ -385,8 +385,8 @@ class AddRecipeViewTest(TestCase):
         self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
         self.assertEqual(response.url, '/recipe')
 
-class AddIngredientViewTest(TestCase):
 
+class AddIngredientViewTest(TestCase):
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/ingredient/new')
         self.assertEqual(response.status_code, 200)
@@ -414,14 +414,13 @@ class AddIngredientViewTest(TestCase):
             "Liquids",
         ]
         Category.objects.bulk_create([Category(name=n) for n in category_names])
-        response = self.client.post('/ingredient/new', {'name':'water', 'price':'2', 'categories':'Liquids'})
+        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2', 'categories': 'Liquids'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(name='water').exists())
         self.assertEqual(response.url, '/ingredient')
 
 
 class AddCategoryViewTest(TestCase):
-
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/category/new')
         self.assertEqual(response.status_code, 200)
@@ -439,16 +438,17 @@ class AddCategoryViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'food/new_category_form.html')
 
-
     def test_view_adds_category(self):
         response = self.client.post('/category/new', {'name': 'Spices'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Category.objects.filter(name='Spices').exists())
         self.assertEqual(response.url, '/category')
 
-#endregion
 
-#region DatabaseTests
+# endregion
+
+# region DatabaseTests
+
 
 def empty_database():
     Category.objects.all().delete()
@@ -495,7 +495,12 @@ def test_default_database(request):
 
     return render(request, "default_database.html")
 
-#endregion
+# endregion
 
+# region ValidationTests
 
+# endregion
 
+# region AuthorisationTests
+
+# endregion

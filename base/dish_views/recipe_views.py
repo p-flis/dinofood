@@ -15,7 +15,7 @@ def add_recipe(request):
         return render(request, "food/new_recipe_form.html", {"ingredients": ingredients})
     elif request.method == 'POST':
         data = request.POST.copy()
-        print(data)
+        # print(data)
         d = Dish(name=data["name"], description=data["description"], recipe=data["recipe"])
         d.save()
         # print(data["ingredients"])

@@ -14,7 +14,7 @@ def add_category(request):
         return render(request, "food/new_category_form.html")
     elif request.method == 'POST':
         data = request.POST.copy()
-        print(data)
+        # print(data)
         c = Category(name=data["name"])
         c.save()
         return redirect('/category')

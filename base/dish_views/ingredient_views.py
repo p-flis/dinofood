@@ -14,11 +14,11 @@ def add_ingredient(request):
         categories = Category.objects.all()
         if not categories:
             return render(request, "food/no_categories.html")
-        print(categories)
+        # print(categories)
         return render(request, "food/new_ingredient_form.html", {"categories": categories})
     elif request.method == 'POST':
         data = request.POST.copy()
-        print(data)
+        # print(data)
         d = Ingredient(name=data["name"], price=data["price"])
         c = Category.objects.get(name=data.get("categories"))
         d.category = c
