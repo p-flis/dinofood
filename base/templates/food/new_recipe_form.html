@@ -15,6 +15,10 @@
     <label for="description">Description:</label>
     <input id="description" name="description" type="text"/>
   </div>
+<div>
+    <label for="recipe">Recipe:</label>
+    <input id="recipe" name="recipe" type="text"/>
+  </div>
   <!-- <div>
     <label for="ingredients">Ingredients:</label>
     <select id="ingredients" name="ingredients" multiple>
@@ -39,7 +43,7 @@
           </select>
           <label for="quantity">Quantity</label>
           <input id="quantity" type="number" name="quantities" step="0.1" min="0.1"
-	onkeydown="return event.keyCode !== 69" 	required ></input>
+	onkeydown="return event.keyCode !== 69" 	required />
 	<!-- onkeydown="return event.keyCode !== 69" skips e and E, as we don't want
 	scientific notation -->
         </div>
@@ -56,6 +60,8 @@
     </div>
   </div>
 {% endblock %}
+
+{% block submitclick %}submitAndDeleteTemplate(event);{% endblock %}
 
 {% block custom_js %}
   <script src="{% static 'js/rowadder.js' %}?version=5"></script>

@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.db.models import Count
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 
 from .models import *
 
@@ -12,7 +14,7 @@ def recipe(request):
     dishes = Dish.objects.all()
     return render(request, "food/recipe.html", {"itemlist": dishes})
 
-
+@login_required(login_url='/accounts/login/')
 def add_recipe(request):
     if request.method == 'GET':
         ingredients = Ingredient.objects.all()
@@ -47,7 +49,7 @@ def recipe_id(request, dish_id):
     return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
 
 
-
+@login_required(login_url='/accounts/login/') #TODO: check if user is the owner of the recipe
 def recipe_id_delete(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
     if not dish:
@@ -75,7 +77,7 @@ def ingredient(request):
     ingredients = Ingredient.objects.all()
     return render(request, "food/ingredients.html", {"itemlist": ingredients})
 
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def add_ingredient(request):
     if request.method == 'GET':
         categories = Category.objects.all()
@@ -99,7 +101,7 @@ def ingredient_id(request, ing_id):
         raise Http404
     return render(request, "food/ingredient_id_get.html", {"item": ing.get(id=ing_id)})
 
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient_id_delete(request, ing_id):
     ing = Ingredient.objects.filter(id=ing_id)
     if not ing:
@@ -112,7 +114,7 @@ def category(request):
     categories = Category.objects.all()
     return render(request, "food/category.html", {"itemlist": categories})
 
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def add_category(request):
     if request.method == 'GET':
         return render(request, "food/new_category_form.html")
@@ -131,7 +133,7 @@ def category_id(request, cat_id):
         raise Http404
     return render(request, "food/category_id_get.html", {"item": cat.get(id=cat_id)})
 
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def category_id_delete(request, cat_id):
     cat = Category.objects.filter(id=cat_id)
     if not cat:

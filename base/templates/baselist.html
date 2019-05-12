@@ -13,7 +13,7 @@
 
 
     <ul class="nomargin">
-        {% for item in itemlist %}
+        {% for item in list_items %}
         <li class="listitem">
           <a class="listitembtn" href="{% block itemlink %}{% endblock %}">
             {% block itemname %}{{ item.name }}{% endblock %}

@@ -1,0 +1,279 @@
+{
+  "categories": [
+    {
+      "name": "Przyprawy"
+    },
+    {
+      "name": "Miesa"
+    },
+    {
+      "name": "Warzywa"
+    },
+    {
+      "name": "Owoce"
+    },
+    {
+      "name": "Ryby"
+    },
+    {
+      "name": "Alkohol"
+    }
+  ],
+  "ingredients": [
+    {
+      "name": "Ketchup",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Majonez",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Pieprz",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Sól",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Gałka muszkatołowa",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Zioła prowansalskie",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Kurczak",
+      "price": 20,
+      "category_name": "Miesa"
+    },
+    {
+      "name": "Indyk",
+      "price": 30,
+      "category_name": "Miesa"
+    },
+    {
+      "name": "Świnia",
+      "price": 20,
+      "category_name": "Miesa"
+    },
+    {
+      "name": "Wół",
+      "price": 20,
+      "category_name": "Miesa"
+    },
+    {
+      "name": "Bóbr",
+      "price": 100,
+      "category_name": "Miesa"
+    },
+    {
+      "name": "Pies",
+      "price": 1,
+      "category_name": "Miesa"
+    },
+    {
+      "name": "Pomidor",
+      "price": 3,
+      "category_name": "Warzywa"
+    },
+    {
+      "name": "Marchewka",
+      "price": 1,
+      "category_name": "Warzywa"
+    },{
+      "name": "Pietruszka",
+      "price": 2,
+      "category_name": "Warzywa"
+    },
+    {
+      "name": "Kartofle",
+      "price": 1,
+      "category_name": "Warzywa"
+    }
+  ],
+  "recipes": [
+    {
+      "name": "Kurczak z ketchupem",
+      "description": "Włóż kurczaka do ketchupa",
+      "recipe": "Jeszcze nie wiadomo",
+      "ingredients": [
+        {
+          "name": "Kurczak",
+          "quantity": 1
+        },
+        {
+          "name": "Ketchup",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Zupa z bobra",
+      "description": "Bardzo dobra",
+      "recipe": "Zagrzej wodę w rzece",
+      "ingredients": [
+        {
+          "name": "Bóbr",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Indyk po tunezyjsku",
+      "description": "Bardzo zagranicznie",
+      "recipe": "Tajniki kuchni tunezyjskiej\nNikomu nie znane\nMoże oprócz babci Krysi",
+      "ingredients": [
+        {
+          "name": "Indyk",
+          "quantity": 2
+        },
+        {
+          "name": "Zioła prowansalskie",
+          "quantity": 1
+        },
+        {
+          "name": "Pomidor",
+          "quantity": 5
+        },
+        {
+          "name": "Marchewka",
+          "quantity": 1
+        },
+        {
+          "name": "Sól",
+          "quantity": 3
+        },
+        {
+          "name": "Pieprz",
+          "quantity": 8
+        }
+      ]
+    },
+    {
+      "name": "Obiad dla czworga",
+      "description": "Albo dla dwóch głodnych",
+      "recipe": "Tylko u nas!!!\nPromocja!!!\nW poniedziałki do -50%!!!!!",
+      "ingredients": [
+        {
+          "name": "Kurczak",
+          "quantity": 1
+        },
+        {
+          "name": "Indyk",
+          "quantity": 1
+        },
+        {
+          "name": "Świnia",
+          "quantity": 1
+        },
+        {
+          "name": "Wół",
+          "quantity": 1
+        },
+        {
+          "name": "Pomidor",
+          "quantity": 4
+        },
+        {
+          "name": "Marchewka",
+          "quantity": 8
+        },
+        {
+          "name": "Kartofle",
+          "quantity": 16
+        },
+        {
+          "name": "Pieprz",
+          "quantity": 1
+        },
+        {
+          "name": "Sól",
+          "quantity": 128
+        }
+      ]
+    },
+    {
+      "name": "Żeberka",
+      "description": "Głównie z woła",
+      "recipe": "Kup żeberka\nZjedz większość\nUpoluj psa\nWymieszaj z resztką żeberek\nPrzygotuj jak żeberka\nGotowe!",
+      "ingredients": [
+        {
+          "name": "Wół",
+          "quantity": 1
+        },
+        {
+          "name": "Ketchup",
+          "quantity": 8
+        },
+        {
+          "name": "Majonez",
+          "quantity": 2
+        },
+        {
+          "name": "Sól",
+          "quantity": 1
+        },
+        {
+          "name": "Pieprz",
+          "quantity": 5
+        },
+        {
+          "name": "Marchewka",
+          "quantity": 1
+        },
+        {
+          "name": "Kartofle",
+          "quantity": 30
+        },
+        {
+          "name": "Pies",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "Ciasto",
+      "description": "Smakuje jak opona",
+      "recipe": "Jeszcze nie opanowałem jak wyłączyć piec\nZaraz wszystko wybuchnie\nJa już mam dość ciast",
+      "ingredients": [
+        {
+          "name": "Sól",
+          "quantity": 8
+        },
+        {
+          "name": "Pieprz",
+          "quantity": 2
+        },
+        {
+          "name": "Marchewka",
+          "quantity": 13
+        },
+        {
+          "name": "Pomidor",
+          "quantity": 37
+        }
+      ]
+    },
+    {
+      "name": "Warzywa na patelni",
+      "description": "Trochę różnorodności",
+      "recipe": "Obierz ziemniaki\nZiemniaki to warzywa\nDaj je na patelnię\nMasz warzywa na patelni!\nGratulacje!",
+      "ingredients": [
+        {
+          "name": "Kartofle",
+          "quantity": 100
+        }
+      ]
+    }
+
+  ]
+}

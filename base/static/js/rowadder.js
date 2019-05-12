@@ -22,4 +22,8 @@ thisRow=thisRow.parentNode;
 thisRow.remove();
 }
 
+function submitAndDeleteTemplate(e){
+document.getElementById("row-template").remove();
+}
+
 
