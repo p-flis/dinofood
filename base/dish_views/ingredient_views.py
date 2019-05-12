@@ -9,6 +9,7 @@ def ingredient(request):
     return render(request, "food/ingredients.html", {"list_items": ingredients})
 
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def add_ingredient(request):
     if request.method == 'GET':
         categories = Category.objects.all()
@@ -33,6 +34,7 @@ def ingredient_id(request, ing_id):
     return render(request, "food/ingredient_id_get.html", {"item": ing.get(id=ing_id)})
 
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient_id_delete(request, ing_id):
     ing = Ingredient.objects.filter(id=ing_id)
     if not ing:
