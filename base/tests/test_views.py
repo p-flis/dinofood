@@ -6,6 +6,7 @@ import json
 
 from base.models import *
 
+
 class RecipeSearchViewTest(TestCase):
 
     @classmethod
@@ -418,6 +419,7 @@ class AddIngredientViewTest(TestCase):
         self.assertTrue(Ingredient.objects.filter(name='water').exists())
         self.assertEqual(response.url, '/ingredient')
 
+
 class AddCategoryViewTest(TestCase):
 
     def test_view_url_exists_at_desired_location(self):
@@ -427,7 +429,6 @@ class AddCategoryViewTest(TestCase):
     def test_view_url_accessible_by_name(self):
         response = self.client.get(reverse('add_category'))
         self.assertEqual(response.status_code, 200)
-
 
     def test_view_uses_correct_template(self):
         category_names = [
