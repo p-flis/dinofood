@@ -11,14 +11,6 @@
 {% endblock %}
 
 {% block itemcontent %}
-  <div>
-    <label for="description">Description:</label>
-    <input id="description" name="description" type="text"/>
-  </div>
-<div>
-    <label for="recipe">Recipe:</label>
-    <input id="recipe" name="recipe" type="text"/>
-  </div>
   <!-- <div>
     <label for="ingredients">Ingredients:</label>
     <select id="ingredients" name="ingredients" multiple>
@@ -54,7 +46,7 @@
         </div>
       </div>
     </div>
-  
+
     <div class="input-group-append">
       <button class="add-form-row" onclick="addNew(event,this);">+</button>
     </div>
@@ -66,5 +58,3 @@
 {% block custom_js %}
   <script src="{% static 'js/rowadder.js' %}?version=5"></script>
 {% endblock %}
-
-

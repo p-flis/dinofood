@@ -9,6 +9,10 @@ Ingredient
 {% url 'ingredient_delete' item.id %}
 {% endblock %}
 
+{% block updatelink %}
+{% url 'ingredient_update' item.id %}
+{% endblock %}
+
 {% block itemcontent %}
   <p>Price: {{item.price}}</p>
 {% endblock %}

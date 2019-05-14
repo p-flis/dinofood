@@ -36,11 +36,13 @@ urlpatterns = [
     path("ingredient/new", ingredient_views.add_ingredient, name="add_ingredient"),
     path("ingredient/<int:ing_id>", ingredient_views.ingredient_id, name="ingredient_id"),
     path("ingredient/<int:ing_id>/delete", ingredient_views.ingredient_id_delete, name="ingredient_delete"),
+    path("ingredient/<int:ing_id>/update", ingredient_views.ingredient_id_update, name="ingredient_update"),
 
     path("category/", category_views.category, name="category"),
     path("category/new", category_views.add_category, name="add_category"),
     path("category/<int:cat_id>", category_views.category_id, name="category_id"),
     path("category/<int:cat_id>/delete", category_views.category_id_delete, name="category_delete"),
+    path("category/<int:cat_id>/update", category_views.category_id_update, name="category_update"),
 
     path("recipe/search", search_views.recipe_search, name="search_recipe"),
 

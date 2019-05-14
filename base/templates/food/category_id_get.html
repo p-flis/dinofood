@@ -8,3 +8,7 @@ Category
 {% block deletelink %}
 {% url 'category_delete' item.id %}
 {% endblock %}
+
+{% block updatelink %}
+{% url 'category_update' item.id %}
+{% endblock %}
