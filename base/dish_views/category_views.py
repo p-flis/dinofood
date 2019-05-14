@@ -53,8 +53,9 @@ def category_id_update(request, cat_id):
         if form.is_valid():
             cat = Category.objects.filter(id=cat_id)
             if cat:
-                cat.delete()
-            c = Category(name=form.cleaned_data["name"])
-            c.save()
+                cat.update(name = form.cleaned_data["name"])
+            else:
+                c = Category(name=form.cleaned_data["name"])
+                c.save()
         return redirect('/category')
     return redirect('/category')

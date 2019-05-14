@@ -61,9 +61,14 @@ def ingredient_id_update(request, ing_id):
         if form.is_valid():
             ing = Ingredient.objects.filter(id=ing_id)
             if ing:
-                ing.delete()
-            d = Ingredient(name=form.cleaned_data["name"], price=form.cleaned_data["price"])
-            c = Category.objects.get(name=form.cleaned_data["category"])
-            d.category = c
-            d.save()
+                ing.update(name = form.cleaned_data["name"])
+                ing.update(price = form.cleaned_data["price"])
+                ing.update(category = Category.objects.get(name=form.cleaned_data["category"]))
+                #this probably makes 3 changes to the db
+            else:
+                d = Ingredient(name=form.cleaned_data["name"], price=form.cleaned_data["price"])
+                c = Category.objects.get(name=form.cleaned_data["category"])
+                d.category = c
+                d.save()
+
         return redirect('/ingredient')
