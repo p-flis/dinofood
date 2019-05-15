@@ -523,6 +523,8 @@ def load_bcc_from_json(file_name):
                 if Ingredient.objects.filter(name=ingredient_data).exists():
                     ing = Ingredient.objects.get(name=ingredient_data)
                 else:
+                    if len(ingredient_data) >= 75:
+                        ingredient_data = ingredient_data[:75] + "..."
                     ing = Ingredient.objects.create(name=ingredient_data, price=1, category=all_category)
                     # ing.save()
                 d.ingredients.add(ing, through_defaults={'quantity': 1})

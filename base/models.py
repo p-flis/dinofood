@@ -1,4 +1,3 @@
-
 from django.db import models
 from accounts import models as accounts_models
 from django.dispatch import receiver
@@ -35,7 +34,6 @@ class DishDetails(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-
 
 
 class Rating(models.Model):
