@@ -48,4 +48,5 @@ urlpatterns = [
 
     path("test/empty", base.tests.test_views.test_empty_database, name="test_empty_database"),
     path("test/default", base.tests.test_views.test_default_database, name="test_default_database"),
+    path("test/default_big", base.tests.test_views.test_big_database, name="test_big_database"),
 ]
