@@ -507,6 +507,8 @@ def load_bcc_from_json(file_name):
         for url, recipe_data in db.items():
             if len(recipe_data['ingredients']) <= 0:
                 continue
+            if len(recipe_data['title']) >= 75:
+                recipe_data['title'] = recipe_data['title'][:75] + "..."
             d = Dish(name=recipe_data['title'],
                      description=recipe_data['url'] + '\nRecipe from www.bbc.com',
                      recipe='\n'.join(recipe_data['method']))
