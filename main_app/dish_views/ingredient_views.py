@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
-from base.forms import IngredientForm
-from base.models import *
+from main_app.forms import IngredientForm
+from main_app.models import *
 
 
 def ingredient(request):

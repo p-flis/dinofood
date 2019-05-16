@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
-from base.forms import RecipeForm
-from base.models import *
+from main_app.forms import RecipeForm
+from main_app.models import *
 
 
 def recipe(request):
     dishes = Dish.objects.all()
     return render(request, "food/recipe.html", {"list_items": dishes})
+
 
 @login_required(login_url='/accounts/login')
 def add_recipe(request):
@@ -20,7 +21,8 @@ def add_recipe(request):
         # needed only because of the ingredients not in form but in html
         form = RecipeForm(request.POST)
         if form.is_valid():
-            d = Dish(name=form.cleaned_data["name"], description=form.cleaned_data["description"], recipe=form.cleaned_data["recipe"])
+            d = Dish(name=form.cleaned_data["name"], description=form.cleaned_data["description"],
+                     recipe=form.cleaned_data["recipe"])
             d.save()
             i_list = [Ingredient.objects.get(name=ing) for ing in data.getlist("ingredients")]
             q_list = data.getlist("quantities")
@@ -42,7 +44,8 @@ def recipe_id(request, dish_id):
         raise Http404
     return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
 
-@login_required(login_url='/accounts/login') #TODO: change to checking ownership
+
+@login_required(login_url='/accounts/login')  # TODO: change to checking ownership
 def recipe_id_delete(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
     if not dish:

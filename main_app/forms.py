@@ -1,5 +1,5 @@
 from django import forms
-from base.models import Category
+from main_app.models import Category
 
 
 class IngredientForm(forms.Form):

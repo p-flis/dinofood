@@ -1,8 +1,8 @@
 from django.urls import reverse
-from base.tests.TestCaseSpecialUser import *
+from main_app.tests.TestCaseSpecialUser import *
 import django.contrib.auth as auth
 
-from base.models import *
+from main_app.models import *
 
 
 class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
@@ -47,7 +47,8 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
 class AddRecipeViewTestNotLoggedUser(TestCase):
     def test_view_correct_redirection(self):
         response = self.client.get(reverse('add_recipe'), follow=True)
-        self.assertRedirects(response, reverse('login') + "?next=" + reverse('add_recipe'), status_code=302, target_status_code=200)
+        self.assertRedirects(response, reverse('login') + "?next=" + reverse('add_recipe'), status_code=302,
+                             target_status_code=200)
 
 
 class AddIngredientViewTestSuperuser(TestCaseSuperuser):

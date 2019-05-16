@@ -4,7 +4,7 @@ from django.urls import reverse
 # from django.test import Client
 import json
 
-from base.models import *
+from main_app.models import *
 
 
 class IngredientIDViewTest(TestCase):

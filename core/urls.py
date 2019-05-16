@@ -2,12 +2,12 @@ from django.urls import path, include
 
 from django.contrib import admin
 
-import base.views
-import base.dish_views.category_views as category_views
-import base.dish_views.ingredient_views as ingredient_views
-import base.dish_views.recipe_views as recipe_views
-import base.dish_views.search_views as search_views
-import base.tests.test_views as test_views
+import main_app.views
+import main_app.dish_views.category_views as category_views
+import main_app.dish_views.ingredient_views as ingredient_views
+import main_app.dish_views.recipe_views as recipe_views
+import main_app.dish_views.search_views as search_views
+import main_app.tests.test_views as test_views
 
 admin.autodiscover()
 
@@ -20,7 +20,7 @@ admin.autodiscover()
 # Learn more here: https://docs.djangoproject.com/en/2.1/topics/http/urls/
 
 urlpatterns = [
-    path("", base.views.index, name="index"),
+    path("", main_app.views.index, name="index"),
     # path("db/", base.views.db, name="db"),
     path("admin/", admin.site.urls),
 
@@ -46,7 +46,7 @@ urlpatterns = [
     path("category/<int:cat_id>/delete", category_views.category_id_delete, name="category_delete"),
     path("category/<int:cat_id>/update", category_views.category_id_update, name="category_update"),
 
-    path("test/empty", base.tests.test_views.test_empty_database, name="test_empty_database"),
-    path("test/default", base.tests.test_views.test_default_database, name="test_default_database"),
-    path("test/default_big", base.tests.test_views.test_big_database, name="test_big_database"),
+    path("test/empty", main_app.tests.test_views.test_empty_database, name="test_empty_database"),
+    path("test/default", main_app.tests.test_views.test_default_database, name="test_default_database"),
+    path("test/default_big", main_app.tests.test_views.test_big_database, name="test_big_database"),
 ]

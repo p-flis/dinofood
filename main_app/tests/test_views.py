@@ -4,7 +4,7 @@ from django.urls import reverse
 # from django.test import Client
 import json
 
-from base.models import *
+from main_app.models import *
 
 
 # region SearchViews
@@ -12,7 +12,6 @@ from base.models import *
 # endregion
 
 # region DeleteViews
-
 
 
 # endregion

@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.db.models import Count, Sum, F
 
-from base.models import *
+from main_app.models import *
+
 
 # https://github.com/taranjeet/django-library-app/blob/master/djlibrary/templates/store/create_normal.html
 
@@ -26,15 +27,15 @@ def recipe_search(request):
 
         if ingredients_in_fridge and any(ingredients_in_fridge):
             search_result = search_result \
-                .exclude(ingredients__name__in=ingredients_in_fridge)\
+                .exclude(ingredients__name__in=ingredients_in_fridge)
 
-        print(search_result.all())
+        # print(search_result.all())
 
-        search_result = search_result\
+        search_result = search_result \
             .annotate(recipe_price=Sum(F('dishdetails__quantity') * F('dishdetails__ingredient__price'))) \
             .filter(recipe_price__gt=extra_money)
 
-        print(search_result.all())
+        # print(search_result.all())
         # print(search_result.query)
         ids_not_affordable = [item.id for item in search_result.all()]
         search_result = Dish.objects.exclude(id__in=ids_not_affordable)
@@ -47,8 +48,3 @@ def recipe_search(request):
 
         # print(search_result.query)
         return render(request, "food/recipe.html", {"list_items": search_result.all()})
-
-
-
-
-

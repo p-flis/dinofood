@@ -1,7 +1,7 @@
 from django.urls import reverse
-from base.tests.TestCaseSpecialUser import *
+from main_app.tests.TestCaseSpecialUser import *
 
-from base.models import *
+from main_app.models import *
 
 
 class DeleteCategoryViewTestSuperuser(TestCaseSuperuser):
