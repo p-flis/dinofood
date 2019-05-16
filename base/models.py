@@ -4,19 +4,18 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
 
-# Create your models here.
-class Greeting(models.Model):
-    when = models.DateTimeField("date created", auto_now_add=True)
-
-
 class Category(models.Model):
     name = models.CharField(max_length=80, unique=True)
+
+    objects = models.Manager()
 
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=80, unique=True)
     price = models.IntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    objects = models.Manager()
 
 
 class Dish(models.Model):
@@ -29,11 +28,15 @@ class Dish(models.Model):
         through_fields=('dish', 'ingredient'),
     )
 
+    objects = models.Manager()
+
 
 class DishDetails(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
+
+    objects = models.Manager()
 
 
 class Rating(models.Model):
@@ -41,6 +44,8 @@ class Rating(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     rating = models.IntegerField(blank=True, null=True)
     favourite = models.BooleanField(default=False)
+
+    objects = models.Manager()
 
 
 @receiver(pre_delete, sender=Ingredient)

@@ -1,6 +1,7 @@
 from django.test import TestCase
 from base.models import *
 
+
 class CategoryModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):

@@ -32,6 +32,8 @@ urlpatterns = [
     path("recipe/<int:dish_id>", recipe_views.recipe_id, name="recipe_id"),
     path("recipe/<int:dish_id>/delete", recipe_views.recipe_id_delete, name="recipe_delete"),
 
+    path("recipe/search", search_views.recipe_search, name="search_recipe"),
+
     path("ingredient/", ingredient_views.ingredient, name="ingredient"),
     path("ingredient/new", ingredient_views.add_ingredient, name="add_ingredient"),
     path("ingredient/<int:ing_id>", ingredient_views.ingredient_id, name="ingredient_id"),
@@ -43,8 +45,6 @@ urlpatterns = [
     path("category/<int:cat_id>", category_views.category_id, name="category_id"),
     path("category/<int:cat_id>/delete", category_views.category_id_delete, name="category_delete"),
     path("category/<int:cat_id>/update", category_views.category_id_update, name="category_update"),
-
-    path("recipe/search", search_views.recipe_search, name="search_recipe"),
 
     path("test/empty", base.tests.test_views.test_empty_database, name="test_empty_database"),
     path("test/default", base.tests.test_views.test_default_database, name="test_default_database"),

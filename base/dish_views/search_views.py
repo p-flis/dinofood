@@ -28,11 +28,14 @@ def recipe_search(request):
             search_result = search_result \
                 .exclude(ingredients__name__in=ingredients_in_fridge)\
 
+        print(search_result.all())
+
         search_result = search_result\
             .annotate(recipe_price=Sum(F('dishdetails__quantity') * F('dishdetails__ingredient__price'))) \
             .filter(recipe_price__gt=extra_money)
 
-        print(search_result.query)
+        print(search_result.all())
+        # print(search_result.query)
         ids_not_affordable = [item.id for item in search_result.all()]
         search_result = Dish.objects.exclude(id__in=ids_not_affordable)
 
@@ -42,7 +45,7 @@ def recipe_search(request):
                 .annotate(ing_num=Count('ingredients')) \
                 .filter(ing_num=ingredients_in_recipe_len)
 
-        print(search_result.query)
+        # print(search_result.query)
         return render(request, "food/recipe.html", {"list_items": search_result.all()})
 
 
