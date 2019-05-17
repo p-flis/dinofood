@@ -19,10 +19,9 @@ def add_recipe(request):
     elif request.method == 'POST':
         data = request.POST.copy()
         # needed only because of the ingredients not in form but in html
-        form = RecipeForm(request.POST)
+        form = RecipeForm(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
-            d = Dish(name=form.cleaned_data["name"], description=form.cleaned_data["description"],
-                     recipe=form.cleaned_data["recipe"])
+            d = form.save(commit=False)
             d.save()
             i_list = [Ingredient.objects.get(name=ing) for ing in data.getlist("ingredients")]
             q_list = data.getlist("quantities")

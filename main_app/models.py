@@ -3,10 +3,8 @@ from accounts import models as accounts_models
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
-
 class Category(models.Model):
     name = models.CharField(max_length=80, unique=True)
-
     objects = models.Manager()
 
 
@@ -18,6 +16,9 @@ class Ingredient(models.Model):
     objects = models.Manager()
 
 
+def upload_location(instance, filename):
+    return "%s/%s" %(instance.id, filename)
+
 class Dish(models.Model):
     name = models.CharField(max_length=80)
     description = models.TextField()
@@ -27,7 +28,7 @@ class Dish(models.Model):
         through='DishDetails',
         through_fields=('dish', 'ingredient'),
     )
-
+    image = models.ImageField(upload_to=upload_location, null=True, blank=True)
     objects = models.Manager()
 
 

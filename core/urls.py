@@ -2,6 +2,9 @@ from django.urls import path, include
 
 from django.contrib import admin
 
+from django.conf.urls.static import static
+from django.conf import settings
+
 import main_app.views
 import main_app.dish_views.category_views as category_views
 import main_app.dish_views.ingredient_views as ingredient_views
@@ -50,3 +53,6 @@ urlpatterns = [
     path("test/default", main_app.tests.test_views.test_default_database, name="test_default_database"),
     path("test/default_big", main_app.tests.test_views.test_big_database, name="test_big_database"),
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

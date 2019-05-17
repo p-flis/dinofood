@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load static %}
+{% block head %}
+<link href="{% static 'css/ListStyle.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/TileStyle.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+
+
+{% block content %}
+  <div class="container">
+
+
+    <h2>{% block smalltitle %}{% endblock %}</h2>
+
+
+    <ul class="nomargin">
+        {% for item in list_items %}
+        {% if item.image %}
+        <a href="{% url 'recipe_id' item.id %}">
+           <div class="textOverImage"
+            style="background-image:url({{item.image.url}})"
+           data-text="{{item.description}}">
+           </div>
+        </a>
+        {% else %}
+        <a href="{% url 'recipe_id' item.id %}">
+           <div class="textOverImage"
+            style="background-image:url({% get_media_prefix %}/default.png)"
+           data-text="{{item.description}}">
+           </div>
+        </a>
+        {% endif %}
+        {% endfor %}
+    </ul>
+
+  </div>
+
+
+{% endblock %}

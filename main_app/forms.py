@@ -1,6 +1,5 @@
 from django import forms
-from main_app.models import Category
-
+from .models import *
 
 class IngredientForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -19,9 +18,12 @@ class CategoryForm(forms.Form):
         self.fields['name'] = forms.CharField()
 
 
-class RecipeForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(RecipeForm, self).__init__(*args, **kwargs)
-        self.fields['name'] = forms.CharField()
-        self.fields['description'] = forms.CharField(required=False)
-        self.fields['recipe'] = forms.CharField(required=False)
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Dish
+        fields = [
+            "name",
+            'description',
+            'recipe',
+            'image',
+        ]
