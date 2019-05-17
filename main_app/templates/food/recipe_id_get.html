@@ -1,6 +1,5 @@
 {% extends "baseitem.html" %}
 {% load staticfiles %}
-
 {% block smalltitle %}
 Dish
 {% endblock %}
@@ -22,5 +21,11 @@ Dish
         <li>{{ ing.ingredient.name }}, {{ ing.quantity }}</li>
     {% endfor %}
     </ul>
+    <h4>Photo:</h4>
+    {% if item.image %}
+        <img src="{{item.image.url}}" style="height: 200px; width: 200px;">
+    {% else %}
+        <img src="/media/default.png" style="height: 200px; width: 200px;">
+    {% endif %}
 {% endblock %}
 
