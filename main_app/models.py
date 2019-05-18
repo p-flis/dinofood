@@ -10,7 +10,7 @@ class Category(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=80, unique=True)
-    price = models.IntegerField(default=0)
+    price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     objects = models.Manager()
