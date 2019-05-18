@@ -13,7 +13,9 @@
 
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {{ form.as_p }}
+      <div class="formulagrid">
+        {{form.as_p}}
+      </div>
       <div class="item">
         <div class="listitem-content">
           {% block itemcontent %}{% endblock %}
