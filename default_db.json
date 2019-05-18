@@ -17,6 +17,12 @@
     },
     {
       "name": "Alkohol"
+    },
+    {
+      "name": "Oleje i sosy"
+    },
+    {
+      "name": "Soki"
     }
   ],
   "ingredients": [
@@ -97,6 +103,61 @@
     {
       "name": "Kartofle",
       "price": 1,
+      "category_name": "Warzywa"
+    },
+    {
+      "name": "Olej słonecznikowy",
+      "price": 3,
+      "category_name": "Oleje i sosy"
+    },
+    {
+      "name": "Chili",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Mielony kumin",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Mięta",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Natka pietruszki",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Oliwa",
+      "price": 10,
+      "category_name": "Oleje i sosy"
+    },
+    {
+      "name": "Woda pomarańczowa",
+      "price": 0,
+      "category_name": "Przyprawy"
+    },
+    {
+      "name": "Sok z cytryny",
+      "price": 1,
+      "category_name": "Soki"
+    },
+    {
+      "name": "Syrop z agawy",
+      "price": 1,
+      "category_name": "Soki"
+    },
+    {
+      "name": "Czarna oliwka",
+      "price": 0.5,
+      "category_name": "Warzywa"
+    },
+    {
+      "name": "Burak",
+      "price": 1.5,
       "category_name": "Warzywa"
     }
   ],
