@@ -1,4 +1,4 @@
-
+﻿
 
 <html>
 <head>
@@ -17,12 +17,12 @@
 <body>
 
   <div class="navbar">
-    <a href="{% url 'index' %}">Home</a>
+    <a class="logo" href="{% url 'index' %}" >DINOFOOD</a>
     <div class="subnav">
       <button class="subnavbtn">Recipe <i class="fa fa-caret-down"></i></button>
       <div class="subnav-content">
-        <a href="{% url 'recipe' %}">All</a>
-        <a href="{% url 'add_recipe' %}">New</a>
+        <a href="{% url 'recipe' %}" style="display:block;">All</a>
+        <a href="{% url 'add_recipe' %}" style="display:block;">New</a>
         <a href="{% url 'search_recipe' %}">Search</a>
       </div>
     </div>
