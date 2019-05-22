@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from main_app.forms import IngredientForm
 from main_app.models import *
+import json
 
 
 def ingredient(request):
@@ -26,6 +27,34 @@ def add_ingredient(request):
             c = Category.objects.get(name=form.cleaned_data['category'])
             d.category = c
             d.save()
+        return redirect('/ingredient')
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
+def add_ingredient_to_default(request):
+    if request.method == 'GET':
+        categories = Category.objects.all()
+        if not categories:
+            return render(request, "food/no_categories.html")
+        form = IngredientForm()
+        args = {"form": form}
+        return render(request, "food/new_ingredient_form.html", args)
+    elif request.method == 'POST':
+        form = IngredientForm(request.POST)
+        if form.is_valid():
+            d = Ingredient(name=form.cleaned_data["name"], price=form.cleaned_data["price"])
+            c = Category.objects.get(name=form.cleaned_data['category'])
+            d.category = c
+            d.save()
+            file_name = "default_db.json"
+            with open(file_name, 'r', encoding='utf-8') as file:
+                db = json.load(file)
+                ingredients_data = db['ingredients']
+                ingredients_data.append({"name": form.cleaned_data["name"],
+                                         "price": int(form.cleaned_data["price"]),
+                                         "category_name": form.cleaned_data['category']})
+            with open(file_name, 'w', encoding='utf-8') as file:
+                json.dump(db, file)
         return redirect('/ingredient')
 
 

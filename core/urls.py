@@ -32,6 +32,7 @@ urlpatterns = [
 
     path("recipe/", recipe_views.recipe, name="recipe"),
     path("recipe/new", recipe_views.add_recipe, name="add_recipe"),
+    path("test/recipe/new", recipe_views.add_recipe_to_default, name="add_recipe_to_default"),
     path("recipe/<int:dish_id>", recipe_views.recipe_id, name="recipe_id"),
     path("recipe/<int:dish_id>/delete", recipe_views.recipe_id_delete, name="recipe_delete"),
 
@@ -39,12 +40,14 @@ urlpatterns = [
 
     path("ingredient/", ingredient_views.ingredient, name="ingredient"),
     path("ingredient/new", ingredient_views.add_ingredient, name="add_ingredient"),
+    path("test/ingredient/new", ingredient_views.add_ingredient_to_default, name="add_ingredient_to_default"),
     path("ingredient/<int:ing_id>", ingredient_views.ingredient_id, name="ingredient_id"),
     path("ingredient/<int:ing_id>/delete", ingredient_views.ingredient_id_delete, name="ingredient_delete"),
     path("ingredient/<int:ing_id>/update", ingredient_views.ingredient_id_update, name="ingredient_update"),
 
     path("category/", category_views.category, name="category"),
     path("category/new", category_views.add_category, name="add_category"),
+    path("test/category/new", category_views.add_category_to_default, name="add_category_to_default"),
     path("category/<int:cat_id>", category_views.category_id, name="category_id"),
     path("category/<int:cat_id>/delete", category_views.category_id_delete, name="category_delete"),
     path("category/<int:cat_id>/update", category_views.category_id_update, name="category_update"),

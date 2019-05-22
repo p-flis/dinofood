@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.http import Http404
 from main_app.forms import CategoryForm
 from main_app.models import *
+import json
 
 
 def category(request):
@@ -21,6 +22,28 @@ def add_category(request):
         if form.is_valid():
             c = Category(name=form.cleaned_data["name"])
             c.save()
+        return redirect('/category')
+    raise Http404
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
+def add_category_to_default(request):
+    if request.method == 'GET':
+        form = CategoryForm()
+        args = {"form": form}
+        return render(request, "food/new_category_form.html", args)
+    elif request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            c = Category(name=form.cleaned_data["name"])
+            c.save()
+            file_name = "default_db.json"
+            with open(file_name, 'r', encoding='utf-8') as file:
+                db = json.load(file)
+                categories_data = db['categories']
+                categories_data.append({"name": form.cleaned_data["name"]})
+            with open(file_name, 'w', encoding='utf-8') as file:
+                json.dump(db, file)
         return redirect('/category')
     raise Http404
 

@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 
+
 class IngredientForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(IngredientForm, self).__init__(*args, **kwargs)

@@ -23,6 +23,7 @@
       <div class="subnav-content">
         <a href="{% url 'recipe' %}" style="display:block;">All</a>
         <a href="{% url 'add_recipe' %}" style="display:block;">New</a>
+        <a href="{% url 'add_recipe_to_default' %}" style="display:block;">New to default</a>
         <a href="{% url 'search_recipe' %}">Search</a>
       </div>
     </div>
@@ -31,6 +32,7 @@
       <div class="subnav-content">
         <a href="{% url 'ingredient' %}">All</a>
         <a href="{% url 'add_ingredient' %}">New</a>
+        <a href="{% url 'add_ingredient_to_default' %}">New to default</a>
       </div>
     </div>
     <div class="subnav">
@@ -38,6 +40,7 @@
       <div class="subnav-content">
         <a href="{% url 'category' %}">All</a>
         <a href="{% url 'add_category' %}">New</a>
+        <a href="{% url 'add_category_to_default' %}">New to default</a>
       </div>
     </div>
     <div class="subnav">
