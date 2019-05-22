@@ -14,7 +14,7 @@
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% block itemcontent %}{% endblock %}
-      <button type="submit" onclick="{% block submitclick %}{% endblock %}">Submit</button>
+      <button type="submit" onclick="{% block submitclick %}{% endblock %}">Zatwierdź</button>
     </form>
 
   </div>

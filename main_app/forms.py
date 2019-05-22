@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 
+
 class IngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
@@ -11,6 +12,7 @@ class IngredientForm(forms.ModelForm):
             'is_vegan',
             'is_gluten_free',
         ]
+
 
 class RecipeForm(forms.ModelForm):
     class Meta:

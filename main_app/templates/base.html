@@ -19,25 +19,25 @@
   <div class="navbar">
     <a class="logo" href="{% url 'index' %}" >DINOFOOD</a>
     <div class="subnav">
-      <button class="subnavbtn">Recipe <i class="fa fa-caret-down"></i></button>
+      <button class="subnavbtn">Przepisy <i class="fa fa-caret-down"></i></button>
       <div class="subnav-content">
-        <a href="{% url 'recipe' %}" style="display:block;">All</a>
+        <a href="{% url 'recipe' %}" style="display:block;">Pokaż wszystkie</a>
         {% if user.is_authenticated %}
-          <a href="{% url 'add_recipe' %}" style="display:block;">New</a>
+          <a href="{% url 'add_recipe' %}" style="display:block;">Utwórz nowy</a>
         {% endif %}
         {% if user.is_superuser %}
-          <a href="{% url 'add_recipe_to_default' %}" style="display:block;">New to default</a>
+          <a href="{% url 'add_recipe_to_default' %}" style="display:block;">Nowy do default db</a>
         {% endif %}
-        <a href="{% url 'search_recipe' %}">Search</a>
+        <a href="{% url 'search_recipe' %}">Wyszukaj</a>
       </div>
     </div>
     {% if user.is_superuser %}
       <div class="subnav">
-        <button class="subnavbtn">Ingredient <i class="fa fa-caret-down"></i></button>
+        <button class="subnavbtn">Składniki <i class="fa fa-caret-down"></i></button>
         <div class="subnav-content">
-          <a href="{% url 'ingredient' %}">All</a>
-          <a href="{% url 'add_ingredient' %}">New</a>
-          <a href="{% url 'add_ingredient_to_default' %}">New to default</a>
+          <a href="{% url 'ingredient' %}">Pokaż wszystkie</a>
+          <a href="{% url 'add_ingredient' %}">Utwórz nowy</a>
+          <a href="{% url 'add_ingredient_to_default' %}">Nowy do default db</a>
         </div>
       </div>
       <div class="subnav">
