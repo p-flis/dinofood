@@ -54,9 +54,10 @@ def ingredient_id(request, ing_id):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient_id_delete(request, ing_id):
-    ing = Ingredient.objects.get(id=ing_id)
+    ing = Ingredient.objects.filter(id=ing_id)
     if not ing:
         raise Http404
+    ing = ing.get()
     ing.delete()
     return redirect('/ingredient')
 
@@ -64,9 +65,10 @@ def ingredient_id_delete(request, ing_id):
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient_id_update(request, ing_id):
     if request.method == 'GET':
-        ing = Ingredient.objects.get(id=ing_id)
+        ing = Ingredient.objects.filter(id=ing_id)
         if not ing:
             raise Http404
+        ing = ing.get()
         form = IngredientForm(instance=ing)
         args = {"form": form}
         return render(request, "food/new_ingredient_form.html", args)
