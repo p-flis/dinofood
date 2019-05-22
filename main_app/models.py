@@ -3,21 +3,17 @@ from accounts import models as accounts_models
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
-class Category(models.Model):
-    name = models.CharField(max_length=80, unique=True)
-    objects = models.Manager()
-
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=80, unique=True)
     price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     objects = models.Manager()
 
 
 def upload_location(instance, filename):
-    return "%s/%s" %(instance.id, filename)
+    return "%s/%s" % (instance.id, filename)
+
 
 class Dish(models.Model):
     name = models.CharField(max_length=80)
@@ -29,6 +25,7 @@ class Dish(models.Model):
         through_fields=('dish', 'ingredient'),
     )
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
+
     objects = models.Manager()
 
 

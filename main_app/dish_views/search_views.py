@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
-from django.db.models import Count, Sum, F
+from django.db.models import Count, Sum, F, FloatField
 
 from main_app.models import *
 
@@ -32,7 +32,8 @@ def recipe_search(request):
         # print(search_result.all())
 
         search_result = search_result \
-            .annotate(recipe_price=Sum(F('dishdetails__quantity') * F('dishdetails__ingredient__price'))) \
+            .annotate(recipe_price=Sum(F('dishdetails__quantity') * F('dishdetails__ingredient__price'),
+                                       output_field=FloatField())) \
             .filter(recipe_price__gt=extra_money)
 
         # print(search_result.all())

@@ -1,170 +1,122 @@
 {
-  "categories": [
-    {
-      "name": "Przyprawy"
-    },
-    {
-      "name": "Miesa"
-    },
-    {
-      "name": "Warzywa"
-    },
-    {
-      "name": "Owoce"
-    },
-    {
-      "name": "Ryby"
-    },
-    {
-      "name": "Alkohol"
-    },
-    {
-      "name": "Oleje i sosy"
-    },
-    {
-      "name": "Soki"
-    }
-  ],
   "ingredients": [
     {
       "name": "Ketchup",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "price": 0
     },
     {
       "name": "Majonez",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "price": 0
     },
     {
       "name": "Pieprz",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "price": 0
     },
     {
-      "name": "Sól",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "name": "S\u00f3l",
+      "price": 0
     },
     {
-      "name": "Gałka muszkatołowa",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "name": "Ga\u0142ka muszkato\u0142owa",
+      "price": 0
     },
     {
-      "name": "Zioła prowansalskie",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "name": "Zio\u0142a prowansalskie",
+      "price": 0
     },
     {
       "name": "Kurczak",
-      "price": 20,
-      "category_name": "Miesa"
+      "price": 20
     },
     {
       "name": "Indyk",
-      "price": 30,
-      "category_name": "Miesa"
+      "price": 30
     },
     {
-      "name": "Świnia",
-      "price": 20,
-      "category_name": "Miesa"
+      "name": "\u015awinia",
+      "price": 20
     },
     {
-      "name": "Wół",
-      "price": 20,
-      "category_name": "Miesa"
+      "name": "W\u00f3\u0142",
+      "price": 20
     },
     {
-      "name": "Bóbr",
-      "price": 100,
-      "category_name": "Miesa"
+      "name": "B\u00f3br",
+      "price": 100
     },
     {
       "name": "Pies",
-      "price": 1,
-      "category_name": "Miesa"
+      "price": 1
     },
     {
       "name": "Pomidor",
-      "price": 3,
-      "category_name": "Warzywa"
+      "price": 3
     },
     {
       "name": "Marchewka",
-      "price": 1,
-      "category_name": "Warzywa"
-    },{
+      "price": 1
+    },
+    {
       "name": "Pietruszka",
-      "price": 2,
-      "category_name": "Warzywa"
+      "price": 2
     },
     {
       "name": "Kartofle",
-      "price": 1,
-      "category_name": "Warzywa"
+      "price": 1
     },
     {
-      "name": "Olej słonecznikowy",
-      "price": 3,
-      "category_name": "Oleje i sosy"
+      "name": "Olej s\u0142onecznikowy",
+      "price": 3
     },
     {
       "name": "Chili",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "price": 0
     },
     {
       "name": "Mielony kumin",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "price": 0
     },
     {
-      "name": "Mięta",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "name": "Mi\u0119ta",
+      "price": 0
     },
     {
       "name": "Natka pietruszki",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "price": 0
     },
     {
       "name": "Oliwa",
-      "price": 10,
-      "category_name": "Oleje i sosy"
+      "price": 10
     },
     {
-      "name": "Woda pomarańczowa",
-      "price": 0,
-      "category_name": "Przyprawy"
+      "name": "Woda pomara\u0144czowa",
+      "price": 0
     },
     {
       "name": "Sok z cytryny",
-      "price": 1,
-      "category_name": "Soki"
+      "price": 1
     },
     {
       "name": "Syrop z agawy",
-      "price": 1,
-      "category_name": "Soki"
+      "price": 1
     },
     {
       "name": "Czarna oliwka",
-      "price": 0.5,
-      "category_name": "Warzywa"
+      "price": 0.5
     },
     {
       "name": "Burak",
-      "price": 1.5,
-      "category_name": "Warzywa"
+      "price": 1.5
+    },
+    {
+      "name": "bxcxc",
+      "price": 1
     }
   ],
   "recipes": [
     {
       "name": "Kurczak z ketchupem",
-      "description": "Włóż kurczaka do ketchupa",
+      "description": "W\u0142\u00f3\u017c kurczaka do ketchupa",
       "recipe": "Jeszcze nie wiadomo",
       "ingredients": [
         {
@@ -180,10 +132,10 @@
     {
       "name": "Zupa z bobra",
       "description": "Bardzo dobra",
-      "recipe": "Zagrzej wodę w rzece",
+      "recipe": "Zagrzej wod\u0119 w rzece",
       "ingredients": [
         {
-          "name": "Bóbr",
+          "name": "B\u00f3br",
           "quantity": 5
         }
       ]
@@ -191,14 +143,14 @@
     {
       "name": "Indyk po tunezyjsku",
       "description": "Bardzo zagranicznie",
-      "recipe": "Tajniki kuchni tunezyjskiej\nNikomu nie znane\nMoże oprócz babci Krysi",
+      "recipe": "Tajniki kuchni tunezyjskiej\nNikomu nie znane\nMo\u017ce opr\u00f3cz babci Krysi",
       "ingredients": [
         {
           "name": "Indyk",
           "quantity": 2
         },
         {
-          "name": "Zioła prowansalskie",
+          "name": "Zio\u0142a prowansalskie",
           "quantity": 1
         },
         {
@@ -210,7 +162,7 @@
           "quantity": 1
         },
         {
-          "name": "Sól",
+          "name": "S\u00f3l",
           "quantity": 3
         },
         {
@@ -221,8 +173,8 @@
     },
     {
       "name": "Obiad dla czworga",
-      "description": "Albo dla dwóch głodnych",
-      "recipe": "Tylko u nas!!!\nPromocja!!!\nW poniedziałki do -50%!!!!!",
+      "description": "Albo dla dw\u00f3ch g\u0142odnych",
+      "recipe": "Tylko u nas!!!\nPromocja!!!\nW poniedzia\u0142ki do -50%!!!!!",
       "ingredients": [
         {
           "name": "Kurczak",
@@ -233,11 +185,11 @@
           "quantity": 1
         },
         {
-          "name": "Świnia",
+          "name": "\u015awinia",
           "quantity": 1
         },
         {
-          "name": "Wół",
+          "name": "W\u00f3\u0142",
           "quantity": 1
         },
         {
@@ -257,18 +209,18 @@
           "quantity": 1
         },
         {
-          "name": "Sól",
+          "name": "S\u00f3l",
           "quantity": 128
         }
       ]
     },
     {
-      "name": "Żeberka",
-      "description": "Głównie z woła",
-      "recipe": "Kup żeberka\nZjedz większość\nUpoluj psa\nWymieszaj z resztką żeberek\nPrzygotuj jak żeberka\nGotowe!",
+      "name": "\u017beberka",
+      "description": "G\u0142\u00f3wnie z wo\u0142a",
+      "recipe": "Kup \u017ceberka\nZjedz wi\u0119kszo\u015b\u0107\nUpoluj psa\nWymieszaj z resztk\u0105 \u017ceberek\nPrzygotuj jak \u017ceberka\nGotowe!",
       "ingredients": [
         {
-          "name": "Wół",
+          "name": "W\u00f3\u0142",
           "quantity": 1
         },
         {
@@ -280,7 +232,7 @@
           "quantity": 2
         },
         {
-          "name": "Sól",
+          "name": "S\u00f3l",
           "quantity": 1
         },
         {
@@ -304,10 +256,10 @@
     {
       "name": "Ciasto",
       "description": "Smakuje jak opona",
-      "recipe": "Jeszcze nie opanowałem jak wyłączyć piec\nZaraz wszystko wybuchnie\nJa już mam dość ciast",
+      "recipe": "Jeszcze nie opanowa\u0142em jak wy\u0142\u0105czy\u0107 piec\nZaraz wszystko wybuchnie\nJa ju\u017c mam do\u015b\u0107 ciast",
       "ingredients": [
         {
-          "name": "Sól",
+          "name": "S\u00f3l",
           "quantity": 8
         },
         {
@@ -326,15 +278,25 @@
     },
     {
       "name": "Warzywa na patelni",
-      "description": "Trochę różnorodności",
-      "recipe": "Obierz ziemniaki\nZiemniaki to warzywa\nDaj je na patelnię\nMasz warzywa na patelni!\nGratulacje!",
+      "description": "Troch\u0119 r\u00f3\u017cnorodno\u015bci",
+      "recipe": "Obierz ziemniaki\nZiemniaki to warzywa\nDaj je na patelni\u0119\nMasz warzywa na patelni!\nGratulacje!",
       "ingredients": [
         {
           "name": "Kartofle",
           "quantity": 100
         }
       ]
+    },
+    {
+      "name": "vxn xvbcxcbcx",
+      "description": "bxcagsafsfas",
+      "recipe": "nssnsnsnsn",
+      "ingredients": [
+        {
+          "name": "Pietruszka",
+          "quantity": 1
+        }
+      ]
     }
-
   ]
 }

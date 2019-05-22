@@ -6,7 +6,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 import main_app.views
-import main_app.dish_views.category_views as category_views
 import main_app.dish_views.ingredient_views as ingredient_views
 import main_app.dish_views.recipe_views as recipe_views
 import main_app.dish_views.search_views as search_views
@@ -45,16 +44,9 @@ urlpatterns = [
     path("ingredient/<int:ing_id>/delete", ingredient_views.ingredient_id_delete, name="ingredient_delete"),
     path("ingredient/<int:ing_id>/update", ingredient_views.ingredient_id_update, name="ingredient_update"),
 
-    path("category/", category_views.category, name="category"),
-    path("category/new", category_views.add_category, name="add_category"),
-    path("test/category/new", category_views.add_category_to_default, name="add_category_to_default"),
-    path("category/<int:cat_id>", category_views.category_id, name="category_id"),
-    path("category/<int:cat_id>/delete", category_views.category_id_delete, name="category_delete"),
-    path("category/<int:cat_id>/update", category_views.category_id_update, name="category_update"),
-
     path("test/empty", main_app.tests.test_views.test_empty_database, name="test_empty_database"),
     path("test/default", main_app.tests.test_views.test_default_database, name="test_default_database"),
-    path("test/default_big", main_app.tests.test_views.test_big_database, name="test_big_database"),
+    # path("test/default_big", main_app.tests.test_views.test_big_database, name="test_big_database"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

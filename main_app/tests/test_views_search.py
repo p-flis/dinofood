@@ -10,18 +10,12 @@ from main_app.models import *
 class RecipeSearchViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        category_names = [
-            "Liquids",
-            "Fruits"
-        ]
         ingredient_data = [
             ("Water", 2, "Liquids"),
             ("Lemon", 8, "Fruits"),
             ("Apple", 5, "Fruits")
         ]
-        Category.objects.bulk_create([Category(name=n) for n in category_names])
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], category=Category.objects.get(name=n[2]))
-                                        for n in ingredient_data])
+        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
         dish_data = [
             ("Lemonade",
              "water, but sour",

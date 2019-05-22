@@ -36,19 +36,11 @@
       </div>
     </div>
     <div class="subnav">
-      <button class="subnavbtn">Category <i class="fa fa-caret-down"></i></button>
-      <div class="subnav-content">
-        <a href="{% url 'category' %}">All</a>
-        <a href="{% url 'add_category' %}">New</a>
-        <a href="{% url 'add_category_to_default' %}">New to default</a>
-      </div>
-    </div>
-    <div class="subnav">
       <button class="subnavbtn">Test <i class="fa fa-caret-down"></i></button>
       <div class="subnav-content">
         <a href="{% url 'test_default_database' %}">Default db</a>
         <a href="{% url 'test_empty_database' %}">Empty db</a>
-        <a href="{% url 'test_big_database' %}">Don't touch!</a>
+{#      <a href="{% url 'test_big_database' %}">Don't touch!</a> #}
       </div>
     </div>
     <a class="right" href="{% url 'login' %}">Log in</a>
