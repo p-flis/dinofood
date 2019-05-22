@@ -15,4 +15,13 @@ Ingredient
 
 {% block itemcontent %}
   <p>Price: {{item.price}}</p>
+  {% if item.is_vegetarian %}
+    <p>Vegetarian!</p>
+  {% endif %}
+  {% if item.is_vegan %}
+    <p>Vegan!</p>
+  {% endif %}
+  {% if item.is_gluten_free %}
+    <p>Totally gluten-free!</p>
+  {% endif %}
 {% endblock %}

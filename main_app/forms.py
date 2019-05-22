@@ -7,6 +7,9 @@ class IngredientForm(forms.ModelForm):
         fields = [
             "name",
             'price',
+            'is_vegetarian',
+            'is_vegan',
+            'is_gluten_free',
         ]
 
 class RecipeForm(forms.ModelForm):

@@ -20,8 +20,7 @@ def add_ingredient(request):
     elif request.method == 'POST':
         form = IngredientForm(request.POST)
         if form.is_valid():
-            d = Ingredient(name=form.cleaned_data["name"], price=form.cleaned_data["price"])
-            d.save()
+            form.save()
         return redirect('/ingredient')
 
 
@@ -34,8 +33,7 @@ def add_ingredient_to_default(request):
     elif request.method == 'POST':
         form = IngredientForm(request.POST)
         if form.is_valid():
-            d = Ingredient(name=form.cleaned_data["name"], price=form.cleaned_data["price"])
-            d.save()
+            form.save()
             file_name = "default_db.json"
             with open(file_name, 'r', encoding='utf-8') as file:
                 db = json.load(file)
@@ -56,7 +54,7 @@ def ingredient_id(request, ing_id):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient_id_delete(request, ing_id):
-    ing = Ingredient.objects.filter(id=ing_id)
+    ing = Ingredient.objects.get(id=ing_id)
     if not ing:
         raise Http404
     ing.delete()
@@ -66,25 +64,16 @@ def ingredient_id_delete(request, ing_id):
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient_id_update(request, ing_id):
     if request.method == 'GET':
-        ing = Ingredient.objects.filter(id=ing_id)
+        ing = Ingredient.objects.get(id=ing_id)
         if not ing:
             raise Http404
-        item = ing.get(id=ing_id)
-        data = {'name': item.name,
-                'price': item.price}
-        form = IngredientForm(data)
+        form = IngredientForm(instance=ing)
         args = {"form": form}
         return render(request, "food/new_ingredient_form.html", args)
     elif request.method == 'POST':
-        form = IngredientForm(request.POST)
+        instance = Ingredient.objects.get(id=ing_id)
+        form = IngredientForm(instance=instance,data=request.POST)
+        print("checkpoint1")
         if form.is_valid():
-            ing = Ingredient.objects.filter(id=ing_id)
-            if ing:
-                ing.update(name=form.cleaned_data["name"])
-                ing.update(price=form.cleaned_data["price"])
-                # this probably makes 3 changes to the db
-            else:
-                d = Ingredient(name=form.cleaned_data["name"], price=form.cleaned_data["price"])
-                d.save()
-
+            form.save()
         return redirect('/ingredient')

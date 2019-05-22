@@ -3,11 +3,12 @@ from accounts import models as accounts_models
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
-
 class Ingredient(models.Model):
     name = models.CharField(max_length=80, unique=True)
     price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-
+    is_vegetarian = models.BooleanField(default=False)
+    is_vegan = models.BooleanField(default=False)
+    is_gluten_free = models.BooleanField(default=False)
     objects = models.Manager()
 
 
