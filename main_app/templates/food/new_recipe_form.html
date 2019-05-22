@@ -11,15 +11,10 @@
 {% endblock %}
 
 {% block itemcontent %}
-  <!-- <div>
-    <label for="ingredients">Ingredients:</label>
-    <select id="ingredients" name="ingredients" multiple>
-    {% for ing in ingredients %}
-        <option>{{ ing.name }}</option>
-    {% endfor %}
-    </select>
-  </div> -->
-
+<div class="formulagrid">
+  {{form.as_p}}
+</div>
+<div class="item">
   <div >
     <div id="row-template" class="ingredients-table">
       <div class="col-2">
@@ -52,6 +47,24 @@
     </div>
   </div>
 {% endblock %}
+
+
+
+
+
+  <div class="listitem-content">
+  </div>
+</div>
+  <!-- <div>
+    <label for="ingredients">Ingredients:</label>
+    <select id="ingredients" name="ingredients" multiple>
+    {% for ing in ingredients %}
+        <option>{{ ing.name }}</option>
+    {% endfor %}
+    </select>
+  </div> -->
+
+
 
 {% block submitclick %}submitAndDeleteTemplate(event);{% endblock %}
 

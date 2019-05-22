@@ -13,14 +13,7 @@
 
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="formulagrid">
-        {{form.as_p}}
-      </div>
-      <div class="item">
-        <div class="listitem-content">
-          {% block itemcontent %}{% endblock %}
-        </div>
-      </div>
+      {% block itemcontent %}{% endblock %}
       <button type="submit" onclick="{% block submitclick %}{% endblock %}">Submit</button>
     </form>
 
