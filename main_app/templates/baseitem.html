@@ -19,12 +19,14 @@
 
         {% block itemcontent %}{% endblock %}
       </div>
-      <a class="delete right" href="{% block updatelink %}{% endblock %}">
-        Update
-      </a>
-      <a class="delete right" href="{% block deletelink %}{% endblock %}">
-        Delete
-      </a>
+      {% if user.is_superuser %}
+        <a class="delete right" href="{% block updatelink %}{% endblock %}">
+          Update
+        </a>
+        <a class="delete right" href="{% block deletelink %}{% endblock %}">
+          Delete
+        </a>
+      {% endif %}
     </div>
 
 
