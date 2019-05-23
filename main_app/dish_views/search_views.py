@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
-from django.db.models import Count, Sum, F, FloatField
+from django.db.models import Count, Sum, F, FloatField, Case, When, Value
 
 from main_app.models import *
 
@@ -25,17 +25,23 @@ def recipe_search(request):
 
         search_result = Dish.objects
 
-        if ingredients_in_fridge and any(ingredients_in_fridge):
-            search_result = search_result \
-                .exclude(ingredients__name__in=ingredients_in_fridge)
+        # if ingredients_in_fridge and any(ingredients_in_fridge):
+        #     search_result = search_result \
+        #         .exclude(ingredients__name__in=ingredients_in_fridge)
 
         # print(search_result.all())
 
         search_result = search_result \
-            .annotate(recipe_price=Sum(F('dishdetails__quantity') * F('dishdetails__ingredient__price'),
-                                       output_field=FloatField())) \
+            .annotate(recipe_price=Sum(Case(
+                When(dishdetails__ingredient__name__in=ingredients_in_fridge, then=0),
+                default=F('dishdetails__quantity') * F('dishdetails__ingredient__price'),
+                output_field=FloatField()
+                ))
+            ) \
             .filter(recipe_price__gt=extra_money)
 
+        # for s in search_result.all():
+        #     print(s.recipe_price)
         # print(search_result.all())
         # print(search_result.query)
         ids_not_affordable = [item.id for item in search_result.all()]
