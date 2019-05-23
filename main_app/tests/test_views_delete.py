@@ -1,28 +1,13 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
 
-from main_app.models import *
+from main_app.tests.TestSetupDatabase import *
 
 
 class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
     @classmethod
     def setUpTestData(cls):
-        ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits")
-
-        ]
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
-        dish_data = [
-            ("Lemonade",
-             "water, but sour",
-             ["Water", "Lemon"]),
-        ]
-        for n in dish_data:
-            d = Dish(name=n[0], description=n[1])
-            d.save()
-            for ing_name in n[2]:
-                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
+        TestDatabase.create_default_test_database()
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/recipe/999/delete')
@@ -58,9 +43,8 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
         ingredient_data = [
             ("Water", 2, "Liquids"),
             ("Lemon", 8, "Fruits"),
-
         ]
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
+        TestDatabase.create_custom_test_database(ingredient_data=ingredient_data)
 
     def test_view_adds_and_deletes_recipe_owner(self):
         ingredients_list = ['Water', 'Lemon']
@@ -85,11 +69,7 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
              "water, but sour",
              ["Water", "Lemon"]),
         ]
-        for n in dish_data:
-            d = Dish(name=n[0], description=n[1])
-            d.save()
-            for ing_name in n[2]:
-                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
+        TestDatabase.create_custom_test_database(dish_data=dish_data)
 
         client = Client()
         item = Dish.objects.only('id').get(name='Lemonade').id
@@ -114,11 +94,7 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
              "water, but sour",
              ["Water", "Lemon"]),
         ]
-        for n in dish_data:
-            d = Dish(name=n[0], description=n[1])
-            d.save()
-            for ing_name in n[2]:
-                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
+        TestDatabase.create_custom_test_database(dish_data=dish_data)
 
         item = Dish.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_delete', kwargs={'dish_id': item}), follow=True)
@@ -139,22 +115,7 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
 class DeleteIngredientViewTestSuperuser(TestCaseSuperuser):
     @classmethod
     def setUpTestData(cls):
-        ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits")
-
-        ]
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
-        dish_data = [
-            ("Lemonade",
-             "water, but sour",
-             ["Water", "Lemon"]),
-        ]
-        for n in dish_data:
-            d = Dish(name=n[0], description=n[1])
-            d.save()
-            for ing_name in n[2]:
-                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
+        TestDatabase.create_default_test_database()
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/ingredient/999/delete')
@@ -187,29 +148,15 @@ class DeleteIngredientViewTestSuperuser(TestCaseSuperuser):
 class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
     @classmethod
     def setUpTestData(cls):
-        ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits")
-
-        ]
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
-        dish_data = [
-            ("Lemonade",
-             "water, but sour",
-             ["Water", "Lemon"]),
-        ]
-        for n in dish_data:
-            d = Dish(name=n[0], description=n[1])
-            d.save()
-            for ing_name in n[2]:
-                d.ingredients.add(Ingredient.objects.get(name=ing_name), through_defaults={'quantity': 1})
+        TestDatabase.create_default_test_database()
 
     def test_view_deletes_ingredient_not_logged_in(self):
         client = Client()
         item = Ingredient.objects.only('id').get(name='Water').id
-        response = client.get(reverse('ingredient_delete', kwargs={'ing_id': item}),follow=True)
+        response = client.get(reverse('ingredient_delete', kwargs={'ing_id': item}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete', kwargs={'ing_id': item}),
+                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
+                                                                                kwargs={'ing_id': item}),
                              status_code=302,
                              target_status_code=200)
         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
@@ -219,15 +166,17 @@ class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
         client = Client()
         response = client.get(reverse('ingredient_delete', kwargs={'ing_id': 999}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete', kwargs={'ing_id': 999}),
+                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
+                                                                                kwargs={'ing_id': 999}),
                              status_code=302,
                              target_status_code=200)
 
     def test_view_deletes_ingredient_logged_in(self):
         item = Ingredient.objects.only('id').get(name='Water').id
-        response = self.client.get(reverse('ingredient_delete', kwargs={'ing_id': item}),follow=True)
+        response = self.client.get(reverse('ingredient_delete', kwargs={'ing_id': item}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete', kwargs={'ing_id': item}),
+                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
+                                                                                kwargs={'ing_id': item}),
                              status_code=302,
                              target_status_code=200)
         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
@@ -236,6 +185,7 @@ class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_deletes_ingredient_logged_in_id_doesnt_exist(self):
         response = self.client.get(reverse('ingredient_delete', kwargs={'ing_id': 999}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete', kwargs={'ing_id': 999}),
+                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
+                                                                                kwargs={'ing_id': 999}),
                              status_code=302,
                              target_status_code=200)

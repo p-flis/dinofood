@@ -1,8 +1,7 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
-import django.contrib.auth as auth
 
-from main_app.models import *
+from main_app.tests.TestSetupDatabase import *
 
 
 class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
@@ -25,7 +24,8 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
             ("Lemon", 8, "Fruits"),
 
         ]
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
+        TestDatabase.create_custom_test_database(ingredient_data=ingredient_data)
+
         ingredients_list = ['Water', 'Lemon']
         quantities_list = ['1', '1']
         response = self.client.post('/recipe/new', {'name': 'Lemonade',
@@ -37,12 +37,45 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
         self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
         self.assertEqual(response.url, '/recipe')
 
+    def test_view_adds_recipe_redirect(self):
+        ingredient_data = [
+            ("Water", 2, "Liquids"),
+            ("Lemon", 8, "Fruits"),
+
+        ]
+        TestDatabase.create_custom_test_database(ingredient_data=ingredient_data)
+
+        ingredients_list = ['Water', 'Lemon']
+        quantities_list = ['1', '1']
+        response = self.client.post('/recipe/new',
+                                    {'name': 'Lemonade',
+                                     'description': 'water, but sour',
+                                     'recipe': '',
+                                     'ingredients': ingredients_list,
+                                     'quantities': quantities_list},
+                                    follow=True)
+        self.assertRedirects(response, reverse('recipe'), status_code=302, target_status_code=200)
+
 
 class AddRecipeViewTestNotLoggedUser(TestCase):
-    def test_view_correct_redirection(self):
+    def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_recipe'), follow=True)
         self.assertRedirects(response, reverse('login') + "?next=" + reverse('add_recipe'), status_code=302,
                              target_status_code=200)
+
+    def test_view_correct_redirection_post(self):
+        ingredients_list = ['Water', 'Lemon']
+        quantities_list = ['1', '1']
+        response = self.client.post('/recipe/new',
+                                    {'name': 'Lemonade',
+                                     'description': 'water, but sour',
+                                     'recipe': '',
+                                     'ingredients': ingredients_list,
+                                     'quantities': quantities_list},
+                                    follow=True)
+        self.assertRedirects(response, reverse('login') + "?next=" + reverse('add_recipe'), status_code=302,
+                             target_status_code=200)
+        self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
 
 
 class AddIngredientViewTestSuperuser(TestCaseSuperuser):
@@ -64,3 +97,27 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(name='water').exists())
         self.assertEqual(response.url, '/ingredient')
+
+    def test_view_adds_ingredient_redirect(self):
+        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2'}, follow=True)
+        self.assertRedirects(response,
+                             reverse('ingredient'),
+                             status_code=302,
+                             target_status_code=200)
+
+
+class AddIngredientViewTestNotSuperuser(TestCase):
+    def test_view_correct_redirection_get(self):
+        response = self.client.get(reverse('add_ingredient'), follow=True)
+        self.assertRedirects(response,
+                             reverse('superuser_required') + "?next=" + reverse('add_ingredient'),
+                             status_code=302,
+                             target_status_code=200)
+
+    def test_view_correct_redirection_post(self):
+        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2'}, follow=True)
+        self.assertRedirects(response,
+                             reverse('superuser_required') + "?next=" + reverse('add_ingredient'),
+                             status_code=302,
+                             target_status_code=200)
+        self.assertFalse(Ingredient.objects.filter(name='water').exists())

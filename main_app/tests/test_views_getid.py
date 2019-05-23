@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.test import TestCase
 from django.urls import reverse
-# from django.test import Client
 import json
 
 from main_app.models import *
