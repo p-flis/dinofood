@@ -75,7 +75,7 @@ def ingredient_id_update(request, ing_id):
     elif request.method == 'POST':
         instance = Ingredient.objects.get(id=ing_id)
         form = IngredientForm(instance=instance,data=request.POST)
-        print("checkpoint1")
+        # print("checkpoint1")
         if form.is_valid():
             form.save()
         return redirect('/ingredient')

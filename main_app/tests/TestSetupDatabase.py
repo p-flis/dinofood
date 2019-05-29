@@ -5,8 +5,8 @@ class TestDatabase:
     @classmethod
     def create_default_test_database(cls):
         ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits")
+            ("Water", 2),
+            ("Lemon", 8)
 
         ]
         Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
