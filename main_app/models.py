@@ -2,7 +2,6 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
-
 class Unit(models.Model):
     name = models.TextField()
     amount = models.DecimalField(default=0, max_digits=6, decimal_places=2) #grams everywhere
@@ -48,6 +47,7 @@ class Dish(models.Model):
         through='DishCookingTool',
         through_fields=('dish', 'tool'),
     )
+    owner = models.ForeignKey('accounts.User', on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
 
     objects = models.Manager()
