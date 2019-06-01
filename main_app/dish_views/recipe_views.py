@@ -16,7 +16,7 @@ def recipe(request):
 @login_required(login_url='/accounts/login')
 def add_recipe(request):
     if request.method == 'GET':
-        ingredients = Ingredient.objects.all()
+        ingredients = Ingredient.objects.all().order_by('name')
         form = RecipeForm()
         return render(request, "food/new_recipe_form.html", {"ingredients": ingredients, 'form': form})
     elif request.method == 'POST':

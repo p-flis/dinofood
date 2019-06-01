@@ -18,19 +18,20 @@
   <div >
     <div id="row-template" class="ingredients-table">
       <div class="col-2">
-        <label>New ingredient</label>
+        <label>Nowy składnik</label>
       </div>
       <div class="col-4">
         <div class="input-group">
-          <label for="ingredient">Name</label>
+          <label for="ingredient">Nazwa</label>
           <select id="ingredient" name="ingredients">
             {% for ing in ingredients %}
               <option>{{ ing.name }}</option>
             {% endfor %}
           </select>
-          <label for="quantity">Quantity</label>
+          <label for="quantity">Ilość</label>
           <input id="quantity" type="number" name="quantities" step="0.1" min="0.1"
 	onkeydown="return event.keyCode !== 69" 	required />
+          <button ><a target="_blank" href="{% url 'add_ingredient' %}">Utwórz nowy</a></button>
 	<!-- onkeydown="return event.keyCode !== 69" skips e and E, as we don't want
 	scientific notation -->
         </div>
