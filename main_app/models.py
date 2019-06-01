@@ -4,12 +4,27 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
 
+class Unit(models.Model):
+    name = models.TextField()
+    amount = models.DecimalField(default=0, max_digits=6, decimal_places=2) #grams everywhere
+    objects = models.Manager()
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=80, unique=True)
     price = models.DecimalField(default=0, max_digits=6, decimal_places=2)
     is_vegetarian = models.BooleanField(default=False)
     is_vegan = models.BooleanField(default=False)
     is_gluten_free = models.BooleanField(default=False)
+    units = models.ManyToManyField(
+        Unit,
+        through='IngredientUnit',
+        through_fields=('ingredient', 'unit'),
+    )
+    objects = models.Manager()
+
+class IngredientUnit(models.Model):
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.DO_NOTHING)
+    unit = models.ForeignKey(Unit, on_delete=models.DO_NOTHING)
     objects = models.Manager()
 
 
@@ -35,7 +50,7 @@ class DishIngredient(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True)
     objects = models.Manager()
 
 

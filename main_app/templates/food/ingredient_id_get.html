@@ -24,4 +24,7 @@ Składnik
   {% if item.is_gluten_free %}
     <p>Totally gluten-free!</p>
   {% endif %}
+  {% for ing in item.ingredientunit_set.all %}
+        <li>{{ ing.unit.name }}, {{ing.unit.amount}}</li>
+    {% endfor %}
 {% endblock %}

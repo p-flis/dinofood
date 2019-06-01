@@ -1,118 +1,442 @@
 {
+  "units": [
+    {
+       "name": "Kilogram",
+       "amount": 1000
+    },
+    {
+      "name": "\u0141y\u017cka",
+      "amount": 25
+    },
+    {
+      "name": "Szklanka",
+      "amount": 250
+    },
+    {
+      "name": "Gram",
+      "amount": 1
+    },
+    {
+      "name": "Wiadro",
+      "amount": 2500
+    },
+    {
+      "name": "Pier\u015a",
+      "amount": 250
+    },
+    {
+      "name": "\u0141y\u017ceczka",
+      "amount": 5
+    },
+    {
+      "name": "Szczypta",
+      "amount": 0.2
+    },
+    {
+      "name": "Sztuka",
+      "amount": -1
+    }
+  ],
   "ingredients": [
     {
       "name": "Ketchup",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Wiadro"
+        },
+        {
+          "name": "Szklanka"
+        }
+      ]
     },
     {
       "name": "Majonez",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Wiadro"
+        },
+        {
+          "name": "Szklanka"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        }
+      ]
     },
     {
       "name": "Pieprz",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "S\u00f3l",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "Ga\u0142ka muszkato\u0142owa",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "Zio\u0142a prowansalskie",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "Kurczak",
-      "price": 20
+      "price": 20,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Kilogram"
+        },
+        {
+          "name": "Pier\u015a"
+        }
+      ]
     },
     {
       "name": "Indyk",
-      "price": 30
+      "price": 30,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Kilogram"
+        },
+        {
+          "name": "Pier\u015a"
+        }
+      ]
     },
     {
       "name": "\u015awinia",
-      "price": 20
+      "price": 20,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Kilogram"
+        }
+      ]
     },
     {
       "name": "W\u00f3\u0142",
-      "price": 20
+      "price": 20,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Kilogram"
+        }
+      ]
     },
     {
       "name": "B\u00f3br",
-      "price": 100
+      "price": 100,
+     "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Kilogram"
+        }
+      ]
     },
     {
       "name": "Pies",
-      "price": 1
+      "price": 1,
+       "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Kilogram"
+        }
+      ]
     },
     {
       "name": "Pomidor",
-      "price": 3
+      "price": 3,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Sztuka"
+        }
+      ]
     },
     {
       "name": "Marchewka",
-      "price": 1
+      "price": 1,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Sztuka"
+        }
+      ]
     },
     {
       "name": "Pietruszka",
-      "price": 2
+      "price": 2,
+       "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Sztuka"
+        }
+      ]
     },
     {
       "name": "Kartofle",
-      "price": 1
+      "price": 1,
+       "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Sztuka"
+        }
+      ]
     },
     {
       "name": "Olej s\u0142onecznikowy",
-      "price": 3
+      "price": 3,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Szklanka"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        }
+      ]
     },
     {
       "name": "Chili",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "Mielony kumin",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "Mi\u0119ta",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "Natka pietruszki",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Szczypta"
+        }
+      ]
     },
     {
       "name": "Oliwa",
-      "price": 10
+      "price": 10,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Wiadro"
+        }
+      ]
     },
     {
       "name": "Woda pomara\u0144czowa",
-      "price": 0
+      "price": 0,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Wiadro"
+        }
+      ]
     },
     {
       "name": "Sok z cytryny",
-      "price": 1
+      "price": 1,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Wiadro"
+        }
+      ]
     },
     {
       "name": "Syrop z agawy",
-      "price": 1
+      "price": 1,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "\u0141y\u017cka"
+        },
+        {
+          "name": "Wiadro"
+        }
+      ]
     },
     {
       "name": "Czarna oliwka",
-      "price": 0.5
+      "price": 0.5,
+      "units": [
+        {
+          "name": "Gram"
+        },
+        {
+          "name": "Sztuka"
+        }
+      ]
     },
     {
       "name": "Burak",
-      "price": 1.5
+      "price": 1.5,
+      "units": [
+        {
+          "name": "Gram"
+        }
+      ]
     },
     {
       "name": "bxcxc",
-      "price": 1
+      "price": 1,
+      "units": [
+        {
+          "name": "Gram"
+        }
+      ]
     }
-  ],
+],
+  "recipes": [
+    {
+      "name": "Kurczak z ketchupem",
+      "description": "W\u0142\u00f3\u017c kurczaka do ketchupa",
+      "recipe": "Jeszcze nie wiadomo",
+      "ingredients": [
+        {
+          "name": "Ketchup",
+          "quantity": 1,
+          "unit": "Gram"
+        }
+      ]
+    }
+    ],
   "recipes": [
     {
       "name": "Kurczak z ketchupem",
@@ -121,11 +445,13 @@
       "ingredients": [
         {
           "name": "Kurczak",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "Ketchup",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         }
       ]
     },
@@ -136,7 +462,8 @@
       "ingredients": [
         {
           "name": "B\u00f3br",
-          "quantity": 5
+          "quantity": 5,
+          "unit": "Gram"
         }
       ]
     },
@@ -147,27 +474,33 @@
       "ingredients": [
         {
           "name": "Indyk",
-          "quantity": 2
+          "quantity": 2,
+          "unit": "Gram"
         },
         {
           "name": "Zio\u0142a prowansalskie",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "Pomidor",
-          "quantity": 5
+          "quantity": 5,
+          "unit": "Gram"
         },
         {
           "name": "Marchewka",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "S\u00f3l",
-          "quantity": 3
+          "quantity": 3,
+          "unit": "Gram"
         },
         {
           "name": "Pieprz",
-          "quantity": 8
+          "quantity": 8,
+          "unit": "Gram"
         }
       ]
     },
@@ -178,39 +511,48 @@
       "ingredients": [
         {
           "name": "Kurczak",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "Indyk",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "\u015awinia",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "W\u00f3\u0142",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "Pomidor",
-          "quantity": 4
+          "quantity": 4,
+          "unit": "Gram"
         },
         {
           "name": "Marchewka",
-          "quantity": 8
+          "quantity": 8,
+          "unit": "Gram"
         },
         {
           "name": "Kartofle",
-          "quantity": 16
+          "quantity": 16,
+          "unit": "Gram"
         },
         {
           "name": "Pieprz",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "S\u00f3l",
-          "quantity": 128
+          "quantity": 128,
+          "unit": "Gram"
         }
       ]
     },
@@ -221,35 +563,43 @@
       "ingredients": [
         {
           "name": "W\u00f3\u0142",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "Ketchup",
-          "quantity": 8
+          "quantity": 8,
+          "unit": "Gram"
         },
         {
           "name": "Majonez",
-          "quantity": 2
+          "quantity": 2,
+          "unit": "Gram"
         },
         {
           "name": "S\u00f3l",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "Pieprz",
-          "quantity": 5
+          "quantity": 5,
+          "unit": "Gram"
         },
         {
           "name": "Marchewka",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         },
         {
           "name": "Kartofle",
-          "quantity": 30
+          "quantity": 30,
+          "unit": "Gram"
         },
         {
           "name": "Pies",
-          "quantity": 100
+          "quantity": 100,
+          "unit": "Gram"
         }
       ]
     },
@@ -260,19 +610,23 @@
       "ingredients": [
         {
           "name": "S\u00f3l",
-          "quantity": 8
+          "quantity": 8,
+          "unit": "Gram"
         },
         {
           "name": "Pieprz",
-          "quantity": 2
+          "quantity": 2,
+          "unit": "Gram"
         },
         {
           "name": "Marchewka",
-          "quantity": 13
+          "quantity": 13,
+          "unit": "Gram"
         },
         {
           "name": "Pomidor",
-          "quantity": 37
+          "quantity": 37,
+          "unit": "Gram"
         }
       ]
     },
@@ -283,7 +637,8 @@
       "ingredients": [
         {
           "name": "Kartofle",
-          "quantity": 100
+          "quantity": 100,
+          "unit": "Gram"
         }
       ]
     },
@@ -294,9 +649,11 @@
       "ingredients": [
         {
           "name": "Pietruszka",
-          "quantity": 1
+          "quantity": 1,
+          "unit": "Gram"
         }
       ]
     }
-  ]
+]
+
 }

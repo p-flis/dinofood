@@ -27,6 +27,7 @@ from main_app.models import *
 
 
 def empty_database():
+    IngredientUnit.objects.all().delete()
     Dish.objects.all().delete()
     Ingredient.objects.all().delete()
     # User.objects.all().delete() #idk where it is and if it is safe to remove users
@@ -34,26 +35,36 @@ def empty_database():
     # two of above should be enough if relations were configured properly
     # but now it is safer to delete everything
 
-    dishingredient.objects.all().delete()
+    DishIngredient.objects.all().delete()
     Rating.objects.all().delete()
+    Unit.objects.all().delete()
 
 
 def load_db_from_json(file_name):
     with open(file_name, encoding='utf-8') as file:
         db = json.load(file)
 
+        units_data = db['units']
+        Unit.objects.bulk_create([Unit(name=unit_data['name'],
+                                                   amount=unit_data['amount'])
+                                        for unit_data in units_data])
         ingredients_data = db['ingredients']
-        Ingredient.objects.bulk_create([Ingredient(name=ingredient_data['name'],
-                                                   price=ingredient_data['price'])
-                                        for ingredient_data in ingredients_data])
+        for ingredient_data in ingredients_data:
+            ingred = Ingredient(name=ingredient_data['name'], price=ingredient_data['price'])
+            ingred.save()
+            for unit_data in ingredient_data['units']:
+                ingred.units.add(Unit.objects.get(name=unit_data['name']))
 
         recipes_data = db['recipes']
         for recipe_data in recipes_data:
             d = Dish(name=recipe_data['name'], description=recipe_data['description'], recipe=recipe_data['recipe'])
             d.save()
             for ingredient_data in recipe_data['ingredients']:
-                d.ingredients.add(Ingredient.objects.get(name=ingredient_data['name']),
-                                  through_defaults={'quantity': ingredient_data['quantity']})
+                ingtmp = Ingredient.objects.get(name=ingredient_data['name'])
+                u = ingtmp.ingredientunit_set.filter(unit=Unit.objects.get(name=ingredient_data['unit'])).first()
+                d.ingredients.add(ingtmp,
+                                  through_defaults={'quantity': ingredient_data['quantity'],
+                                                    'unit': u.unit})
 
 
 def test_empty_database(request):
