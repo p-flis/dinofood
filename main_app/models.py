@@ -31,6 +31,9 @@ class IngredientUnit(models.Model):
 def upload_location(instance, filename):
     return "%s/%s" % (instance.id, filename)
 
+class CookingTool(models.Model):
+    name = models.CharField(max_length=80)
+    objects = models.Manager()
 
 class Dish(models.Model):
     name = models.CharField(max_length=80)
@@ -41,10 +44,19 @@ class Dish(models.Model):
         through='DishIngredient',
         through_fields=('dish', 'ingredient'),
     )
+    tools = models.ManyToManyField(
+        CookingTool,
+        through='DishCookingTool',
+        through_fields=('dish', 'tool'),
+    )
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
 
     objects = models.Manager()
 
+class DishCookingTool(models.Model):
+    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
+    tool = models.ForeignKey(CookingTool, on_delete=models.CASCADE)
+    objects = models.Manager()
 
 class DishIngredient(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
