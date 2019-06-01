@@ -1,5 +1,4 @@
 from django.db import models
-from accounts import models as accounts_models
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
@@ -66,13 +65,7 @@ class DishIngredient(models.Model):
     objects = models.Manager()
 
 
-class Rating(models.Model):
-    user = models.ForeignKey(accounts_models.User, on_delete=models.CASCADE)
-    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
-    rating = models.IntegerField(blank=True, null=True)
-    favourite = models.BooleanField(default=False)
 
-    objects = models.Manager()
 
 
 @receiver(pre_delete, sender=Ingredient)
