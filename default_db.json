@@ -423,20 +423,7 @@
       ]
     }
 ],
-  "recipes": [
-    {
-      "name": "Kurczak z ketchupem",
-      "description": "W\u0142\u00f3\u017c kurczaka do ketchupa",
-      "recipe": "Jeszcze nie wiadomo",
-      "ingredients": [
-        {
-          "name": "Ketchup",
-          "quantity": 1,
-          "unit": "Gram"
-        }
-      ]
-    }
-    ],
+
   "recipes": [
     {
       "name": "Kurczak z ketchupem",
@@ -465,7 +452,8 @@
           "quantity": 5,
           "unit": "Gram"
         }
-      ]
+      ],
+      "image": "pizza.png"
     },
     {
       "name": "Indyk po tunezyjsku",
@@ -502,7 +490,8 @@
           "quantity": 8,
           "unit": "Gram"
         }
-      ]
+      ],
+      "image": "salatka.png"
     },
     {
       "name": "Obiad dla czworga",
@@ -554,7 +543,8 @@
           "quantity": 128,
           "unit": "Gram"
         }
-      ]
+      ],
+      "image": "kurczak.png"
     },
     {
       "name": "\u017beberka",
@@ -605,7 +595,7 @@
     },
     {
       "name": "Ciasto",
-      "description": "Smakuje jak opona",
+      "description": "Smakuje jak niebo",
       "recipe": "Jeszcze nie opanowa\u0142em jak wy\u0142\u0105czy\u0107 piec\nZaraz wszystko wybuchnie\nJa ju\u017c mam do\u015b\u0107 ciast",
       "ingredients": [
         {
@@ -628,7 +618,9 @@
           "quantity": 37,
           "unit": "Gram"
         }
-      ]
+
+      ],
+      "image": "babeczki.png"
     },
     {
       "name": "Warzywa na patelni",
@@ -640,7 +632,8 @@
           "quantity": 100,
           "unit": "Gram"
         }
-      ]
+      ],
+      "image": "zdrowe.png"
     },
     {
       "name": "vxn xvbcxcbcx",
