@@ -30,9 +30,10 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
         quantities_list = ['1', '1']
         response = self.client.post('/recipe/new', {'name': 'Lemonade',
                                                     'description': 'water, but sour',
-                                                    'recipe': '',
+                                                    'recipe': 'hahaha to jest wymagane',
                                                     'ingredients': ingredients_list,
-                                                    'quantities': quantities_list})
+                                                    'quantities': quantities_list,
+                                                    'image': ''})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
         self.assertEqual(response.url, '/recipe')
@@ -50,7 +51,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
         response = self.client.post('/recipe/new',
                                     {'name': 'Lemonade',
                                      'description': 'water, but sour',
-                                     'recipe': '',
+                                     'recipe': 'hahaha to jest wymagane',
                                      'ingredients': ingredients_list,
                                      'quantities': quantities_list},
                                     follow=True)
@@ -69,7 +70,7 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
         response = self.client.post('/recipe/new',
                                     {'name': 'Lemonade',
                                      'description': 'water, but sour',
-                                     'recipe': '',
+                                     'recipe': 'hahaha to jest wymagane',
                                      'ingredients': ingredients_list,
                                      'quantities': quantities_list},
                                     follow=True)

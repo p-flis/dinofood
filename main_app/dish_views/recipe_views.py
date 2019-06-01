@@ -35,8 +35,9 @@ def add_recipe(request):
                     d.ingredients.add(i_list[i], through_defaults={'quantity': q})
                 except ValueError:
                     pass
-            d.owner = User.get(username=request.user.username)
+            d.owner = User.objects.get(username=request.user.username)
             d.save()
+
 
             # if Dish.objects.filter(accepted=False).count() > 0:
             #     send_mail(
