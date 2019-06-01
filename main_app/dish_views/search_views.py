@@ -33,8 +33,8 @@ def recipe_search(request):
 
         search_result = search_result \
             .annotate(recipe_price=Sum(Case(
-                When(dishdetails__ingredient__name__in=ingredients_in_fridge, then=0),
-                default=F('dishdetails__quantity') * F('dishdetails__ingredient__price'),
+                When(dishingredient__ingredient__name__in=ingredients_in_fridge, then=0),
+                default=F('dishingredient__quantity') * F('dishingredient__ingredient__price'),
                 output_field=FloatField()
                 ))
             ) \

@@ -17,7 +17,7 @@ Przepis
 
     <h4>Ingredients:</h4>
     <ul>
-    {% for ing in item.dishdetails_set.all %}
+    {% for ing in item.dishingredient_set.all %}
         <li>{{ ing.ingredient.name }}, {{ ing.quantity }}</li>
     {% endfor %}
     </ul>

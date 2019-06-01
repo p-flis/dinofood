@@ -34,7 +34,7 @@ def empty_database():
     # two of above should be enough if relations were configured properly
     # but now it is safer to delete everything
 
-    DishDetails.objects.all().delete()
+    dishingredient.objects.all().delete()
     Rating.objects.all().delete()
 
 

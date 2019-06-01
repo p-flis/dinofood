@@ -23,7 +23,7 @@ class Dish(models.Model):
     recipe = models.TextField()
     ingredients = models.ManyToManyField(
         Ingredient,
-        through='DishDetails',
+        through='DishIngredient',
         through_fields=('dish', 'ingredient'),
     )
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
@@ -31,7 +31,7 @@ class Dish(models.Model):
     objects = models.Manager()
 
 
-class DishDetails(models.Model):
+class DishIngredient(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
