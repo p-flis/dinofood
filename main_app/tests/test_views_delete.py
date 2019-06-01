@@ -41,8 +41,8 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
     @classmethod
     def setUpTestData(cls):
         ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits"),
+            ("Water", 2, True, True, True),
+            ("Lemon", 8, True, True, True),
         ]
         TestDatabase.create_custom_test_database(ingredient_data=ingredient_data)
 

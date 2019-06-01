@@ -11,9 +11,9 @@ class IngredientIDViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ingredient_data = [
-            ("Water", 2, "Liquids"),
+            ("Water", 2, True, True, True),
         ]
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
+        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], is_vegetarian=n[2], is_vegan=n[3], is_gluten_free=n[4]) for n in ingredient_data])
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/ingredient/999')
@@ -38,11 +38,11 @@ class RecipeIDViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits")
+            ("Water", 2, True, True, True),
+            ("Lemon", 8, True, True, True)
 
         ]
-        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1]) for n in ingredient_data])
+        Ingredient.objects.bulk_create([Ingredient(name=n[0], price=n[1], is_vegetarian=n[2], is_vegan=n[3], is_gluten_free=n[4]) for n in ingredient_data])
         dish_data = [
             ("Lemonade",
              "water, but sour",

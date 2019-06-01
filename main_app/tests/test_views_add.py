@@ -20,8 +20,8 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
 
     def test_view_adds_recipe(self):
         ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits"),
+            ("Water", 2, True, True, True),
+            ("Lemon", 8, True, True, True),
 
         ]
         TestDatabase.create_custom_test_database(ingredient_data=ingredient_data)
@@ -39,8 +39,8 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
 
     def test_view_adds_recipe_redirect(self):
         ingredient_data = [
-            ("Water", 2, "Liquids"),
-            ("Lemon", 8, "Fruits"),
+            ("Water", 2, True, True, True),
+            ("Lemon", 8, True, True, True),
 
         ]
         TestDatabase.create_custom_test_database(ingredient_data=ingredient_data)
@@ -93,13 +93,13 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
         self.assertTemplateUsed(response, 'food/new_ingredient_form.html')
 
     def test_view_adds_ingredient(self):
-        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2'})
+        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2', 'is_vegetarian':'false', 'is_vegan':'false', 'is_gluten_free':'false'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(name='water').exists())
         self.assertEqual(response.url, '/ingredient')
 
     def test_view_adds_ingredient_redirect(self):
-        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2'}, follow=True)
+        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2', 'is_vegetarian':'false', 'is_vegan':'false', 'is_gluten_free':'false'}, follow=True)
         self.assertRedirects(response,
                              reverse('ingredient'),
                              status_code=302,
