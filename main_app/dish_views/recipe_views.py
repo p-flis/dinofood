@@ -79,6 +79,10 @@ def add_recipe_to_default(request):
         return redirect('/recipe')
     raise Http404
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
+def accept_recipes(request):
+    dishes = Dish.objects.filter(accepted=False)
+    return render(request, "food/recipe.html", {"list_items": dishes})
 
 def recipe_id(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)

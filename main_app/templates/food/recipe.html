@@ -1,6 +1,6 @@
 {% extends "basetileslist.html" %}
 {% load staticfiles %}
-
+{% load static %}
 {% block smalltitle %}
 Przepisy
 {% endblock %}
@@ -10,10 +10,33 @@ Przepisy
 {% endblock %}
 
 {% block itemcontent %}
-    <ul>
-    {% for ing in item.ingredients.all %}
-        <li>{{ ing.name }}</li>
-    {% endfor %}
+    <ul class="nomargin" style="position:center;">
+        {% for item in list_items %}
+
+            <div class="square">
+                <div class="content">
+                    <div class="table">
+                        <div class="table-cell">
+
+                            {% if item.image %}
+                                <a href="{% url 'recipe_id' item.id %}">
+                                   <div class="textOverImage"
+                                        style="background-image:url({{item.image.url}})"
+                                        data-text="{{item.name}}&#10{{item.description}}">
+                                   </div>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'recipe_id' item.id %}">
+                                   <div class="textOverImage"
+                                        style="background-image:url({% get_media_prefix %}/default.png)"
+                                        data-text="{{item.name}}&#10{{item.description}}">
+                                   </div>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </ul>
 {% endblock %}
-

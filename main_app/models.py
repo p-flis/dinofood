@@ -49,6 +49,7 @@ class Dish(models.Model):
     )
     owner = models.ForeignKey('accounts.User', on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
+    accepted = models.BooleanField(default=False)
 
     objects = models.Manager()
 

@@ -27,6 +27,7 @@
         {% endif %}
         {% if user.is_superuser %}
           <a href="{% url 'add_recipe_to_default' %}" style="display:block;">Nowy do default db</a>
+          <a href="{% url 'accept_recipes' %}" style="display:block;">Akcjeptuj przepisy</a>
         {% endif %}
         <a href="{% url 'search_recipe' %}">Wyszukaj</a>
       </div>
