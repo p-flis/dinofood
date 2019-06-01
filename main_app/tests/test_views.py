@@ -2,7 +2,7 @@ from django.shortcuts import render
 import json
 
 from main_app.models import *
-
+from accounts.models import *
 
 # region SearchViews
 
