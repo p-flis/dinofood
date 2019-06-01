@@ -8,6 +8,10 @@ Przepis
 {% url 'recipe_delete' item.id %}
 {% endblock %}
 
+{% block acceptlink %}
+{% url 'recipe_accept' item.id %}
+{% endblock %}
+
 {% block itemcontent %}
     <h4>Description:</h4>
     <p class="tab">{{ item.description }}</p>

@@ -98,3 +98,10 @@ def recipe_id_delete(request, dish_id):
         raise Http404
     dish.delete()
     return redirect('/recipe')
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
+def recipe_id_accept(request, dish_id):
+    dish = Dish.objects.filter(id=dish_id).update(accepted=True)
+    if not dish:
+        raise Http404
+    return redirect('/recipe/accept')
