@@ -57,7 +57,11 @@ def load_db_from_json(file_name):
 
         recipes_data = db['recipes']
         for recipe_data in recipes_data:
-            d = Dish(name=recipe_data['name'], description=recipe_data['description'], recipe=recipe_data['recipe'])
+            d = Dish(name=recipe_data['name'],
+                     description=recipe_data['description'],
+                     recipe=recipe_data['recipe'])
+            if "image" in recipe_data:
+                d.image = recipe_data['image']
             d.save()
             for ingredient_data in recipe_data['ingredients']:
                 ingtmp = Ingredient.objects.get(name=ingredient_data['name'])
