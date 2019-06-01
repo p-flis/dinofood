@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from main_app.forms import RecipeForm
 from main_app.models import *
+from accounts.models import User
 from django.core.mail import send_mail
 import json
 
@@ -34,7 +35,7 @@ def add_recipe(request):
                     d.ingredients.add(i_list[i], through_defaults={'quantity': q})
                 except ValueError:
                     pass
-
+            d.owner = User.get(username=request.user.username)
             d.save()
 
             if Dish.objects.filter(accepted=False).count() > 0:
@@ -107,6 +108,9 @@ def recipe_id_delete(request, dish_id):
     dish = Dish.objects.filter(id=dish_id)
     if not dish:
         raise Http404
+    if dish.get().owner!=request.user.username and not request.user.is_superuser:
+        #I'm pretty sure this is not very secure
+        return redirect('/accounts/login/?next=' + request.path)
     dish.delete()
     return redirect('/recipe')
 
