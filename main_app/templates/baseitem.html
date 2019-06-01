@@ -26,9 +26,11 @@
         <a class="delete right" href="{% block deletelink %}{% endblock %}">
           Usuń
         </a>
+      {% if item.accepted != True %}
         <a class="delete right" href="{% block acceptlink %}{% endblock %}">
           Akceptuj
         </a>
+      {% endif %}
       {% endif %}
     </div>
 

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from main_app.forms import RecipeForm
 from main_app.models import *
+from django.core.mail import send_mail
 import json
 
 
@@ -18,6 +19,7 @@ def add_recipe(request):
         form = RecipeForm()
         return render(request, "food/new_recipe_form.html", {"ingredients": ingredients, 'form': form})
     elif request.method == 'POST':
+
         data = request.POST.copy()
         # needed only because of the ingredients not in form but in html
         form = RecipeForm(data=request.POST or None, files=request.FILES or None)
@@ -34,6 +36,15 @@ def add_recipe(request):
                     pass
 
             d.save()
+
+            if Dish.objects.filter(accepted=False).count() > 0:
+                send_mail(
+                    'Niezaakceptowane przepisy',
+                    'Here is the message.',
+                    'django@django.com',
+                    ['karkru4@gmail.com'],
+                    fail_silently=False,
+                )
         return redirect('/recipe')
     raise Http404
 
