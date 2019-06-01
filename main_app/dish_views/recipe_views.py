@@ -38,14 +38,14 @@ def add_recipe(request):
             d.owner = User.get(username=request.user.username)
             d.save()
 
-            if Dish.objects.filter(accepted=False).count() > 0:
-                send_mail(
-                    'Niezaakceptowane przepisy',
-                    'Here is the message.',
-                    'django@django.com',
-                    ['karkru4@gmail.com'],
-                    fail_silently=False,
-                )
+            # if Dish.objects.filter(accepted=False).count() > 0:
+            #     send_mail(
+            #         'Niezaakceptowane przepisy',
+            #         'Here is the message.',
+            #         'django@django.com',
+            #         ['karkru4@gmail.com'],
+            #         fail_silently=False,
+            #     )
         return redirect('/recipe')
     raise Http404
 
