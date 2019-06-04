@@ -8,6 +8,7 @@ class IngredientForm(forms.ModelForm):
         fields = [
             "name",
             'price',
+            'units',
             'is_vegetarian',
             'is_vegan',
             'is_gluten_free',
@@ -22,4 +23,22 @@ class RecipeForm(forms.ModelForm):
             'description',
             'recipe',
             'image',
+            'tools'
+        ]
+
+
+class UnitForm(forms.ModelForm):
+    class Meta:
+        model = Unit
+        fields = [
+            "name",
+            'amount'
+        ]
+
+
+class CookingToolForm(forms.ModelForm):
+    class Meta:
+        model = CookingTool
+        fields = [
+            "name"
         ]

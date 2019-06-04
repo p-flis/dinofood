@@ -1,0 +1,14 @@
+{% extends "baselist.html" %}
+{% load staticfiles %}
+
+{% block smalltitle %}
+Jednostki
+{% endblock %}
+
+{% block itemlink %}
+{% url 'unit_id' item.id %}
+{% endblock %}
+
+{% block itemcontent %}
+  <p>Amount: {{item.amount}}</p>
+{% endblock %}

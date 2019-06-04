@@ -26,7 +26,6 @@
           <a href="{% url 'add_recipe' %}" style="display:block;">Utwórz nowy</a>
         {% endif %}
         {% if user.is_superuser %}
-          <a href="{% url 'add_recipe_to_default' %}" style="display:block;">Nowy do default db</a>
           <a href="{% url 'accept_recipes' %}" style="display:block;">Akcjeptuj przepisy</a>
         {% endif %}
         <a href="{% url 'search_recipe' %}">Wyszukaj</a>
@@ -34,11 +33,24 @@
     </div>
     {% if user.is_superuser %}
       <div class="subnav">
-        <button class="subnavbtn">Składniki <i class="fa fa-caret-down"></i></button>
+        <button class="subnavbtn">Składniki<i class="fa fa-caret-down"></i></button>
         <div class="subnav-content">
           <a href="{% url 'ingredient' %}">Pokaż wszystkie</a>
           <a href="{% url 'add_ingredient' %}">Utwórz nowy</a>
-          <a href="{% url 'add_ingredient_to_default' %}">Nowy do default db</a>
+        </div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">Narzędzia<i class="fa fa-caret-down"></i></button>
+        <div class="subnav-content">
+          <a href="{% url 'cooking_tool' %}">Pokaż wszystkie</a>
+          <a href="{% url 'add_cooking_tool' %}">Utwórz nowy</a>
+        </div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">Jednostki<i class="fa fa-caret-down"></i></button>
+        <div class="subnav-content">
+          <a href="{% url 'unit' %}">Pokaż wszystkie</a>
+          <a href="{% url 'add_unit' %}">Utwórz nowy</a>
         </div>
       </div>
       <div class="subnav">
@@ -46,7 +58,7 @@
         <div class="subnav-content">
           <a href="{% url 'test_default_database' %}">Default db</a>
           <a href="{% url 'test_empty_database' %}">Empty db</a>
-  {#      <a href="{% url 'test_big_database' %}">Don't touch!</a> #}
+          <a href="{% url 'save_db_to_default' %}">Save db</a>
         </div>
       </div>
     {% endif %}

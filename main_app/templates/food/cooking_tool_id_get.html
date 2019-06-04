@@ -1,0 +1,16 @@
+{% extends "baseitem.html" %}
+{% load staticfiles %}
+
+{% block smalltitle %}
+Urządzenie
+{% endblock %}
+
+{% block deletelink %}
+{% url 'cooking_tool_delete' item.id %}
+{% endblock %}
+
+{% block updatelink %}
+{% url 'cooking_tool_update' item.id %}
+{% endblock %}
+
+

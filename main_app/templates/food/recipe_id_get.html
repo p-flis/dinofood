@@ -18,7 +18,7 @@ Przepis
 
     <h4>Recipe:</h4>
     <p class="tab">{{ item.recipe|linebreaksbr }}</p>
-
+    <p>{{item.image.url}}</p>
     <h4>Ingredients:</h4>
     <ul>
     {% for ing in item.dishingredient_set.all %}

@@ -38,7 +38,6 @@ def add_recipe(request):
             d.owner = User.objects.get(username=request.user.username)
             d.save()
 
-
             # if Dish.objects.filter(accepted=False).count() > 0:
             #     send_mail(
             #         'Niezaakceptowane przepisy',
@@ -77,7 +76,7 @@ def add_recipe_to_default(request):
             with open(file_name, 'r', encoding='utf-8') as file:
                 db = json.load(file)
                 ingredients_data = []
-                ingredient_names=data.getlist("ingredients")
+                ingredient_names = data.getlist("ingredients")
                 for i in range(len(i_list)):
                     ingredients_data.append({"name": ingredient_names[i],
                                              "quantity": int(q_list[i])})
@@ -92,32 +91,35 @@ def add_recipe_to_default(request):
         return redirect('/recipe')
     raise Http404
 
+
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def accept_recipes(request):
     dishes = Dish.objects.filter(accepted=False)
     return render(request, "food/recipe.html", {"list_items": dishes})
 
-def recipe_id(request, dish_id):
-    dish = Dish.objects.filter(id=dish_id)
+
+def recipe_id(request, object_id):
+    dish = Dish.objects.filter(id=object_id)
     if not dish:
         raise Http404
-    return render(request, "food/recipe_id_get.html", {"item": dish.get(id=dish_id)})
+    return render(request, "food/recipe_id_get.html", {"item": dish.get(id=object_id)})
 
 
 @login_required(login_url='/accounts/login')  # TODO: change to checking ownership
-def recipe_id_delete(request, dish_id):
-    dish = Dish.objects.filter(id=dish_id)
+def recipe_id_delete(request, object_id):
+    dish = Dish.objects.filter(id=object_id)
     if not dish:
         raise Http404
-    if dish.get().owner!=request.user.username and not request.user.is_superuser:
-        #I'm pretty sure this is not very secure
+    if dish.get().owner != request.user.username and not request.user.is_superuser:
+        # I'm pretty sure this is not very secure
         return redirect('/accounts/login/?next=' + request.path)
     dish.delete()
     return redirect('/recipe')
 
+
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
-def recipe_id_accept(request, dish_id):
-    dish = Dish.objects.filter(id=dish_id).update(accepted=True)
+def recipe_id_accept(request, object_id):
+    dish = Dish.objects.filter(id=object_id).update(accepted=True)
     if not dish:
         raise Http404
     return redirect('/recipe/accept')

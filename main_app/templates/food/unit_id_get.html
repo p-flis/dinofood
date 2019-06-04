@@ -1,0 +1,19 @@
+{% extends "baseitem.html" %}
+{% load staticfiles %}
+
+{% block smalltitle %}
+Jednostka
+{% endblock %}
+
+{% block deletelink %}
+{% url 'unit_delete' item.id %}
+{% endblock %}
+
+{% block updatelink %}
+{% url 'unit_update' item.id %}
+{% endblock %}
+
+
+{% block itemcontent %}
+  <p>Amount: {{item.amount}}</p>
+{% endblock %}

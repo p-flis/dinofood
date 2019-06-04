@@ -1,0 +1,10 @@
+{% extends "baselist.html" %}
+{% load staticfiles %}
+
+{% block smalltitle %}
+Urządzenia
+{% endblock %}
+
+{% block itemlink %}
+{% url 'cooking_tool_id' item.id %}
+{% endblock %}

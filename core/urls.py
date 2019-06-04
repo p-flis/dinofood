@@ -7,6 +7,8 @@ from django.conf import settings
 
 import main_app.views
 import main_app.dish_views.ingredient_views as ingredient_views
+import main_app.dish_views.cookingtools_views as cookingtools_views
+import main_app.dish_views.unit_views as unit_views
 import main_app.dish_views.recipe_views as recipe_views
 import main_app.dish_views.search_views as search_views
 import main_app.tests.test_views as test_views
@@ -31,24 +33,34 @@ urlpatterns = [
 
     path("recipe/", recipe_views.recipe, name="recipe"),
     path("recipe/new", recipe_views.add_recipe, name="add_recipe"),
-    path("test/recipe/new", recipe_views.add_recipe_to_default, name="add_recipe_to_default"),
     path("recipe/accept", recipe_views.accept_recipes, name="accept_recipes"),
-    path("recipe/<int:dish_id>", recipe_views.recipe_id, name="recipe_id"),
-    path("recipe/<int:dish_id>/delete", recipe_views.recipe_id_delete, name="recipe_delete"),
-    path("recipe/<int:dish_id>/accept", recipe_views.recipe_id_accept, name="recipe_accept"),
+    path("recipe/<int:object_id>", recipe_views.recipe_id, name="recipe_id"),
+    path("recipe/<int:object_id>/delete", recipe_views.recipe_id_delete, name="recipe_delete"),
+    path("recipe/<int:object_id>/accept", recipe_views.recipe_id_accept, name="recipe_accept"),
 
     path("recipe/search", search_views.recipe_search, name="search_recipe"),
 
     path("ingredient/", ingredient_views.ingredient, name="ingredient"),
     path("ingredient/new", ingredient_views.add_ingredient, name="add_ingredient"),
-    path("test/ingredient/new", ingredient_views.add_ingredient_to_default, name="add_ingredient_to_default"),
-    path("ingredient/<int:ing_id>", ingredient_views.ingredient_id, name="ingredient_id"),
-    path("ingredient/<int:ing_id>/delete", ingredient_views.ingredient_id_delete, name="ingredient_delete"),
-    path("ingredient/<int:ing_id>/update", ingredient_views.ingredient_id_update, name="ingredient_update"),
+    path("ingredient/<int:object_id>", ingredient_views.ingredient_id, name="ingredient_id"),
+    path("ingredient/<int:object_id>/delete", ingredient_views.ingredient_id_delete, name="ingredient_delete"),
+    path("ingredient/<int:object_id>/update", ingredient_views.ingredient_id_update, name="ingredient_update"),
+
+    path("unit/", unit_views.unit, name="unit"),
+    path("unit/new", unit_views.add_unit, name="add_unit"),
+    path("unit/<int:object_id>", unit_views.unit_id, name="unit_id"),
+    path("unit/<int:object_id>/delete", unit_views.unit_id_delete, name="unit_delete"),
+    path("unit/<int:object_id>/update", unit_views.unit_id_update, name="unit_update"),
+
+    path("cooking_tool/", cookingtools_views.cooking_tool, name="cooking_tool"),
+    path("cooking_tool/new", cookingtools_views.add_cooking_tool, name="add_cooking_tool"),
+    path("cooking_tool/<int:object_id>", cookingtools_views.cooking_tool_id, name="cooking_tool_id"),
+    path("cooking_tool/<int:object_id>/delete", cookingtools_views.cooking_tool_id_delete, name="cooking_tool_delete"),
+    path("cooking_tool/<int:object_id>/update", cookingtools_views.cooking_tool_id_update, name="cooking_tool_update"),
 
     path("test/empty", main_app.tests.test_views.test_empty_database, name="test_empty_database"),
     path("test/default", main_app.tests.test_views.test_default_database, name="test_default_database"),
-    # path("test/default_big", main_app.tests.test_views.test_big_database, name="test_big_database"),
+    path("test/save", main_app.tests.test_views.save_database_to_default, name="save_db_to_default"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
