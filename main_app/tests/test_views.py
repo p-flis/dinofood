@@ -1,16 +1,9 @@
 from django.shortcuts import render
 import json
+from main_app.tests.TestSetupDatabase import TestDatabase
 
 from main_app.models import *
 from accounts.models import *
-
-
-def int_from_decimal(number):
-    return float(number)
-
-
-def decimal_from_int(number):
-    return number
 
 
 def empty_database():
@@ -27,42 +20,10 @@ def load_db_from_json(file_name):
     with open(file_name, encoding='utf-8') as file:
         db = json.load(file)
 
-        units_data = db['units']
-        Unit.objects.bulk_create([Unit(name=unit_data['name'],
-                                       amount=decimal_from_int(unit_data['amount']))
-                                  for unit_data in units_data])
-
-        ingredients_data = db['ingredients']
-        for ingredient_data in ingredients_data:
-            ingredient_model = Ingredient(name=ingredient_data['name'],
-                                          price=decimal_from_int(ingredient_data['price']))
-            ingredient_model.save()
-            for unit_data in ingredient_data['units']:
-                ingredient_model.units.add(Unit.objects.get(name=unit_data['name']))
-
-        tools_data = db['tools']
-        CookingTool.objects.bulk_create([CookingTool(name=tool_data['name'])
-                                         for tool_data in tools_data])
-
-        recipes_data = db['recipes']
-        for recipe_data in recipes_data:
-            recipe_model = Recipe(name=recipe_data['name'],
-                                  description=recipe_data['description'],
-                                  recipe_text=recipe_data['recipe'])
-            if ("image" in recipe_data) and recipe_data['image'] != "":
-                recipe_model.image = recipe_data['image']
-            else:
-                recipe_model.image = "default.png"
-            recipe_model.save()
-            for ingredient_data in recipe_data['ingredients']:
-                ingredient_model = Ingredient.objects.get(name=ingredient_data['name'])
-                unit_model = ingredient_model.units.get(name=ingredient_data['unit'])
-                recipe_model.ingredients.add(ingredient_model,
-                                             through_defaults={'quantity': ingredient_data['quantity'],
-                                                               'unit': unit_model})
-            if 'tools' in recipe_data:
-                for tool_data in recipe_data['tools']:
-                    recipe_model.tools.add(CookingTool.objects.get(name=tool_data['name']))
+        TestDatabase.create_custom_test_database(units_data=db['units'],
+                                                 ingredients_data=db['ingredients'],
+                                                 tools_data=db['tools'],
+                                                 recipes_data=db['recipes'])
 
 
 def test_empty_database(request):
