@@ -4,13 +4,13 @@ from django.http import Http404
 from main_app.forms import RecipeForm
 from main_app.models import *
 from accounts.models import User
-from django.core.mail import send_mail
+# from django.core.mail import send_mail
 import json
 
 
 def recipe(request):
-    dishes = Dish.objects.all()
-    return render(request, "food/recipe.html", {"list_items": dishes})
+    recipes = Recipe.objects.all()
+    return render(request, "food/recipe.html", {"list_items": recipes})
 
 
 @login_required(login_url='/accounts/login')
@@ -25,20 +25,20 @@ def add_recipe(request):
         # needed only because of the ingredients not in form but in html
         form = RecipeForm(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
-            d = form.save(commit=False)
-            d.save()
+            recipe_model = form.save(commit=False)
+            recipe_model.save()
             i_list = [Ingredient.objects.get(name=ing) for ing in data.getlist("ingredients")]
             q_list = data.getlist("quantities")
             for i in range(len(i_list)):
                 try:
                     q = int(q_list[i])
-                    d.ingredients.add(i_list[i], through_defaults={'quantity': q})
+                    recipe_model.ingredients.add(i_list[i], through_defaults={'quantity': q})
                 except ValueError:
                     pass
-            d.owner = User.objects.get(username=request.user.username)
-            d.save()
+            recipe_model.owner = User.objects.get(username=request.user.username)
+            recipe_model.save()
 
-            # if Dish.objects.filter(accepted=False).count() > 0:
+            # if Recipe.objects.filter(accepted=False).count() > 0:
             #     send_mail(
             #         'Niezaakceptowane przepisy',
             #         'Here is the message.',
@@ -61,17 +61,17 @@ def add_recipe_to_default(request):
         # needed only because of the ingredients not in form but in html
         form = RecipeForm(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
-            d = form.save(commit=False)
-            d.save()
+            recipe_model = form.save(commit=False)
+            recipe_model.save()
             i_list = [Ingredient.objects.get(name=ing) for ing in data.getlist("ingredients")]
             q_list = data.getlist("quantities")
             for i in range(len(i_list)):
                 try:
                     q = int(q_list[i])
-                    d.ingredients.add(i_list[i], through_defaults={'quantity': q})
+                    recipe_model.ingredients.add(i_list[i], through_defaults={'quantity': q})
                 except ValueError:
                     pass
-            d.save()
+            recipe_model.save()
             file_name = "default_db.json"
             with open(file_name, 'r', encoding='utf-8') as file:
                 db = json.load(file)
@@ -94,32 +94,32 @@ def add_recipe_to_default(request):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def accept_recipes(request):
-    dishes = Dish.objects.filter(accepted=False)
-    return render(request, "food/recipe.html", {"list_items": dishes})
+    recipes = Recipe.objects.filter(accepted=False)
+    return render(request, "food/recipe.html", {"list_items": recipes})
 
 
 def recipe_id(request, object_id):
-    dish = Dish.objects.filter(id=object_id)
-    if not dish:
+    recipe_model = Recipe.objects.filter(id=object_id)
+    if not recipe_model:
         raise Http404
-    return render(request, "food/recipe_id_get.html", {"item": dish.get(id=object_id)})
+    return render(request, "food/recipe_id_get.html", {"item": recipe_model.get(id=object_id)})
 
 
 @login_required(login_url='/accounts/login')  # TODO: change to checking ownership
 def recipe_id_delete(request, object_id):
-    dish = Dish.objects.filter(id=object_id)
-    if not dish:
+    recipe_model = Recipe.objects.filter(id=object_id)
+    if not recipe_model:
         raise Http404
-    if dish.get().owner != request.user.username and not request.user.is_superuser:
+    if recipe_model.get().owner != request.user.username and not request.user.is_superuser:
         # I'm pretty sure this is not very secure
         return redirect('/accounts/login/?next=' + request.path)
-    dish.delete()
+    recipe_model.delete()
     return redirect('/recipe')
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def recipe_id_accept(request, object_id):
-    dish = Dish.objects.filter(id=object_id).update(accepted=True)
-    if not dish:
+    recipe_model = Recipe.objects.filter(id=object_id).update(accepted=True)
+    if not recipe_model:
         raise Http404
     return redirect('/recipe/accept')

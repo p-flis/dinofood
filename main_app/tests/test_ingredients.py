@@ -83,7 +83,7 @@ class DeleteIngredientViewTestSuperuser(TestCaseSuperuser):
         self.assertEqual(response.status_code, 302)
         # things should be deleted cascade
         self.assertFalse(Ingredient.objects.filter(name='Water').exists())
-        self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
+        self.assertFalse(Recipe.objects.filter(name='Lemonade').exists())
 
     def test_view_redirects_properly(self):
         item = Ingredient.objects.only('id').get(name='Water').id
@@ -106,7 +106,7 @@ class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
                              status_code=302,
                              target_status_code=200)
         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
 
     def test_view_deletes_ingredient_not_logged_in_id_doesnt_exist(self):
         client = Client()
@@ -126,7 +126,7 @@ class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
                              status_code=302,
                              target_status_code=200)
         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
 
     def test_view_deletes_ingredient_logged_in_id_doesnt_exist(self):
         response = self.client.get(reverse('ingredient_delete', kwargs={'object_id': 999}), follow=True)
@@ -206,8 +206,8 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
         self.assertTrue(Ingredient.objects.filter(id=item).exists())
         self.assertEquals(Ingredient.objects.get(id=item).name, 'Water')
         self.assertEquals(Ingredient.objects.get(id=item).price, 2)
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
-        self.assertTrue(Dish.objects.get(name='Lemonade').
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.get(name='Lemonade').
                         ingredients.filter(name='Water').exists())
 
     def test_view_updates_properly_with_modifications(self):
@@ -221,8 +221,8 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
         self.assertEquals(Ingredient.objects.get(id=item).name, 'Wine')
         self.assertEquals(Ingredient.objects.get(id=item).price, 200)
         self.assertFalse(Ingredient.objects.filter(name='Water').exists())
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
-        self.assertTrue(Dish.objects.get(name='Lemonade').
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.get(name='Lemonade').
                         ingredients.filter(name='Wine').exists())
 
 # endregion

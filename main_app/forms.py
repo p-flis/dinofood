@@ -17,11 +17,11 @@ class IngredientForm(forms.ModelForm):
 
 class RecipeForm(forms.ModelForm):
     class Meta:
-        model = Dish
+        model = Recipe
         fields = [
             "name",
             'description',
-            'recipe',
+            'recipe_text',
             'image',
             'tools'
         ]

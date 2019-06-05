@@ -14,12 +14,12 @@ def decimal_from_int(number):
 
 
 def empty_database():
-    Dish.objects.all().delete()
+    Recipe.objects.all().delete()
     Ingredient.objects.all().delete()
     Unit.objects.all().delete()
     CookingTool.objects.all().delete()
     # User.objects.all().delete() #idk where it is and if it is safe to remove users
-    DishIngredient.objects.all().delete()
+    RecipeIngredient.objects.all().delete()
     Rating.objects.all().delete()
 
 
@@ -46,11 +46,13 @@ def load_db_from_json(file_name):
 
         recipes_data = db['recipes']
         for recipe_data in recipes_data:
-            recipe_model = Dish(name=recipe_data['name'],
-                                description=recipe_data['description'],
-                                recipe=recipe_data['recipe'])
+            recipe_model = Recipe(name=recipe_data['name'],
+                                  description=recipe_data['description'],
+                                  recipe_text=recipe_data['recipe'])
             if ("image" in recipe_data) and recipe_data['image'] != "":
                 recipe_model.image = recipe_data['image']
+            else:
+                recipe_model.image = "default.png"
             recipe_model.save()
             for ingredient_data in recipe_data['ingredients']:
                 ingredient_model = Ingredient.objects.get(name=ingredient_data['name'])
@@ -110,15 +112,15 @@ def save_database_to_default(request):
             'recipe': recipe_object.recipe,
             'ingredients': [
                 {
-                    'name': dishingredient_object.ingredient.name,
-                    'quantity': dishingredient_object.quantity,
-                    'unit': dishingredient_object.unit.name if dishingredient_object.unit else "Gram"
+                    'name': recipeingredient_object.ingredient.name,
+                    'quantity': recipeingredient_object.quantity,
+                    'unit': recipeingredient_object.unit.name if recipeingredient_object.unit else "Gram"
                 }
-                for dishingredient_object in recipe_object.dishingredient_set.all()
+                for recipeingredient_object in recipe_object.recipeingredient_set.all()
             ],
             'image': recipe_object.image.name if recipe_object.image else ""
         }
-        for recipe_object in Dish.objects.all()
+        for recipe_object in Recipe.objects.all()
     ]
     db = {
         'units': units_data,

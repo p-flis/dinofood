@@ -31,14 +31,14 @@ class CookingTool(models.Model):
     objects = models.Manager()
 
 
-class Dish(models.Model):
+class Recipe(models.Model):
     name = models.CharField(max_length=80)
     description = models.TextField()
-    recipe = models.TextField()
+    recipe_text = models.TextField()
     ingredients = models.ManyToManyField(
         Ingredient,
-        through='DishIngredient',
-        through_fields=('dish', 'ingredient'),
+        through='RecipeIngredient',
+        through_fields=('recipe', 'ingredient'),
     )
     tools = models.ManyToManyField(CookingTool)
     owner = models.ForeignKey('accounts.User', on_delete=models.CASCADE, null=True)
@@ -48,8 +48,8 @@ class Dish(models.Model):
     objects = models.Manager()
 
 
-class DishIngredient(models.Model):
-    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
+class RecipeIngredient(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True)
@@ -59,5 +59,5 @@ class DishIngredient(models.Model):
 
 @receiver(pre_delete, sender=Ingredient)
 def delete_related_recipes(sender, instance, using, **kwargs):
-    for recipe in Ingredient.objects.get(id=instance.id).dish_set.all():
+    for recipe in Ingredient.objects.get(id=instance.id).recipe_set.all():
         recipe.delete()

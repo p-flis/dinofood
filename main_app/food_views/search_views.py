@@ -1,14 +1,10 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404
+from django.shortcuts import render
 from django.db.models import Count, Sum, F, FloatField, Case, When, Value
 
 from main_app.models import *
 
 
 # https://github.com/taranjeet/django-library-app/blob/master/djlibrary/templates/store/create_normal.html
-
-
-# Create your views here.
 
 
 def recipe_search(request):
@@ -23,7 +19,7 @@ def recipe_search(request):
 
         ingredients_in_recipe_len = len(ingredients_in_recipe)
 
-        search_result = Dish.objects
+        search_result = Recipe.objects
 
         # if ingredients_in_fridge and any(ingredients_in_fridge):
         #     search_result = search_result \
@@ -33,8 +29,8 @@ def recipe_search(request):
 
         search_result = search_result \
             .annotate(recipe_price=Sum(Case(
-                When(dishingredient__ingredient__name__in=ingredients_in_fridge, then=0),
-                default=F('dishingredient__quantity') * F('dishingredient__ingredient__price'),
+                When(recipeingredient__ingredient__name__in=ingredients_in_fridge, then=0),
+                default=F('recipeingredient__quantity') * F('recipeingredient__ingredient__price'),
                 output_field=FloatField()
                 ))
             ) \
@@ -45,7 +41,7 @@ def recipe_search(request):
         # print(search_result.all())
         # print(search_result.query)
         ids_not_affordable = [item.id for item in search_result.all()]
-        search_result = Dish.objects.exclude(id__in=ids_not_affordable)
+        search_result = Recipe.objects.exclude(id__in=ids_not_affordable)
 
         if ingredients_in_recipe and any(ingredients_in_recipe):
             search_result = search_result \

@@ -37,7 +37,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
                                                     'quantities': quantities_list,
                                                     'image': ''})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
         self.assertEqual(response.url, '/recipe')
 
     def test_view_adds_recipe_redirect(self):
@@ -78,7 +78,7 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
                                     follow=True)
         self.assertRedirects(response, reverse('login') + "?next=" + reverse('add_recipe'), status_code=302,
                              target_status_code=200)
-        self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
+        self.assertFalse(Recipe.objects.filter(name='Lemonade').exists())
 
 
 # endregion
@@ -94,25 +94,25 @@ class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get('/recipe/{}/delete'.format(item))
         self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 302)
 
     def test_view_deletes_properly(self):
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 302)
         # things should be deleted cascade
         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
-        self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
+        self.assertFalse(Recipe.objects.filter(name='Lemonade').exists())
 
     def test_view_redirects_properly(self):
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response, reverse('recipe'))
 
@@ -135,30 +135,30 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
                                                     'ingredients': ingredients_list,
                                                     'quantities': quantities_list})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
 
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 302)
         # things should be deleted cascade
-        self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
+        self.assertFalse(Recipe.objects.filter(name='Lemonade').exists())
 
     def test_view_deletes_recipe_not_logged_in(self):
-        dish_data = [
+        recipe_data = [
             ("Lemonade",
              "water, but sour",
              ["Water", "Lemon"]),
         ]
-        TestDatabase.create_custom_test_database(dish_data=dish_data)
+        TestDatabase.create_custom_test_database(recipe_data=recipe_data)
 
         client = Client()
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = client.get(reverse('recipe_delete', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
                              reverse('login') + "?next=" + reverse('recipe_delete', kwargs={'object_id': item}),
                              status_code=302,
                              target_status_code=200)
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
 
     def test_view_deletes_recipe_not_logged_in_id_doesnt_exist(self):
         client = Client()
@@ -169,20 +169,20 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
                              target_status_code=200)
 
     def test_view_deletes_recipe_logged_in_not_owner(self):
-        dish_data = [
+        recipe_data = [
             ("Lemonade",
              "water, but sour",
              ["Water", "Lemon"]),
         ]
-        TestDatabase.create_custom_test_database(dish_data=dish_data)
+        TestDatabase.create_custom_test_database(recipe_data=recipe_data)
 
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
                              reverse('login') + "?next=" + reverse('recipe_delete', kwargs={'object_id': item}),
                              status_code=302,
                              target_status_code=200)
-        self.assertTrue(Dish.objects.filter(name='Lemonade').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemonade').exists())
 
     def test_view_deletes_recipe_logged_in_not_owner_id_doesnt_exist(self):
         response = self.client.get(reverse('recipe_delete', kwargs={'object_id': 999}), follow=True)
@@ -203,29 +203,29 @@ class RecipeIDViewTest(TestCase):
             ("Lemon", 8, True, True, True)
 
         ]
-        dish_data = [
+        recipe_data = [
             ("Lemonade",
              "water, but sour",
              ["Water", "Lemon"]),
         ]
-        TestDatabase.create_custom_test_database(ingredient_data,dish_data)
+        TestDatabase.create_custom_test_database(ingredient_data=ingredient_data, recipe_data=recipe_data)
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/recipe/999')
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get('/recipe/{}'.format(item))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_id', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
-        item = Dish.objects.only('id').get(name='Lemonade').id
+        item = Recipe.objects.only('id').get(name='Lemonade').id
         response = self.client.get(reverse('recipe_id', kwargs={'object_id': item}))
         self.assertTemplateUsed(response, 'food/recipe_id_get.html')
 
@@ -241,33 +241,33 @@ class RecipeIDViewTest(TestCase):
 #         self.assertEqual(response.status_code, 404)
 #
 #     def test_view_url_exists_at_desired_location_id_exists(self):
-#         item = Dish.objects.only('id').get(name='Lemonade').id
+#         item = Recipe.objects.only('id').get(name='Lemonade').id
 #         response = self.client.get('/recipe/{}/update'.format(item))
 #         self.assertEqual(response.status_code, 200)
 #
 #     def test_view_url_accessible_by_name(self):
-#         item = Dish.objects.only('id').get(name='Lemonade').id
+#         item = Recipe.objects.only('id').get(name='Lemonade').id
 #         response = self.client.get(reverse('recipe_update', kwargs={'object_id': item}))
 #         self.assertEqual(response.status_code, 200)
 #
 #     def test_view_updates_default_values(self):
-#         item = Dish.objects.only('id').get(name='Lemonade').id
+#         item = Recipe.objects.only('id').get(name='Lemonade').id
 #         response = self.client.get(reverse('recipe_update', kwargs={'object_id': item}))
 #         self.assertEqual(response.context['form'].initial['name'], 'Lemonade')
-#         self.assertTrue(Dish.objects.filter(id=item).exists())
+#         self.assertTrue(Recipe.objects.filter(id=item).exists())
 #
 #         # things should be deleted cascade
 #         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
-#         self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
+#         self.assertFalse(Recipe.objects.filter(name='Lemonade').exists())
 #
 #     def test_view_updates_properly_no_modifications(self):
-#         item = Dish.objects.only('id').get(name='Lemonade').id
+#         item = Recipe.objects.only('id').get(name='Lemonade').id
 #         response = self.client.post(reverse('recipe_update', kwargs={'object_id': item}))
 #         self.assertEqual(response.status_code, 302)
-#         self.assertTrue(Dish.objects.filter(id=item).exists())
+#         self.assertTrue(Recipe.objects.filter(id=item).exists())
 #
 #         # things should be deleted cascade
 #         self.assertTrue(Ingredient.objects.filter(name='Water').exists())
-#         self.assertFalse(Dish.objects.filter(name='Lemonade').exists())
+#         self.assertFalse(Recipe.objects.filter(name='Lemonade').exists())
 
 # endregion

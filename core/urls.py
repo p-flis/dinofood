@@ -6,11 +6,11 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 import main_app.views
-import main_app.dish_views.ingredient_views as ingredient_views
-import main_app.dish_views.cookingtools_views as cookingtools_views
-import main_app.dish_views.unit_views as unit_views
-import main_app.dish_views.recipe_views as recipe_views
-import main_app.dish_views.search_views as search_views
+import main_app.food_views.ingredient_views as ingredient_views
+import main_app.food_views.cookingtools_views as cookingtools_views
+import main_app.food_views.unit_views as unit_views
+import main_app.food_views.recipe_views as recipe_views
+import main_app.food_views.search_views as search_views
 import main_app.tests.test_views as test_views
 
 admin.autodiscover()
