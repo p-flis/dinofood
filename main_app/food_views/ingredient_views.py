@@ -21,6 +21,13 @@ def add_ingredient(request):
         form = IngredientForm(request.POST)
         if form.is_valid():
             form.save()
+        # else:
+        #     print('Invalid add ingredient form')
+        #     print('reasons: ')
+        #     for reason in form.errors:
+        #         print(reason)
+        #         for error in form.errors[reason]:
+        #             print(error)
         return redirect('/ingredient')
 
 
@@ -75,7 +82,14 @@ def ingredient_id_update(request, object_id):
     elif request.method == 'POST':
         instance = Ingredient.objects.get(id=object_id)
         form = IngredientForm(instance=instance,data=request.POST)
-        # print("checkpoint1")
         if form.is_valid():
             form.save()
+        # else:
+        #     print('Invalid update ingredient form')
+        #     print('reasons: ')
+        #     for reason in form.errors:
+        #         print(reason)
+        #         for error in form.errors[reason]:
+        #             print(error)
+
         return redirect('/ingredient')

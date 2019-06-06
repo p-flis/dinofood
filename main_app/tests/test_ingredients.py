@@ -27,7 +27,7 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
                                      'is_vegetarian': 'false',
                                      'is_vegan': 'false',
                                      'is_gluten_free': 'false',
-                                     'units':''})
+                                     'units':[]})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(name='water').exists())
         self.assertEqual(response.url, '/ingredient')
@@ -228,10 +228,17 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
         ingredient_data = response_get.context['form'].initial
         ingredient_data['name'] = 'Wino'
         ingredient_data['price'] = 20
+        #a workaround, because we get objects with GET, and need only ids in POST
+        new_units = []
+        for value in ingredient_data['units']:
+            new_units.append(value.id)
+        ingredient_data['units'] = new_units
+        #end of workaround
         response = self.client.post(reverse('ingredient_update', kwargs={'object_id': item}),
                                     ingredient_data)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(id=item).exists())
+        self.assertNotEquals(Ingredient.objects.get(id=item).name, 'Woda')
         self.assertEquals(Ingredient.objects.get(id=item).name, 'Wino')
         self.assertEquals(Ingredient.objects.get(id=item).price, 20)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
