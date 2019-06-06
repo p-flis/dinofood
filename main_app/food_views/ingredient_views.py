@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from main_app.forms import IngredientForm
 from main_app.models import *
+from main_app.views import displayFormErrors
 import json
 
 
@@ -22,12 +23,7 @@ def add_ingredient(request):
         if form.is_valid():
             form.save()
         # else:
-        #     print('Invalid add ingredient form')
-        #     print('reasons: ')
-        #     for reason in form.errors:
-        #         print(reason)
-        #         for error in form.errors[reason]:
-        #             print(error)
+        #     displayFormErrors(form)
         return redirect('/ingredient')
 
 
@@ -85,11 +81,6 @@ def ingredient_id_update(request, object_id):
         if form.is_valid():
             form.save()
         # else:
-        #     print('Invalid update ingredient form')
-        #     print('reasons: ')
-        #     for reason in form.errors:
-        #         print(reason)
-        #         for error in form.errors[reason]:
-        #             print(error)
+        #     displayFormErrors(form)
 
         return redirect('/ingredient')

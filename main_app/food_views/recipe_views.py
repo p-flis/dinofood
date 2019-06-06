@@ -4,6 +4,7 @@ from django.http import Http404
 from main_app.forms import RecipeForm
 from main_app.models import *
 from accounts.models import User
+from main_app.views import displayFormErrors
 # from django.core.mail import send_mail
 import json
 
@@ -46,6 +47,8 @@ def add_recipe(request):
             #         ['karkru4@gmail.com'],
             #         fail_silently=False,
             #     )
+        else:
+            displayFormErrors(form)
         return redirect('/recipe')
     raise Http404
 
@@ -110,7 +113,7 @@ def recipe_id_delete(request, object_id):
     recipe_model = Recipe.objects.filter(id=object_id)
     if not recipe_model:
         raise Http404
-    if recipe_model.get().owner != request.user.username and not request.user.is_superuser:
+    if recipe_model.get().owner != request.user and not request.user.is_superuser:
         # I'm pretty sure this is not very secure
         return redirect('/accounts/login/?next=' + request.path)
     recipe_model.delete()

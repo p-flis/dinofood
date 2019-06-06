@@ -21,31 +21,37 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
         self.assertTemplateUsed(response, 'food/new_recipe_form.html')
 
     def test_view_adds_recipe(self):
-        TestDatabase.create_default_test_database(ingredients=True)
+        TestDatabase.create_default_test_database(ingredients=True, tools=True)
 
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
+        tools_list = []
+        tools_list.append(CookingTool.objects.filter()[0].id)
         response = self.client.post('/recipe/new', {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
-                                                    'recipe': 'hahaha to jest wymagane',
+                                                    'recipe_text': 'hahaha to jest wymagane',
                                                     'ingredients': ingredients_list,
                                                     'quantities': quantities_list,
+                                                    'tools': tools_list,
                                                     'image': ''})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
         self.assertEqual(response.url, '/recipe')
 
     def test_view_adds_recipe_redirect(self):
-        TestDatabase.create_default_test_database(ingredients=True)
+        TestDatabase.create_default_test_database(ingredients=True, tools=True)
 
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
+        tools_list = []
+        tools_list.append(CookingTool.objects.filter()[0].id)
         response = self.client.post('/recipe/new',
                                     {'name': 'Lemoniada',
                                      'description': 'Woda, but sour',
-                                     'recipe': 'hahaha to jest wymagane',
+                                     'recipe_text': 'hahaha to jest wymagane',
                                      'ingredients': ingredients_list,
-                                     'quantities': quantities_list},
+                                     'quantities': quantities_list,
+                                     'tools': tools_list},
                                     follow=True)
         self.assertRedirects(response, reverse('recipe'), status_code=302, target_status_code=200)
 
@@ -57,14 +63,18 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
                              target_status_code=200)
 
     def test_view_correct_redirection_post(self):
+        TestDatabase.create_default_test_database(ingredients=True, tools=True)
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
+        tools_list = []
+        tools_list.append(CookingTool.objects.filter()[0].id)
         response = self.client.post('/recipe/new',
                                     {'name': 'Lemoniada',
                                      'description': 'Woda, but sour',
-                                     'recipe': 'hahaha to jest wymagane',
+                                     'recipe_text': 'hahaha to jest wymagane',
                                      'ingredients': ingredients_list,
-                                     'quantities': quantities_list},
+                                     'quantities': quantities_list,
+                                     'tools': tools_list},
                                     follow=True)
         self.assertRedirects(response, reverse('login') + "?next=" + reverse('add_recipe'), status_code=302,
                              target_status_code=200)
@@ -110,18 +120,21 @@ class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
 class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
     @classmethod
     def setUpTestData(cls):
-        TestDatabase.create_default_test_database(ingredients=True, units=True)
+        TestDatabase.create_default_test_database(ingredients=True, units=True, tools=True)
 
     def test_view_adds_and_deletes_recipe_owner(self):
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
+        tools_list=[]
+        tools_list.append(CookingTool.objects.filter()[0].id)
         response_get = self.client.get('/recipe/new')
         recipe_data = response_get.context['form'].initial
         recipe_data['name'] = 'Lemoniada'
         recipe_data['description'] = 'Woda, but sour'
-        recipe_data['recipe'] = 'hahaha to jest wymagane'
+        recipe_data['recipe_text'] = 'hahaha to jest wymagane'
         recipe_data['ingredients'] = ingredients_list
         recipe_data['quantities'] = quantities_list
+        recipe_data['tools'] = tools_list
         response = self.client.post('/recipe/new', recipe_data)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
