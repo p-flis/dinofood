@@ -16,7 +16,7 @@ class Ingredient(models.Model):
     is_vegetarian = models.BooleanField(default=False)
     is_vegan = models.BooleanField(default=False)
     is_gluten_free = models.BooleanField(default=False)
-    units = models.ManyToManyField(Unit)
+    units = models.ManyToManyField(Unit, blank=True)
 
     objects = models.Manager()
 
