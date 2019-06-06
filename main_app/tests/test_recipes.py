@@ -115,11 +115,14 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_adds_and_deletes_recipe_owner(self):
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
-        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
-                                                    'description': 'Woda, but sour',
-                                                    'recipe': 'hahaha to jest wymagane',
-                                                    'ingredients': ingredients_list,
-                                                    'quantities': quantities_list})
+        response_get = self.client.get('/recipe/new')
+        recipe_data = response_get.context['form'].initial
+        recipe_data['name'] = 'Lemoniada'
+        recipe_data['description'] = 'Woda, but sour'
+        recipe_data['recipe'] = 'hahaha to jest wymagane'
+        recipe_data['ingredients'] = ingredients_list
+        recipe_data['quantities'] = quantities_list
+        response = self.client.post('/recipe/new', recipe_data)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
 
@@ -161,11 +164,8 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
 
     def test_view_deletes_recipe_logged_in_not_owner_id_doesnt_exist(self):
-        response = self.client.get(reverse('recipe_delete', kwargs={'object_id': 999}), follow=True)
-        self.assertRedirects(response,
-                             reverse('login') + "?next=" + reverse('recipe_delete', kwargs={'object_id': 999}),
-                             status_code=302,
-                             target_status_code=200)
+        response = self.client.get(reverse('recipe_delete', kwargs={'object_id': 999}))
+        self.assertEqual(response.status_code, 404)
 
 
 # endregion

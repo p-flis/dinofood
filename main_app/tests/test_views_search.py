@@ -36,7 +36,7 @@ class RecipeSearchViewTest(TestCase):
                 ]
             }
         ]
-        TestDatabase.create_custom_test_database(recipes_data=recipes_data)
+        TestDatabase.append_custom_test_database(recipes_data=recipes_data)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         response = self.client.get('/recipe/search')

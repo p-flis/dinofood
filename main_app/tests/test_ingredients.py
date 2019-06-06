@@ -26,7 +26,8 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
                                      'price': '2',
                                      'is_vegetarian': 'false',
                                      'is_vegan': 'false',
-                                     'is_gluten_free': 'false'})
+                                     'is_gluten_free': 'false',
+                                     'units':''})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(name='water').exists())
         self.assertEqual(response.url, '/ingredient')
@@ -207,13 +208,13 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_updates_properly_no_modifications(self):
         TestDatabase.create_default_test_database(units=True, ingredients=True, recipes=True)
         item = Ingredient.objects.only('id').get(name='Woda').id
-        ingredient_data = {'name': 'Woda',
-                           'price': 2}
+        response_get = self.client.get(reverse('ingredient_update', kwargs={'object_id': item}))
+        ingredient_data = response_get.context['form'].initial
         response = self.client.post(reverse('ingredient_update', kwargs={'object_id': item}),
                                     ingredient_data)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(id=item).exists())
-        self.assertEquals(Ingredient.objects.get(id=item).name, 'Water')
+        self.assertEquals(Ingredient.objects.get(id=item).name, 'Woda')
         self.assertEquals(Ingredient.objects.get(id=item).price, 2)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
         self.assertTrue(Unit.objects.filter(name='Gram').exists())
@@ -223,8 +224,10 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_updates_properly_with_modifications(self):
         TestDatabase.create_default_test_database(units=True, ingredients=True, recipes=True)
         item = Ingredient.objects.only('id').get(name='Woda').id
-        ingredient_data = {'name': 'Wino',
-                           'price': 20}
+        response_get = self.client.get(reverse('ingredient_update', kwargs={'object_id': item}))
+        ingredient_data = response_get.context['form'].initial
+        ingredient_data['name'] = 'Wino'
+        ingredient_data['price'] = 20
         response = self.client.post(reverse('ingredient_update', kwargs={'object_id': item}),
                                     ingredient_data)
         self.assertEqual(response.status_code, 302)
