@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
+from django.conf import settings
 from main_app.forms import RecipeForm
 from main_app.models import *
 from accounts.models import User
 from main_app.views import displayFormErrors
-# from django.core.mail import send_mail
+from django.core.mail import send_mail
 import json
 
 
@@ -37,16 +38,19 @@ def add_recipe(request):
                 except ValueError:
                     pass
             recipe_model.owner = User.objects.get(username=request.user.username)
+            if request.user.is_superuser:
+                recipe_model.accepted = True
+            recipe_model.save()
             recipe_model.save()
 
-            # if Recipe.objects.filter(accepted=False).count() > 0:
-            #     send_mail(
-            #         'Niezaakceptowane przepisy',
-            #         'Here is the message.',
-            #         'django@django.com',
-            #         ['karkru4@gmail.com'],
-            #         fail_silently=False,
-            #     )
+            if Recipe.objects.filter(accepted=False).count() == 1:
+                send_mail(
+                    'Unaccepted recipes',
+                    'Sth happened.',
+                    settings.EMAIL_HOST_USER,
+                    [settings.EMAIL_HOST_USER],
+                    fail_silently=False,
+                )
         else:
             displayFormErrors(form)
         return redirect('/recipe')

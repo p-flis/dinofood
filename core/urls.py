@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
+import bug_report.views
 import main_app.views
 import main_app.food_views.ingredient_views as ingredient_views
 import main_app.food_views.cookingtools_views as cookingtools_views
@@ -30,6 +31,8 @@ urlpatterns = [
 
     path('accounts/', include('accounts.urls')),  # first search in accounts app
     path('accounts/', include('django.contrib.auth.urls')),  # then in built in auth
+
+    path("report", bug_report.views.bug_report, name="bug_report"),
 
     path("recipe/", recipe_views.recipe, name="recipe"),
     path("recipe/new", recipe_views.add_recipe, name="add_recipe"),

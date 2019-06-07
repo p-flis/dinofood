@@ -33,7 +33,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'dinofoodnotification@gmail.com'
+EMAIL_HOST_PASSWORD = 'cebula1234'
+EMAIL_PORT = 587
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "main_app",
     "accounts",
+    "bug_report",
 ]
 
 MIDDLEWARE = [
