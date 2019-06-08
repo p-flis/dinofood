@@ -26,3 +26,21 @@ function clearHoverStars(starId){
     (stars[i]).classList.remove('hover');
   }
 }
+
+function checkFavourite(starId){
+  var heart = document.getElementsByClassName('heart')[0];
+  if(heart.classList.contains('selected'))
+    heart.classList.remove('selected');
+  else
+    heart.classList.add('selected');
+}
+
+function hoverFavourite(starId){
+  var heart = document.getElementsByClassName('heart')[0];
+  heart.classList.add('hover');
+}
+
+function clearHoverFavourite(starId){
+  var heart = document.getElementsByClassName('heart')[0];
+  heart.classList.remove('hover');
+}
