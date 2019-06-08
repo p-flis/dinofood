@@ -16,7 +16,9 @@ def recipe_search(request):
         ingredients_in_fridge = data.getlist("ingredients_in_fridge")
         ingredients_in_recipe = data.getlist("ingredients_in_recipe")
         extra_money = data.get("extra_money")
-
+        is_vegetarian = data.get("is_vegetarian")
+        is_vegan = data.get("is_vegan")
+        is_gluten_free = data.get("is_gluten_free")
         ingredients_in_recipe_len = len(ingredients_in_recipe)
 
         search_result = Recipe.objects
@@ -49,5 +51,11 @@ def recipe_search(request):
                 .annotate(ing_num=Count('ingredients')) \
                 .filter(ing_num=ingredients_in_recipe_len)
 
+        if is_vegetarian:
+            search_result = search_result.filter(ingredients__is_vegetarian=True)
+        if is_vegan:
+            search_result = search_result.filter(ingredients__is_vegan=True)
+        if is_gluten_free:
+            search_result = search_result.filter(ingredients__is_gluten_free=True)
         # print(search_result.query)
         return render(request, "food/recipe.html", {"list_items": search_result.all()})
