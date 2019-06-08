@@ -8,7 +8,11 @@ class User(AbstractUser):
     admin = models.BooleanField(default=False)
     ingredients = models.ManyToManyField(main_models.Ingredient)
     tools = models.ManyToManyField(main_models.CookingTool)
-
+    ratings = models.ManyToManyField(
+        main_models.Recipe,
+        through='Rating',
+        through_fields=('user', 'recipe'),
+    )
     def __str__(self):
         return self.email
 

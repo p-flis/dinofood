@@ -4,7 +4,7 @@ from django.http import Http404
 from django.conf import settings
 from main_app.forms import RecipeForm
 from main_app.models import *
-from accounts.models import User
+from accounts.models import *
 from main_app.views import displayFormErrors
 from django.core.mail import send_mail
 import json
@@ -107,12 +107,16 @@ def accept_recipes(request):
 
 def recipe_id(request, object_id):
     recipe_model = Recipe.objects.filter(id=object_id)
+    if request.user.is_authenticated:
+        rating = Rating.objects.filter(recipe=recipe_model[0], user=request.user)
+    else:
+        rating=None
     if not recipe_model:
         raise Http404
-    return render(request, "food/recipe_id_get.html", {"item": recipe_model.get(id=object_id)})
+    return render(request, "food/recipe_id_get.html", {"item": recipe_model.get(id=object_id), "rating": rating})
 
 
-@login_required(login_url='/accounts/login')  # TODO: change to checking ownership
+@login_required(login_url='/accounts/login')
 def recipe_id_delete(request, object_id):
     recipe_model = Recipe.objects.filter(id=object_id)
     if not recipe_model:

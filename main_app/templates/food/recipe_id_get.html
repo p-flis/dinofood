@@ -13,7 +13,18 @@ Przepis
 {% endblock %}
 
 {% block itemcontent %}
+    <h4>Rating:</h4>
+    {% if rating %}
+      <p class="tab">{{ rating.rating }}</p>
+      {% if rating.favourite %}
+        <p class="tab">Favourite! &hearts;</p>
+      {% endif %}
+    {% else %}
+      <p class="tab">{{ 0 }}</p>
+    {% endif %}
+
     <h4>Description:</h4>
+    <p class="tab">{{ item.description }}</p>
     <p class="tab">{{ item.description }}</p>
 
     <h4>Recipe:</h4>
@@ -32,4 +43,3 @@ Przepis
         <img src="/media/default.png" style="height: 200px; width: 200px;">
     {% endif %}
 {% endblock %}
-
