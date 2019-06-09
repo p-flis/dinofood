@@ -12,7 +12,26 @@
 
 {% block itemcontent %}
 <div class="formulagrid">
-  {{form.as_p}}
+  <p>
+    {{form.name.errors}}
+    <label>Nazwa:</label>
+    {{form.name}}
+  </p>
+  <p>
+    {{form.description.errors}}
+    <label>Opis:</label>
+    {{form.description}}
+  </p>
+  <p>
+    {{form.recipe_text.errors}}
+    <label>Przepis:</label>
+    {{form.recipe_text}}
+  </p>
+  <p>
+    {{form.tools.errors}}
+    <label>Narzędzia:</label>
+    {{form.tools}}
+  </p>
 </div>
 <div class="item">
   <div >
