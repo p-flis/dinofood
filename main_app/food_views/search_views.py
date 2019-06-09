@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.db.models import Count, Sum, F, FloatField, Case, When, Value
+from main_app.forms import SearchForm
+from django.http import Http404
 
 from main_app.models import *
+from main_app.views import displayFormErrors
 
 
 # https://github.com/taranjeet/django-library-app/blob/master/djlibrary/templates/store/create_normal.html
@@ -9,29 +12,31 @@ from main_app.models import *
 
 def recipe_search(request):
     if request.method == 'GET':
-        ingredients = Ingredient.objects.all()
-        return render(request, "food/search_recipe.html", {"ingredients": ingredients})
+        form = SearchForm(initial={"ingredients_in_fridge": request.user.ingredients.all(),
+                                   "tools_in_kitchen": request.user.tools.all()})
+        return render(request, "food/search_recipe.html", {"form": form})
     elif request.method == 'POST':
-        data = request.POST.copy()
-        ingredients_in_fridge = data.getlist("ingredients_in_fridge")
-        ingredients_in_recipe = data.getlist("ingredients_in_recipe")
-        extra_money = data.get("extra_money")
-        is_vegetarian = data.get("is_vegetarian")
-        is_vegan = data.get("is_vegan")
-        is_gluten_free = data.get("is_gluten_free")
+        form = SearchForm(request.POST)
+        if not form.is_valid():
+            displayFormErrors(form)
+            # raise Http404  # todo change to more suitable error
+        ingredients_in_fridge = form.cleaned_data["ingredients_in_fridge"]
+        ingredients_in_recipe = form.cleaned_data["ingredients_in_recipe"]
+        extra_money = int(form.cleaned_data["extra_money"])
+
+        is_vegetarian = form.cleaned_data["is_vegetarian"]
+        is_vegan = form.cleaned_data["is_vegan"]
+        is_gluten_free = form.cleaned_data["is_gluten_free"]
+
+        # print(form.cleaned_data)
+
         ingredients_in_recipe_len = len(ingredients_in_recipe)
 
         search_result = Recipe.objects
 
-        # if ingredients_in_fridge and any(ingredients_in_fridge):
-        #     search_result = search_result \
-        #         .exclude(ingredients__name__in=ingredients_in_fridge)
-
-        # print(search_result.all())
-
         search_result = search_result \
             .annotate(recipe_price=Sum(Case(
-                When(recipeingredient__ingredient__name__in=ingredients_in_fridge, then=0),
+                When(recipeingredient__ingredient__in=ingredients_in_fridge, then=0),
                 default=F('recipeingredient__quantity') * F('recipeingredient__ingredient__price') * F('recipeingredient__unit__amount'),
                 output_field=FloatField()
                 ))
@@ -42,12 +47,13 @@ def recipe_search(request):
         #     print(s.recipe_price)
         # print(search_result.all())
         # print(search_result.query)
+
         ids_not_affordable = [item.id for item in search_result.all()]
         search_result = Recipe.objects.exclude(id__in=ids_not_affordable)
 
         if ingredients_in_recipe and any(ingredients_in_recipe):
             search_result = search_result \
-                .filter(ingredients__name__in=ingredients_in_recipe) \
+                .filter(ingredients__in=ingredients_in_recipe) \
                 .annotate(ing_num=Count('ingredients')) \
                 .filter(ing_num=ingredients_in_recipe_len)
 
@@ -59,3 +65,4 @@ def recipe_search(request):
             search_result = search_result.filter(ingredients__is_gluten_free=True)
         # print(search_result.query)
         return render(request, "food/recipe.html", {"list_items": search_result.all()})
+

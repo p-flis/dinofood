@@ -1,0 +1,15 @@
+{% extends "baseform.html" %}
+{% load staticfiles %}
+
+{% block smalltitle %}
+Skomponuj swoją lodówkę
+{% endblock %}
+{% block itemcontent %}
+<div class="formulagrid">
+  {{form.as_p}}
+</div>
+<div class="item">
+  <div class="listitem-content">
+  </div>
+</div>
+{% endblock %}

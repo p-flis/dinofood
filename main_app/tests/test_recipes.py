@@ -125,8 +125,7 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_adds_and_deletes_recipe_owner(self):
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
-        tools_list=[]
-        tools_list.append(CookingTool.objects.filter()[0].id)
+        tools_list = [CookingTool.objects.filter()[0].id]
         response_get = self.client.get('/recipe/new')
         recipe_data = response_get.context['form'].initial
         recipe_data['name'] = 'Lemoniada'

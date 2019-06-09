@@ -20,6 +20,12 @@ class Ingredient(models.Model):
 
     objects = models.Manager()
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
 
 def upload_location(instance, filename):
     return "%s/%s" % (instance.id, filename)
@@ -29,6 +35,12 @@ class CookingTool(models.Model):
     name = models.CharField(max_length=80)
 
     objects = models.Manager()
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
 
 class Recipe(models.Model):

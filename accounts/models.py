@@ -13,6 +13,7 @@ class User(AbstractUser):
         through='Rating',
         through_fields=('user', 'recipe'),
     )
+
     def __str__(self):
         return self.email
 

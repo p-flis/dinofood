@@ -6,6 +6,7 @@ def index(request):
     # return HttpResponse('base Karol!')
     return render(request, "home.html")
 
+
 def displayFormErrors(form):
     print('Invalid form')
     print('reasons: ')

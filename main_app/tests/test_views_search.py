@@ -51,84 +51,127 @@ class RecipeSearchViewTest(TestCase):
         self.assertTemplateUsed(response, 'food/search_recipe.html')
 
     def test_view_uses_correct_template_post(self):
-        ingredients_list = ['Woda']
+        ingredients_list = Ingredient.objects.filter(name__in=["Woda"]).all()
+        ingredients_list = [i.id for i in ingredients_list]
         response = self.client.post('/recipe/search',
                                     {"ingredients_in_fridge": ingredients_list,
                                      "ingredients_in_recipe": ingredients_list,
-                                     "extra_money": 0})
+                                     "extra_money": 0,
+                                     "is_vegetarian": False,
+                                     "is_vegan": False,
+                                     "is_gluten_free": False})
         self.assertTemplateUsed(response, 'food/recipe.html')
 
     def test_view_finds_single_recipe_from_fridge(self):
-        ingredients_list = ['Woda', 'Cytryna']
+        ingredients_list = Ingredient.objects.filter(name__in=['Woda', 'Cytryna']).all()
+        ingredients_list = [i.id for i in ingredients_list]
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": ingredients_list,
                                                        "ingredients_in_recipe": [],
-                                                       "extra_money": 0})
+                                                       "extra_money": 0,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')
 
     def test_view_finds_two_recipes_from_fridge(self):
-        ingredients_list = ['Woda', 'Cytryna', 'Jabłko']
+        ingredients_list = Ingredient.objects.filter(name__in=['Woda', 'Cytryna', 'Jabłko']).all()
+        ingredients_list = [i.id for i in ingredients_list]
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": ingredients_list,
                                                        "ingredients_in_recipe": [],
-                                                       "extra_money": 0})
+                                                       "extra_money": 0,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 2)
 
     def test_view_finds_single_recipe_from_recipe(self):
-        ingredients_list = ['Woda', 'Cytryna']
+        ingredients_list = Ingredient.objects.filter(name__in=['Woda', 'Cytryna']).all()
+        ingredients_list = [i.id for i in ingredients_list]
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": [],
                                                        "ingredients_in_recipe": ingredients_list,
-                                                       "extra_money": 999})
+                                                       "extra_money": 999,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')
 
     def test_view_finds_two_recipes_from_recipe(self):
-        ingredients_list = ['Woda']
+        ingredients_list = Ingredient.objects.filter(name__in=['Woda']).all()
+        ingredients_list = [i.id for i in ingredients_list]
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": [],
                                                        "ingredients_in_recipe": ingredients_list,
-                                                       "extra_money": 999})
+                                                       "extra_money": 999,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 2)
 
     def test_view_finds_single_recipe_from_money(self):
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": [],
                                                        "ingredients_in_recipe": [],
-                                                       "extra_money": 30})
+                                                       "extra_money": 30,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Sok jabłkowy')
 
     def test_view_finds_two_recipes_from_money(self):
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": [],
                                                        "ingredients_in_recipe": [],
-                                                       "extra_money": 500})
+                                                       "extra_money": 500,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 2)
 
     def test_view_finds_no_recipes(self):
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": [],
                                                        "ingredients_in_recipe": [],
-                                                       "extra_money": 0})
+                                                       "extra_money": 0,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 0)
 
     def test_view_finds_single_recipe_mix_fridge_money(self):
-        ingredients_list = ['Woda']
+        ingredients_list = Ingredient.objects.filter(name__in=['Woda']).all()
+        ingredients_list = [i.id for i in ingredients_list]
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": ingredients_list,
                                                        "ingredients_in_recipe": [],
-                                                       "extra_money": 25})
+                                                       "extra_money": 25,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Sok jabłkowy')
 
     def test_view_finds_single_recipe_mix_fridge_recipe(self):
-        fridge_ingredients_list = ['Woda', 'Cytryna', 'Jabłko']
-        recipe_ingredients_list = ['Cytryna']
+        fridge_ingredients_list = Ingredient.objects.filter(name__in=['Woda', 'Cytryna', 'Jabłko']).all()
+        fridge_ingredients_list = [i.id for i in fridge_ingredients_list]
+        recipe_ingredients_list = Ingredient.objects.filter(name__in=['Cytryna']).all()
+        recipe_ingredients_list = [i.id for i in recipe_ingredients_list]
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": fridge_ingredients_list,
                                                        "ingredients_in_recipe": recipe_ingredients_list,
-                                                       "extra_money": 0})
+                                                       "extra_money": 0,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')
 
     def test_view_finds_single_recipe_mix_fridge_recipe_money(self):
-        fridge_ingredients_list = ['Woda']
-        recipe_ingredients_list = ['Cytryna']
+        fridge_ingredients_list = Ingredient.objects.filter(name__in=['Woda']).all()
+        fridge_ingredients_list = [i.id for i in fridge_ingredients_list]
+        recipe_ingredients_list = Ingredient.objects.filter(name__in=['Cytryna']).all()
+        recipe_ingredients_list = [i.id for i in recipe_ingredients_list]
         response = self.client.post('/recipe/search', {"ingredients_in_fridge": fridge_ingredients_list,
                                                        "ingredients_in_recipe": recipe_ingredients_list,
-                                                       "extra_money": 160})
+                                                       "extra_money": 160,
+                                                       "is_vegetarian": False,
+                                                       "is_vegan": False,
+                                                       "is_gluten_free": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')

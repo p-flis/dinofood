@@ -31,6 +31,13 @@
         <a href="{% url 'search_recipe' %}">Wyszukaj</a>
       </div>
     </div>
+    <div class="subnav">
+      <button class="subnavbtn">Kuchnia <i class="fa fa-caret-down"></i></button>
+      <div class="subnav-content">
+        <a href="{% url 'fridge' %}" style="display:block;">Lodówka</a>
+        <a href="{% url 'tools' %}" style="display:block;">Sprzęty</a>
+      </div>
+    </div>
     {% if user.is_superuser %}
       <div class="subnav">
         <button class="subnavbtn">Składniki<i class="fa fa-caret-down"></i></button>

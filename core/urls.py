@@ -12,6 +12,7 @@ import main_app.food_views.cookingtools_views as cookingtools_views
 import main_app.food_views.unit_views as unit_views
 import main_app.food_views.recipe_views as recipe_views
 import main_app.food_views.search_views as search_views
+import main_app.food_views.cient_equipment_views as cient_equipment_views
 import main_app.tests.test_views as test_views
 
 admin.autodiscover()
@@ -60,6 +61,9 @@ urlpatterns = [
     path("cooking_tool/<int:object_id>", cookingtools_views.cooking_tool_id, name="cooking_tool_id"),
     path("cooking_tool/<int:object_id>/delete", cookingtools_views.cooking_tool_id_delete, name="cooking_tool_delete"),
     path("cooking_tool/<int:object_id>/update", cookingtools_views.cooking_tool_id_update, name="cooking_tool_update"),
+
+    path("fridge", cient_equipment_views.modify_fridge, name="fridge"),
+    path("tools", cient_equipment_views.modify_tools, name="tools"),
 
     path("test/empty", main_app.tests.test_views.test_empty_database, name="test_empty_database"),
     path("test/default", main_app.tests.test_views.test_default_database, name="test_default_database"),

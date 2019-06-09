@@ -27,27 +27,6 @@ def add_ingredient(request):
         return redirect('/ingredient')
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
-def add_ingredient_to_default(request):
-    if request.method == 'GET':
-        form = IngredientForm()
-        args = {"form": form}
-        return render(request, "food/new_ingredient_form.html", args)
-    elif request.method == 'POST':
-        form = IngredientForm(request.POST)
-        if form.is_valid():
-            form.save()
-            file_name = "default_db.json"
-            with open(file_name, 'r', encoding='utf-8') as file:
-                db = json.load(file)
-                ingredients_data = db['ingredients']
-                ingredients_data.append({"name": form.cleaned_data["name"],
-                                         "price": int(form.cleaned_data["price"])})
-            with open(file_name, 'w', encoding='utf-8') as file:
-                json.dump(db, file)
-        return redirect('/ingredient')
-
-
 def ingredient_id(request, object_id):
     ing = Ingredient.objects.filter(id=object_id)
     if not ing:
