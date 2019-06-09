@@ -12,8 +12,11 @@ from main_app.views import displayFormErrors
 
 def recipe_search(request):
     if request.method == 'GET':
-        form = SearchForm(initial={"ingredients_in_fridge": request.user.ingredients.all(),
-                                   "tools_in_kitchen": request.user.tools.all()})
+        if request.user.is_authenticated:
+            form = SearchForm(initial={"ingredients_in_fridge": request.user.ingredients.all(),
+                                       "tools_in_kitchen": request.user.tools.all()})
+        else:
+            form = SearchForm()
         return render(request, "food/search_recipe.html", {"form": form})
     elif request.method == 'POST':
         form = SearchForm(request.POST)
