@@ -69,5 +69,4 @@ class SearchForm(forms.Form):
     is_vegetarian = forms.BooleanField(required=False)
     is_vegan = forms.BooleanField(required=False)
     is_gluten_free = forms.BooleanField(required=False)
-
-
+    is_favourite = forms.BooleanField(required=False)

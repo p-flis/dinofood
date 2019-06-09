@@ -59,7 +59,8 @@ class RecipeSearchViewTest(TestCase):
                                      "extra_money": 0,
                                      "is_vegetarian": False,
                                      "is_vegan": False,
-                                     "is_gluten_free": False})
+                                     "is_gluten_free": False,
+                                     "is_favourite": False})
         self.assertTemplateUsed(response, 'food/recipe.html')
 
     def test_view_finds_single_recipe_from_fridge(self):
@@ -70,7 +71,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 0,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')
 
@@ -82,7 +84,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 0,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 2)
 
     def test_view_finds_single_recipe_from_recipe(self):
@@ -93,7 +96,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 999,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')
 
@@ -105,7 +109,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 999,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 2)
 
     def test_view_finds_single_recipe_from_money(self):
@@ -114,7 +119,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 30,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Sok jabłkowy')
 
@@ -124,7 +130,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 500,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 2)
 
     def test_view_finds_no_recipes(self):
@@ -133,7 +140,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 0,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 0)
 
     def test_view_finds_single_recipe_mix_fridge_money(self):
@@ -144,7 +152,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 25,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Sok jabłkowy')
 
@@ -158,7 +167,8 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 0,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')
 
@@ -172,6 +182,7 @@ class RecipeSearchViewTest(TestCase):
                                                        "extra_money": 160,
                                                        "is_vegetarian": False,
                                                        "is_vegan": False,
-                                                       "is_gluten_free": False})
+                                                       "is_gluten_free": False,
+                                                       "is_favourite": False})
         self.assertEqual(response.context['list_items'].count(), 1)
         self.assertEqual(response.context['list_items'][0].name, 'Lemoniada')

@@ -30,7 +30,7 @@ def recipe_search(request):
         is_vegetarian = form.cleaned_data["is_vegetarian"]
         is_vegan = form.cleaned_data["is_vegan"]
         is_gluten_free = form.cleaned_data["is_gluten_free"]
-
+        is_favourite = form.cleaned_data["is_favourite"]
         # print(form.cleaned_data)
 
         ingredients_in_recipe_len = len(ingredients_in_recipe)
@@ -60,6 +60,9 @@ def recipe_search(request):
                 .annotate(ing_num=Count('ingredients')) \
                 .filter(ing_num=ingredients_in_recipe_len)
 
+        if is_favourite and request.user.is_authenticated:
+            user_favourites_ids = [rating.recipe.id for rating in request.user.ratings.objects.filter(favourite=True)]
+            search_result = search_result.filter(id__in=user_favourites_ids)
         if is_vegetarian:
             search_result = search_result.filter(ingredients__is_vegetarian=True)
         if is_vegan:
@@ -68,4 +71,3 @@ def recipe_search(request):
             search_result = search_result.filter(ingredients__is_gluten_free=True)
         # print(search_result.query)
         return render(request, "food/recipe.html", {"list_items": search_result.all()})
-
