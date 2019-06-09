@@ -52,3 +52,11 @@
       border: 10px solid #dfdfdf;
       width:auto;
       }
+
+      .bugreport textarea{
+
+        overflow: auto;
+        display:block;
+        width:100%;
+        height: 400;
+      }

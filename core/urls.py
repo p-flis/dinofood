@@ -34,6 +34,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # then in built in auth
 
     path("report", bug_report.views.bug_report, name="bug_report"),
+    path("report/successful", bug_report.views.report_successful, name="report_successful"),
 
     path("recipe/", recipe_views.recipe, name="recipe"),
     path("recipe/new", recipe_views.add_recipe, name="add_recipe"),
