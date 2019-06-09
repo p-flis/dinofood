@@ -52,14 +52,7 @@ Przepis
   </div>
 </section>
     <h4>Rating:</h4>
-    {% if rating %}
-      <p class="tab">{{ rating.rating }}</p>
-      {% if rating.favourite %}
-        <p class="tab">Favourite! &hearts;</p>
-      {% endif %}
-    {% else %}
-      <p class="tab">{{ 0 }}</p>
-    {% endif %}
+    <p class="tab">{{ item.average_rating }}</p>
 
     <h4>Description:</h4>
     <p class="tab">{{ item.description }}</p>
