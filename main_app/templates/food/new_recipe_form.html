@@ -42,11 +42,12 @@
       <div class="col-4">
         <div class="input-group">
           <label for="ingredient">Nazwa</label>
-          <select id="ingredient" name="ingredients">
+          <input type="text" list="ingredient" />
+          <datalist id="ingredient" name="ingredients">
             {% for ing in ingredients %}
               <option>{{ ing.name }}</option>
             {% endfor %}
-          </select>
+          </datalist>
           <label for="quantity">Ilość</label>
           <input id="quantity" type="number" name="quantities" step="0.1" min="0.1"
 	onkeydown="return event.keyCode !== 69" 	required />
