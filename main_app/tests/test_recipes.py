@@ -17,7 +17,6 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('add_recipe'))
-        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'food/new_recipe_form.html')
 
     def test_view_adds_recipe(self):
@@ -25,8 +24,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
 
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
-        tools_list = []
-        tools_list.append(CookingTool.objects.filter()[0].id)
+        tools_list = [CookingTool.objects.first().id]
         response = self.client.post('/recipe/new', {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
@@ -43,8 +41,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
 
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
-        tools_list = []
-        tools_list.append(CookingTool.objects.filter()[0].id)
+        tools_list = [CookingTool.objects.first()]
         response = self.client.post('/recipe/new',
                                     {'name': 'Lemoniada',
                                      'description': 'Woda, but sour',
@@ -66,8 +63,7 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
         TestDatabase.create_default_test_database(ingredients=True, tools=True)
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
-        tools_list = []
-        tools_list.append(CookingTool.objects.filter()[0].id)
+        tools_list = [CookingTool.objects.first()]
         response = self.client.post('/recipe/new',
                                     {'name': 'Lemoniada',
                                      'description': 'Woda, but sour',
@@ -85,8 +81,7 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
 # region delete
 
 class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         TestDatabase.create_default_test_database(recipes=True, ingredients=True, units=True, tools=True)
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
@@ -107,8 +102,8 @@ class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
         item = Recipe.objects.only('id').get(name='Lemoniada').id
         response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 302)
-        # things should be deleted cascade
         self.assertTrue(Ingredient.objects.filter(name='Woda').exists())
+        self.assertTrue(CookingTool.objects.filter(name='Garnek').exists())
         self.assertFalse(Recipe.objects.filter(name='Lemoniada').exists())
 
     def test_view_redirects_properly(self):
@@ -118,11 +113,8 @@ class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
 
 
 class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
-    @classmethod
-    def setUpTestData(cls):
-        TestDatabase.create_default_test_database(ingredients=True, units=True, tools=True)
-
     def test_view_adds_and_deletes_recipe_owner(self):
+        TestDatabase.create_default_test_database(ingredients=True, units=True, tools=True)
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
         tools_list = [CookingTool.objects.filter()[0].id]
@@ -207,8 +199,19 @@ class RecipeIDViewTest(TestCase):
         response = self.client.get(reverse('recipe_id', kwargs={'object_id': item}))
         self.assertTemplateUsed(response, 'food/recipe_id_get.html')
 
+    def test_view_displays_everything(self):
+        item = Recipe.objects.only('id').get(name='Lemoniada').id
+        response = self.client.get(reverse('recipe_id', kwargs={'object_id': item}))
+        self.assertContains(response, 'Lemoniada')  # name
+        self.assertContains(response, 'Woda, ale słodka')  # description
+        self.assertContains(response, 'Domyśl się')  # recipe_text
+        self.assertContains(response, 'Woda')  # ingredient
+        self.assertContains(response, 'Garnek')  # tool
+
 # endregion
 # region update
+# todo region update
+# below needs to be corrected
 
 # class UpdateRecipeViewTestSuperuser(TestCaseSuperuser):
 #     def setUp(self):
