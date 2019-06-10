@@ -56,7 +56,7 @@ class AddUnitViewTestNotLoggedIn(TestCase):
         self.assertFalse(Unit.objects.filter(name='Gram').exists())
 
 
-class AddIngredientViewTestNotSuperuser(TestCaseLoggedUser):
+class AddUnitViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_unit'), follow=True)
         self.assertRedirects(response,
@@ -320,7 +320,7 @@ class UpdateUnitViewTestNotSuperuser(TestCaseLoggedUser):
     # todo post?
 
 
-class UpdateIngredientViewTestNotLoggedIn(TestCase):
+class UpdateUnitViewTestNotLoggedIn(TestCase):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}))
         self.assertRedirects(response,

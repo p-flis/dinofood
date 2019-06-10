@@ -41,7 +41,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
 
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
-        tools_list = [CookingTool.objects.first()]
+        tools_list = [CookingTool.objects.first().id]
         response = self.client.post('/recipe/new',
                                     {'name': 'Lemoniada',
                                      'description': 'Woda, but sour',

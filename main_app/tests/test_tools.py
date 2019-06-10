@@ -6,7 +6,7 @@ from main_app.tests.TestSetupDatabase import *
 
 # region add
 
-class AddToolViewTestSuperuser(TestCaseSuperuser):
+class AddCookingToolViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/cooking_tool/new')
         self.assertEqual(response.status_code, 200)
@@ -24,7 +24,7 @@ class AddToolViewTestSuperuser(TestCaseSuperuser):
         response = self.client.post('/cooking_tool/new',
                                     {'name': 'Garnek'})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Unit.objects.filter(name='Garnek').exists())
+        self.assertTrue(CookingTool.objects.filter(name='Garnek').exists())
         self.assertEqual(response.url, '/cooking_tool')
 
     def test_view_correct_redirection(self):
@@ -37,7 +37,7 @@ class AddToolViewTestSuperuser(TestCaseSuperuser):
                              target_status_code=200)
 
 
-class AddUnitViewTestNotLoggedIn(TestCase):
+class AddCookingToolViewTestNotLoggedIn(TestCase):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_cooking_tool'), follow=True)
         self.assertRedirects(response,
@@ -51,24 +51,24 @@ class AddUnitViewTestNotLoggedIn(TestCase):
                              reverse('superuser_required') + "?next=" + reverse('add_cooking_tool'),
                              status_code=302,
                              target_status_code=200)
-        self.assertFalse(Unit.objects.filter(name='Gram').exists())
+        self.assertFalse(CookingTool.objects.filter(name='Garnek').exists())
 
 
-class AddIngredientViewTestNotSuperuser(TestCaseLoggedUser):
+class AddCookingToolViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_correct_redirection_get(self):
-        response = self.client.get(reverse('add_unit'), follow=True)
+        response = self.client.get(reverse('add_cooking_tool'), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('add_unit'),
+                             reverse('superuser_required') + "?next=" + reverse('add_cooking_tool'),
                              status_code=302,
                              target_status_code=200)
 
     def test_view_correct_redirection_post(self):
-        response = self.client.post(reverse('add_unit'), {'name': 'Gram', 'amount': 100}, follow=True)
+        response = self.client.post(reverse('add_cooking_tool'), {'name': 'Garnek'}, follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('add_unit'),
+                             reverse('superuser_required') + "?next=" + reverse('add_cooking_tool'),
                              status_code=302,
                              target_status_code=200)
-        self.assertFalse(Unit.objects.filter(name='Gram').exists())
+        self.assertFalse(CookingTool.objects.filter(name='Garnek').exists())
 
 
 # endregion
@@ -76,75 +76,74 @@ class AddIngredientViewTestNotSuperuser(TestCaseLoggedUser):
 
 class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/unit/999/delete')
+        response = self.client.get('/cooking_tool/999/delete')
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
-        TestDatabase.create_default_test_database(units=True)
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get('/unit/{}/delete'.format(item))
+        TestDatabase.create_default_test_database(tools=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get('/cooking_tool/{}/delete'.format(item))
         self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
-        TestDatabase.create_default_test_database(units=True)
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get(reverse('unit_delete', kwargs={'object_id': item}))
+        TestDatabase.create_default_test_database(tools=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_delete', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 302)
 
     def test_view_deletes_properly(self):
-        TestDatabase.create_default_test_database(units=True, ingredients=True, recipes=True, tools=True)
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get(reverse('unit_delete', kwargs={'object_id': item}))
+        TestDatabase.create_default_test_database(tools=True, recipes=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_delete', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 302)
         # things should be deleted cascade
-        self.assertTrue(Ingredient.objects.filter(name='Woda').exists())
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
-        self.assertFalse(Unit.objects.filter(name='Gram').exists())
+        self.assertFalse(CookingTool.objects.filter(name='Garnek').exists())
 
     def test_view_redirects_properly(self):
-        TestDatabase.create_default_test_database(units=True)
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get(reverse('unit_delete', kwargs={'object_id': item}), follow=True)
-        self.assertRedirects(response, reverse('unit'))
+        TestDatabase.create_default_test_database(tools=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_delete', kwargs={'object_id': item}), follow=True)
+        self.assertRedirects(response, reverse('cooking_tool'))
 
 
-class DeleteUnitViewTestNotSuperuser(TestCaseLoggedUser):
+class DeleteCookingToolViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_deletes_not_logged_in(self):
-        TestDatabase.create_default_test_database(units=True)
+        TestDatabase.create_default_test_database(tools=True)
         client = Client()
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = client.get(reverse('unit_delete', kwargs={'object_id': item}), follow=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = client.get(reverse('cooking_tool_delete', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_delete',
                                                                                 kwargs={'object_id': item}),
                              status_code=302,
                              target_status_code=200)
-        self.assertTrue(Unit.objects.filter(name='Gram').exists())
+        self.assertTrue(CookingTool.objects.filter(name='Garnek').exists())
 
     def test_view_deletes_not_logged_in_id_doesnt_exist(self):
         client = Client()
-        response = client.get(reverse('unit_delete', kwargs={'object_id': 999}), follow=True)
+        response = client.get(reverse('cooking_tool_delete', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_delete',
                                                                                 kwargs={'object_id': 999}),
                              status_code=302,
                              target_status_code=200)
 
     def test_view_deletes_logged_in(self):
-        TestDatabase.create_default_test_database(units=True)
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get(reverse('unit_delete', kwargs={'object_id': item}), follow=True)
+        TestDatabase.create_default_test_database(tools=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_delete', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_delete',
                                                                                 kwargs={'object_id': item}),
                              status_code=302,
                              target_status_code=200)
-        self.assertTrue(Unit.objects.filter(name='Gram').exists())
+        self.assertTrue(CookingTool.objects.filter(name='Garnek').exists())
 
     def test_view_deletes_logged_in_id_doesnt_exist(self):
-        response = self.client.get(reverse('unit_delete', kwargs={'object_id': 999}), follow=True)
+        response = self.client.get(reverse('cooking_tool_delete', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_delete',
                                                                                 kwargs={'object_id': 999}),
                              status_code=302,
                              target_status_code=200)
@@ -153,72 +152,71 @@ class DeleteUnitViewTestNotSuperuser(TestCaseLoggedUser):
 # endregion
 # region getid
 
-class UnitIDViewTest(TestCaseSuperuser):
+class CookingToolIDViewTest(TestCaseSuperuser):
     @classmethod
     def setUpTestData(cls):
-        TestDatabase.create_default_test_database(units=True)
+        TestDatabase.create_default_test_database(tools=True)
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/unit/999')
+        response = self.client.get('/cooking_tool/999')
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get('/unit/{}'.format(item))
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get('/cooking_tool/{}'.format(item))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
-        self.assertTemplateUsed(response, 'food/unit_id_get.html')
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': item}))
+        self.assertTemplateUsed(response, 'food/cooking_tool_id_get.html')
 
     def test_view_correct_texts(self):
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
-        self.assertContains(response, "10")  # amount
-        self.assertContains(response, "Kilogram")  # name
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': item}))
+        self.assertContains(response, "Garnek")  # name
 
 
-class UnitIDViewTestNotLoggedIn(TestCase):
+class CookingToolIDViewTestNotLoggedIn(TestCase):
     @classmethod
     def setUpTestData(cls):
-        TestDatabase.create_default_test_database(units=True)
+        TestDatabase.create_default_test_database(tools=True)
 
     def test_view_correct_redirection(self):
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': item}))
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_id',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_id',
                                                                                 kwargs={'object_id': item}))
 
     def test_view_correct_redirection_doesnt_exist(self):
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': 999}))
+        response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': 999}))
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_id',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_id',
                                                                                 kwargs={'object_id': 999}))
 
 
-class UnitIDViewTestNotSuperuser(TestCaseLoggedUser):
+class CookingToolIDViewTestNotSuperuser(TestCaseLoggedUser):
     @classmethod
     def setUpTestData(cls):
-        TestDatabase.create_default_test_database(units=True)
+        TestDatabase.create_default_test_database(tools=True)
 
     def test_view_correct_redirection(self):
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': item}))
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_id',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_id',
                                                                                 kwargs={'object_id': item}))
 
     def test_view_correct_redirection_doesnt_exist(self):
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': 999}))
+        response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': 999}))
         self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_id',
+                             reverse('superuser_required') + "?next=" + reverse('cooking_tool_id',
                                                                                 kwargs={'object_id': 999}))
 
 
@@ -226,93 +224,74 @@ class UnitIDViewTestNotSuperuser(TestCaseLoggedUser):
 # region update
 
 
-class UpdateUnitViewTestSuperuser(TestCaseSuperuser):
+class UpdateCookingToolCookingToolViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/unit/999/update')
+        response = self.client.get('/cooking_tool/999/update')
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(ingredients=True)
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get('/unit/{}/update'.format(item))
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get('/cooking_tool/{}/update'.format(item))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
         TestDatabase.create_default_test_database(ingredients=True)
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 200)
 
     def test_view_updates_default_values(self):
         TestDatabase.create_default_test_database(ingredients=True)
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
-        self.assertEqual(response.context['form'].initial['name'], 'Kilogram')
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': item}))
+        self.assertEqual(response.context['form'].initial['name'], 'Garnek')
         self.assertEqual(response.context['form'].initial['amount'], 10)
 
     def test_view_updates_properly_no_modifications(self):
-        TestDatabase.create_default_test_database(units=True, ingredients=True, recipes=True)
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response_get = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
-        unit_data = response_get.context['form'].initial
-        response = self.client.post(reverse('unit_update', kwargs={'object_id': item}),
-                                    unit_data)
+        TestDatabase.create_default_test_database(tools=True, recipes=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response_get = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': item}))
+        cooking_tool_data = response_get.context['form'].initial
+        response = self.client.post(reverse('cooking_tool_update', kwargs={'object_id': item}),
+                                    cooking_tool_data)
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Unit.objects.filter(id=item).exists())
-        self.assertEquals(Unit.objects.get(id=item).name, 'Kilogram')
-        self.assertEquals(Unit.objects.get(id=item).amount, 10)
-
-        self.assertTrue(Ingredient.objects.filter(name='Woda').exists())
-        self.assertTrue(Ingredient.objects.get(name='Woda').
-                        units.filter(name='Kilogram').exists())
+        self.assertTrue(CookingTool.objects.filter(id=item).exists())
+        self.assertEquals(CookingTool.objects.get(id=item).name, 'Garnek')
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
         self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.filter(name='Cytryna').exists())
-        self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.get(name='Cytryna').
-                        unit.name == 'Kilogram')
+                        tools.objects.filter(name='Garnek').exists())
 
     def test_view_updates_properly_with_modifications(self):
-        TestDatabase.create_default_test_database(units=True, ingredients=True, recipes=True)
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response_get = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
-        unit_data = response_get.context['form'].initial
-        unit_data['name'] = "Litr"
-        unit_data['amount'] = 50
-        response = self.client.post(reverse('unit_update', kwargs={'object_id': item}),
-                                    unit_data)
+        TestDatabase.create_default_test_database(tools=True, ingredients=True, recipes=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response_get = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': item}))
+        cooking_tool_data = response_get.context['form'].initial
+        cooking_tool_data['name'] = "Durszlak"
+        response = self.client.post(reverse('cooking_tool_update', kwargs={'object_id': item}),
+                                    cooking_tool_data)
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Unit.objects.filter(id=item).exists())
-        self.assertEquals(Unit.objects.get(id=item).name, 'Litr')
-        self.assertEquals(Unit.objects.get(id=item).amount, 50)
-
-        self.assertTrue(Ingredient.objects.filter(name='Woda').exists())
-        self.assertFalse(Ingredient.objects.get(name='Woda').
-                         units.filter(name='Kilogram').exists())
-        self.assertTrue(Ingredient.objects.get(name='Woda').
-                        units.filter(name='Litr').exists())
+        self.assertTrue(CookingTool.objects.filter(id=item).exists())
+        self.assertEquals(CookingTool.objects.get(id=item).name, 'Durszlak')
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
         self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.filter(name='Cytryna').exists())
-        self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.get(name='Cytryna').
-                        unit.name == 'Litr')
+                        tools.objects.filter(name='Durszlak').exists())
 
 
 class UpdateUnitViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}))
+        response = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': 999}))
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
-                                 'unit_update',
+                                 'cooking_tool_update',
                                  kwargs={'object_id': 999}))
 
     def test_view_url_exists_at_desired_location_id_exists(self):
-        TestDatabase.create_default_test_database(units=True)
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
+        TestDatabase.create_default_test_database(tools=True)
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': item}))
         self.assertRedirects(response,
-                             reverse('unit_update') + "?next=" + reverse(
+                             reverse('cooking_tool_update') + "?next=" + reverse(
                                  'ingredient_id',
                                  kwargs={'object_id': item}))
     # todo post?
@@ -320,19 +299,19 @@ class UpdateUnitViewTestNotSuperuser(TestCaseLoggedUser):
 
 class UpdateIngredientViewTestNotLoggedIn(TestCase):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}))
+        response = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': 999}))
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
-                                 'unit_update',
+                                 'cooking_tool_update',
                                  kwargs={'object_id': 999}))
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(ingredients=True)
-        item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
+        item = CookingTool.objects.only('id').get(name='Garnek').id
+        response = self.client.get(reverse('cooking_tool_update', kwargs={'object_id': item}))
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
-                                 'unit_update',
+                                 'cooking_tool_update',
                                  kwargs={'object_id': item}))
     # todo post?
 # endregion
