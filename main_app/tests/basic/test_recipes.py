@@ -1,12 +1,13 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
+from django.test import tag
 
 from main_app.tests.TestSetupDatabase import *
 
 
 # region add
-
-class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
+@tag('recipe', 'add', 'logged_user')
+class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, zdjęcie, pola w bd
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/recipe/new')
         self.assertEqual(response.status_code, 200)
@@ -53,6 +54,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
         self.assertRedirects(response, reverse('recipe'), status_code=302, target_status_code=200)
 
 
+@tag('recipe', 'add', 'normal_user')
 class AddRecipeViewTestNotLoggedUser(TestCase):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_recipe'), follow=True)
@@ -80,6 +82,7 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
 # endregion
 # region delete
 
+@tag('recipe', 'delete', 'superuser')
 class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
     def setUp(self):
         TestDatabase.create_default_test_database(recipes=True, ingredients=True, units=True, tools=True)
@@ -112,8 +115,9 @@ class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
         self.assertRedirects(response, reverse('recipe'))
 
 
-class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
-    def test_view_adds_and_deletes_recipe_owner(self):
+@tag('recipe', 'delete', 'logged_user')
+class DeleteRecipeViewTestLoggedUser(TestCaseLoggedUser):
+    def test_view_deletes_owner(self):  # todo dodać przez bazę danych, nie przez post
         TestDatabase.create_default_test_database(ingredients=True, units=True, tools=True)
         ingredients_list = ['Woda', 'Cytryna']
         quantities_list = ['1', '1']
@@ -136,7 +140,25 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
         # things should be deleted cascade
         self.assertFalse(Recipe.objects.filter(name='Lemoniada').exists())
 
-    def test_view_deletes_recipe_not_logged_in(self):
+    def test_view_deletes(self):
+        TestDatabase.create_default_test_database(recipes=True)
+
+        item = Recipe.objects.only('id').get(name='Lemoniada').id
+        response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}), follow=True)
+        self.assertRedirects(response,
+                             reverse('login') + "?next=" + reverse('recipe_delete', kwargs={'object_id': item}),
+                             status_code=302,
+                             target_status_code=200)
+        self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
+
+    def test_view_deletes_id_doesnt_exist(self):
+        response = self.client.get(reverse('recipe_delete', kwargs={'object_id': 999}))
+        self.assertEqual(response.status_code, 404)
+
+
+@tag('recipe', 'delete', 'normal_user')
+class DeleteRecipeViewTestNormalUser(TestCase):
+    def test_view_deletes(self):
         TestDatabase.create_default_test_database(recipes=True)
 
         client = Client()
@@ -148,7 +170,7 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
                              target_status_code=200)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
 
-    def test_view_deletes_recipe_not_logged_in_id_doesnt_exist(self):
+    def test_view_deletes_id_doesnt_exist(self):
         client = Client()
         response = client.get(reverse('recipe_delete', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
@@ -156,26 +178,12 @@ class DeleteRecipeViewTestNotSuperuser(TestCaseLoggedUser):
                              status_code=302,
                              target_status_code=200)
 
-    def test_view_deletes_recipe_logged_in_not_owner(self):
-        TestDatabase.create_default_test_database(recipes=True)
-
-        item = Recipe.objects.only('id').get(name='Lemoniada').id
-        response = self.client.get(reverse('recipe_delete', kwargs={'object_id': item}), follow=True)
-        self.assertRedirects(response,
-                             reverse('login') + "?next=" + reverse('recipe_delete', kwargs={'object_id': item}),
-                             status_code=302,
-                             target_status_code=200)
-        self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
-
-    def test_view_deletes_recipe_logged_in_not_owner_id_doesnt_exist(self):
-        response = self.client.get(reverse('recipe_delete', kwargs={'object_id': 999}))
-        self.assertEqual(response.status_code, 404)
-
 
 # endregion
 # region getid
 
-class RecipeIDViewTest(TestCase):
+@tag('recipe', 'id', 'normal_user')
+class RecipeIDViewTest(TestCase):  # todo logged user?
     @classmethod
     def setUpTestData(cls):
         TestDatabase.create_default_test_database(ingredients=True, units=True, recipes=True, tools=True)

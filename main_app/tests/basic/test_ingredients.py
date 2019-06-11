@@ -1,11 +1,12 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
+from django.test import tag
 
 from main_app.tests.TestSetupDatabase import *
 
 
 # region add
-
+@tag('ingredient', 'add', 'superuser')
 class AddIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/ingredient/new')
@@ -46,6 +47,7 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
                              target_status_code=200)
 
 
+@tag('ingredient', 'add', 'normal_user')
 class AddIngredientViewTestNotLoggedIn(TestCase):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_ingredient'), follow=True)
@@ -63,6 +65,7 @@ class AddIngredientViewTestNotLoggedIn(TestCase):
         self.assertFalse(Ingredient.objects.filter(name='water').exists())
 
 
+@tag('ingredient', 'add', 'logged_user')
 class AddIngredientViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_ingredient'), follow=True)
@@ -83,6 +86,7 @@ class AddIngredientViewTestNotSuperuser(TestCaseLoggedUser):
 # endregion
 # region delete
 
+@tag('ingredient', 'delete', 'superuser')
 class DeleteIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/ingredient/999/delete')
@@ -117,29 +121,9 @@ class DeleteIngredientViewTestSuperuser(TestCaseSuperuser):
         self.assertRedirects(response, reverse('ingredient'))
 
 
-class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
-    def test_view_deletes_ingredient_not_logged_in(self):
-        TestDatabase.create_default_test_database(ingredients=True)
-        client = Client()
-        item = Ingredient.objects.only('id').get(name='Woda').id
-        response = client.get(reverse('ingredient_delete', kwargs={'object_id': item}), follow=True)
-        self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
-                                                                                kwargs={'object_id': item}),
-                             status_code=302,
-                             target_status_code=200)
-        self.assertTrue(Ingredient.objects.filter(name='Woda').exists())
-
-    def test_view_deletes_ingredient_not_logged_in_id_doesnt_exist(self):
-        client = Client()
-        response = client.get(reverse('ingredient_delete', kwargs={'object_id': 999}), follow=True)
-        self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
-                                                                                kwargs={'object_id': 999}),
-                             status_code=302,
-                             target_status_code=200)
-
-    def test_view_deletes_ingredient_logged_in(self):
+@tag('ingredient', 'delete', 'logged_user')
+class DeleteIngredientViewTestLoggedUser(TestCaseLoggedUser):
+    def test_view_deletes(self):
         TestDatabase.create_default_test_database(ingredients=True)
         item = Ingredient.objects.only('id').get(name='Woda').id
         response = self.client.get(reverse('ingredient_delete', kwargs={'object_id': item}), follow=True)
@@ -150,7 +134,29 @@ class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
                              target_status_code=200)
         self.assertTrue(Ingredient.objects.filter(name='Woda').exists())
 
-    def test_view_deletes_ingredient_logged_in_id_doesnt_exist(self):
+    def test_view_deletes_id_doesnt_exist(self):
+        response = self.client.get(reverse('ingredient_delete', kwargs={'object_id': 999}), follow=True)
+        self.assertRedirects(response,
+                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
+                                                                                kwargs={'object_id': 999}),
+                             status_code=302,
+                             target_status_code=200)
+
+
+@tag('ingredient', 'delete', 'normal_user')
+class DeleteIngredientViewTestNormalUser(TestCase):
+    def test_view_deletes(self):
+        TestDatabase.create_default_test_database(ingredients=True)
+        item = Ingredient.objects.only('id').get(name='Woda').id
+        response = self.client.get(reverse('ingredient_delete', kwargs={'object_id': item}), follow=True)
+        self.assertRedirects(response,
+                             reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
+                                                                                kwargs={'object_id': item}),
+                             status_code=302,
+                             target_status_code=200)
+        self.assertTrue(Ingredient.objects.filter(name='Woda').exists())
+
+    def test_view_deletes_id_doesnt_exist(self):
         response = self.client.get(reverse('ingredient_delete', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('ingredient_delete',
@@ -162,6 +168,8 @@ class DeleteIngredientViewTestNotSuperuser(TestCaseLoggedUser):
 # endregion
 # region getid
 
+
+@tag('ingredient', 'id', 'superuser')
 class IngredientIDViewTest(TestCaseSuperuser):
     @classmethod
     def setUpTestData(cls):
@@ -193,6 +201,7 @@ class IngredientIDViewTest(TestCaseSuperuser):
         self.assertContains(response, "Gram")
 
 
+@tag('ingredient', 'id', 'normal_user')
 class IngredientIDViewTestNotLoggedIn(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -212,6 +221,7 @@ class IngredientIDViewTestNotLoggedIn(TestCase):
                                                                                 kwargs={'object_id': 999}))
 
 
+@tag('ingredient', 'id', 'logged_user')
 class IngredientIDViewTestNotSuperuser(TestCaseLoggedUser):
     @classmethod
     def setUpTestData(cls):
@@ -235,6 +245,7 @@ class IngredientIDViewTestNotSuperuser(TestCaseLoggedUser):
 # region update
 
 
+@tag('ingredient', 'update', 'superuser')
 class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/ingredient/999/update')
@@ -308,7 +319,8 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
         # todo what to da after change of units? - lemoniada.woda.unit to default & force to change it manually?
 
 
-class UpdateIngredientViewTestNotSuperuser(TestCaseLoggedUser):
+@tag('ingredient', 'update', 'logged_user')
+class UpdateIngredientViewTestNotSuperuser(TestCaseLoggedUser):  # todo post
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get(reverse('ingredient_update', kwargs={'object_id': 999}))
         self.assertRedirects(response,
@@ -326,7 +338,8 @@ class UpdateIngredientViewTestNotSuperuser(TestCaseLoggedUser):
                                  kwargs={'object_id': item}))
 
 
-class UpdateIngredientViewTestNotLoggedIn(TestCase):
+@tag('ingredient', 'update', 'normal_user')
+class UpdateIngredientViewTestNotLoggedIn(TestCase):  # todo post
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get(reverse('ingredient_update', kwargs={'object_id': 999}))
         self.assertRedirects(response,

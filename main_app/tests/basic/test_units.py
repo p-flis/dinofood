@@ -1,11 +1,13 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
+from django.test import tag
 
 from main_app.tests.TestSetupDatabase import *
 
 
 # region add
 
+@tag('unit', 'add', 'superuser')
 class AddUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/unit/new')
@@ -39,6 +41,7 @@ class AddUnitViewTestSuperuser(TestCaseSuperuser):
                              target_status_code=200)
 
 
+@tag('unit', 'add', 'normal_user')
 class AddUnitViewTestNotLoggedIn(TestCase):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_unit'), follow=True)
@@ -56,6 +59,7 @@ class AddUnitViewTestNotLoggedIn(TestCase):
         self.assertFalse(Unit.objects.filter(name='Gram').exists())
 
 
+@tag('unit', 'add', 'logged_user')
 class AddUnitViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_unit'), follow=True)
@@ -76,6 +80,7 @@ class AddUnitViewTestNotSuperuser(TestCaseLoggedUser):
 # endregion
 # region delete
 
+@tag('unit', 'delete', 'superuser')
 class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/unit/999/delete')
@@ -110,29 +115,9 @@ class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
         self.assertRedirects(response, reverse('unit'))
 
 
-class DeleteUnitViewTestNotSuperuser(TestCaseLoggedUser):
-    def test_view_deletes_not_logged_in(self):
-        TestDatabase.create_default_test_database(units=True)
-        client = Client()
-        item = Unit.objects.only('id').get(name='Gram').id
-        response = client.get(reverse('unit_delete', kwargs={'object_id': item}), follow=True)
-        self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
-                                                                                kwargs={'object_id': item}),
-                             status_code=302,
-                             target_status_code=200)
-        self.assertTrue(Unit.objects.filter(name='Gram').exists())
-
-    def test_view_deletes_not_logged_in_id_doesnt_exist(self):
-        client = Client()
-        response = client.get(reverse('unit_delete', kwargs={'object_id': 999}), follow=True)
-        self.assertRedirects(response,
-                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
-                                                                                kwargs={'object_id': 999}),
-                             status_code=302,
-                             target_status_code=200)
-
-    def test_view_deletes_logged_in(self):
+@tag('unit', 'delete', 'logged_user')
+class DeleteUnitViewTestLoggedUser(TestCaseLoggedUser):
+    def test_view_deletes(self):
         TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Gram').id
         response = self.client.get(reverse('unit_delete', kwargs={'object_id': item}), follow=True)
@@ -143,7 +128,29 @@ class DeleteUnitViewTestNotSuperuser(TestCaseLoggedUser):
                              target_status_code=200)
         self.assertTrue(Unit.objects.filter(name='Gram').exists())
 
-    def test_view_deletes_logged_in_id_doesnt_exist(self):
+    def test_view_deletes_doesnt_exist(self):
+        response = self.client.get(reverse('unit_delete', kwargs={'object_id': 999}), follow=True)
+        self.assertRedirects(response,
+                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
+                                                                                kwargs={'object_id': 999}),
+                             status_code=302,
+                             target_status_code=200)
+
+
+@tag('unit', 'delete', 'logged_user')
+class DeleteUnitViewTestNormalUser(TestCase):
+    def test_view_deletes(self):
+        TestDatabase.create_default_test_database(units=True)
+        item = Unit.objects.only('id').get(name='Gram').id
+        response = self.client.get(reverse('unit_delete', kwargs={'object_id': item}), follow=True)
+        self.assertRedirects(response,
+                             reverse('superuser_required') + "?next=" + reverse('unit_delete',
+                                                                                kwargs={'object_id': item}),
+                             status_code=302,
+                             target_status_code=200)
+        self.assertTrue(Unit.objects.filter(name='Gram').exists())
+
+    def test_view_deletes_doesnt_exist(self):
         response = self.client.get(reverse('unit_delete', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('unit_delete',
@@ -155,6 +162,7 @@ class DeleteUnitViewTestNotSuperuser(TestCaseLoggedUser):
 # endregion
 # region getid
 
+@tag('unit', 'id', 'superuser')
 class UnitIDViewTest(TestCaseSuperuser):
     @classmethod
     def setUpTestData(cls):
@@ -186,6 +194,7 @@ class UnitIDViewTest(TestCaseSuperuser):
         self.assertContains(response, "Kilogram")  # name
 
 
+@tag('unit', 'id', 'normal_user')
 class UnitIDViewTestNotLoggedIn(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -205,6 +214,7 @@ class UnitIDViewTestNotLoggedIn(TestCase):
                                                                                 kwargs={'object_id': 999}))
 
 
+@tag('unit', 'id', 'logged_user')
 class UnitIDViewTestNotSuperuser(TestCaseLoggedUser):
     @classmethod
     def setUpTestData(cls):
@@ -228,25 +238,26 @@ class UnitIDViewTestNotSuperuser(TestCaseLoggedUser):
 # region update
 
 
+@tag('unit', 'update', 'superuser')
 class UpdateUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/unit/999/update')
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
-        TestDatabase.create_default_test_database(ingredients=True)
+        TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
         response = self.client.get('/unit/{}/update'.format(item))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
-        TestDatabase.create_default_test_database(ingredients=True)
+        TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
         response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 200)
 
     def test_view_updates_default_values(self):
-        TestDatabase.create_default_test_database(ingredients=True)
+        TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
         response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
         self.assertEqual(response.context['form'].initial['name'], 'Kilogram')
@@ -269,10 +280,10 @@ class UpdateUnitViewTestSuperuser(TestCaseSuperuser):
                         units.filter(name='Kilogram').exists())
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
         self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.filter(name='Cytryna').exists())
-        self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.get(name='Cytryna').
-                        unit.name == 'Kilogram')
+                        ingredients.filter(name='Cytryna').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemoniada',
+                                              recipeingredient__ingredient__name='Cytryna',
+                                              recipeingredient__unit__name='Kilogram'))
 
     def test_view_updates_properly_with_modifications(self):
         TestDatabase.create_default_test_database(units=True, ingredients=True, recipes=True)
@@ -295,12 +306,13 @@ class UpdateUnitViewTestSuperuser(TestCaseSuperuser):
                         units.filter(name='Litr').exists())
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
         self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.filter(name='Cytryna').exists())
-        self.assertTrue(Recipe.objects.get(name='Lemoniada').
-                        ingredients.objects.get(name='Cytryna').
-                        unit.name == 'Litr')
+                        ingredients.filter(name='Cytryna').exists())
+        self.assertTrue(Recipe.objects.filter(name='Lemoniada',
+                                              recipeingredient__ingredient__name='Cytryna',
+                                              recipeingredient__unit__name='Litr'))
 
 
+@tag('unit', 'update', 'logged_user')
 class UpdateUnitViewTestNotSuperuser(TestCaseLoggedUser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}))
@@ -314,12 +326,13 @@ class UpdateUnitViewTestNotSuperuser(TestCaseLoggedUser):
         item = Unit.objects.only('id').get(name='Kilogram').id
         response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
         self.assertRedirects(response,
-                             reverse('unit_update') + "?next=" + reverse(
+                             reverse('unit_update', kwargs={'object_id': item}) + "?next=" + reverse(
                                  'ingredient_id',
                                  kwargs={'object_id': item}))
     # todo post?
 
 
+@tag('unit', 'update', 'normal_user')
 class UpdateUnitViewTestNotLoggedIn(TestCase):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}))
@@ -329,7 +342,7 @@ class UpdateUnitViewTestNotLoggedIn(TestCase):
                                  kwargs={'object_id': 999}))
 
     def test_view_url_exists_at_desired_location_id_exists(self):
-        TestDatabase.create_default_test_database(ingredients=True)
+        TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
         response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
         self.assertRedirects(response,
