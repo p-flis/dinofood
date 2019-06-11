@@ -85,13 +85,14 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
 @tag('recipe', 'delete', 'superuser')
 class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
     def setUp(self):
+        super().setUp()
         TestDatabase.create_default_test_database(recipes=True, ingredients=True, units=True, tools=True)
 
-    def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
+    def test_view_doesnt_exists(self):
         response = self.client.get('/recipe/999/delete')
         self.assertEqual(response.status_code, 404)
 
-    def test_view_url_exists_at_desired_location_id_exists(self):
+    def test_view(self):
         item = Recipe.objects.only('id').get(name='Lemoniada').id
         response = self.client.get('/recipe/{}/delete'.format(item))
         self.assertEqual(response.status_code, 302)

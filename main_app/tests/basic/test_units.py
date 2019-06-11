@@ -42,7 +42,7 @@ class AddUnitViewTestSuperuser(TestCaseSuperuser):
 
 
 @tag('unit', 'add', 'normal_user')
-class AddUnitViewTestNotLoggedIn(TestCase):
+class AddUnitViewTestNormalUser(TestCase):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_unit'), follow=True)
         self.assertRedirects(response,
@@ -60,7 +60,7 @@ class AddUnitViewTestNotLoggedIn(TestCase):
 
 
 @tag('unit', 'add', 'logged_user')
-class AddUnitViewTestNotSuperuser(TestCaseLoggedUser):
+class AddUnitViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_correct_redirection_get(self):
         response = self.client.get(reverse('add_unit'), follow=True)
         self.assertRedirects(response,
@@ -195,40 +195,40 @@ class UnitIDViewTest(TestCaseSuperuser):
 
 
 @tag('unit', 'id', 'normal_user')
-class UnitIDViewTestNotLoggedIn(TestCase):
+class UnitIDViewTestNormalUser(TestCase):
     @classmethod
     def setUpTestData(cls):
         TestDatabase.create_default_test_database(units=True)
 
     def test_view_correct_redirection(self):
         item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
+        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('unit_id',
                                                                                 kwargs={'object_id': item}))
 
     def test_view_correct_redirection_doesnt_exist(self):
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': 999}))
+        response = self.client.get(reverse('unit_id', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('unit_id',
                                                                                 kwargs={'object_id': 999}))
 
 
 @tag('unit', 'id', 'logged_user')
-class UnitIDViewTestNotSuperuser(TestCaseLoggedUser):
+class UnitIDViewTestLoggedUser(TestCaseLoggedUser):
     @classmethod
     def setUpTestData(cls):
         TestDatabase.create_default_test_database(units=True)
 
     def test_view_correct_redirection(self):
         item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
+        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('unit_id',
                                                                                 kwargs={'object_id': item}))
 
     def test_view_correct_redirection_doesnt_exist(self):
-        response = self.client.get(reverse('unit_id', kwargs={'object_id': 999}))
+        response = self.client.get(reverse('unit_id', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('unit_id',
                                                                                 kwargs={'object_id': 999}))
@@ -313,38 +313,38 @@ class UpdateUnitViewTestSuperuser(TestCaseSuperuser):
 
 
 @tag('unit', 'update', 'logged_user')
-class UpdateUnitViewTestNotSuperuser(TestCaseLoggedUser):
-    def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}))
+class UpdateUnitViewTestLoggedUser(TestCaseLoggedUser):
+    def test_view_doesnt_exists(self):
+        response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
                                  'unit_update',
                                  kwargs={'object_id': 999}))
 
-    def test_view_url_exists_at_desired_location_id_exists(self):
+    def test_view(self):
         TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
+        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
-                             reverse('unit_update', kwargs={'object_id': item}) + "?next=" + reverse(
-                                 'ingredient_id',
+                             reverse('superuser_required') + "?next=" + reverse(
+                                 'unit_update',
                                  kwargs={'object_id': item}))
     # todo post?
 
 
 @tag('unit', 'update', 'normal_user')
-class UpdateUnitViewTestNotLoggedIn(TestCase):
-    def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}))
+class UpdateUnitViewTestNormalUser(TestCase):
+    def test_view_doesnt_exists(self):
+        response = self.client.get(reverse('unit_update', kwargs={'object_id': 999}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
                                  'unit_update',
                                  kwargs={'object_id': 999}))
 
-    def test_view_url_exists_at_desired_location_id_exists(self):
+    def test_view(self):
         TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}))
+        response = self.client.get(reverse('unit_update', kwargs={'object_id': item}), follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
                                  'unit_update',

@@ -3,10 +3,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from main_app.forms import IngredientForm
 from main_app.models import *
-from main_app.views import displayFormErrors
-import json
 
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient(request):
     ingredients = Ingredient.objects.all()
     return render(request, "food/ingredients.html", {"list_items": ingredients})
@@ -27,6 +26,7 @@ def add_ingredient(request):
         return redirect('/ingredient')
 
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def ingredient_id(request, object_id):
     ing = Ingredient.objects.filter(id=object_id)
     if not ing:
