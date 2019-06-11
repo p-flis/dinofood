@@ -6,6 +6,8 @@ from main_app.models import *
 from accounts.models import *
 
 
+# todo rating
+
 def empty_database():
     Recipe.objects.all().delete()
     Ingredient.objects.all().delete()

@@ -65,6 +65,12 @@ Przepis
         <li>{{ ing.ingredient.name }}, {{ ing.quantity }}, {{ing.unit.name}} ({{ing.unit.amount}} g)</li>
     {% endfor %}
     </ul>
+    <h4>Tools:</h4>
+    <ul>
+    {% for tool in item.tools.all %}
+        <li>{{ tool.name }}</li>
+    {% endfor %}
+    </ul>
     <h4>Photo:</h4>
     {% if item.image %}
         <img src="{{item.image.url}}" style="height: 200px; width: 200px;">
