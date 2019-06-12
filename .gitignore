@@ -10,3 +10,7 @@ Lib/
 *.vs
 getting-started/*
 dinofood
+.coveragerc
+.coverage
+htmlcov/*
+__pycache__/*
