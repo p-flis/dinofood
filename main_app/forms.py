@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 from accounts.models import User
+from django.forms import widgets
 
 
 class IngredientForm(forms.ModelForm):
@@ -14,6 +15,24 @@ class IngredientForm(forms.ModelForm):
             'is_vegan',
             'is_gluten_free',
         ]
+
+
+# chyba coś takiego
+# class RecipeIngredientWidget(widgets.MultiWidget):
+#     def __init__(self, ingredients, units, attrs=None):
+#         ingredients = [(ing.id,ing.name) for ing in ingredients]
+#         units = [(ing.id,ing.name) for ing in units]
+#         _widgets = (
+#             widgets.SelectMultiple(attrs=attrs, choices=ingredients),
+#             widgets.NumberInput(attrs=attrs),
+#             widgets.Select(attrs=attrs, choices=units),
+#         )
+#         super().__init__(_widgets, attrs)
+#
+#     def decompress(self, value):
+#         if value:
+#             return [value.ingredient.id, value.quantity, value.unit.id]
+#         return [None,None,None]
 
 
 class RecipeForm(forms.ModelForm):
@@ -70,3 +89,27 @@ class SearchForm(forms.Form):
     is_vegan = forms.BooleanField(required=False)
     is_gluten_free = forms.BooleanField(required=False)
     is_favourite = forms.BooleanField(required=False)
+
+
+class RecipeIdIngredientsForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.recipe = kwargs.pop('recipe')
+        super().__init__(*args, **kwargs)
+        self.fields['ingredients'].queryset = self.recipe.recipeingredient_set
+        self.fields['ingredients'].choices = \
+            [
+                (
+                    obj.ingredient.id,
+                    '{0}, {1}, {2} ({3} g)'.format(obj.ingredient.name, obj.quantity, obj.unit.name, obj.unit.amount)
+                )
+                for obj in self.recipe.recipeingredient_set.all()
+            ]
+        # def custom_label(obj):
+        #     return '{0}, {1}, {2} ({3} g)'.format(obj.ingredient.name, obj.quantity, obj.unit.name, obj.unit.amount)
+        #
+        # self.fields['ingredients'].label_from_instance = custom_label
+
+    ingredients = forms.MultipleChoiceField(choices={},
+                                            widget=widgets.CheckboxSelectMultiple,
+                                            required=False
+                                            )

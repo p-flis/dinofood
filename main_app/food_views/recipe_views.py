@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.conf import settings
-from main_app.forms import RecipeForm
+from main_app.forms import RecipeForm, RecipeIdIngredientsForm
 from main_app.models import *
 from accounts.models import *
 from main_app.views import displayFormErrors
@@ -71,7 +71,13 @@ def recipe_id(request, object_id):
         rating = None
     if not recipe_model:
         raise Http404
-    return render(request, "food/recipe_id_get.html", {"item": recipe_model.get(id=object_id), "rating": rating})
+    recipe_model=recipe_model.first()
+    form = RecipeIdIngredientsForm(recipe=recipe_model)
+    if request.user.is_authenticated:
+        form.initial = {"ingredients": [ing.id for ing in request.user.ingredients.all()]}
+    return render(request, "food/recipe_id_get.html", {"item": recipe_model,
+                                                       "rating": rating,
+                                                       "form": form})
 
 
 @login_required(login_url='/accounts/login')
