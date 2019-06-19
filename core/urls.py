@@ -26,6 +26,7 @@ admin.autodiscover()
 # Learn more here: https://docs.djangoproject.com/en/2.1/topics/http/urls/
 
 urlpatterns = [
+    path("test", main_app.views.test_view, name='test_view'),
     path("", main_app.views.index, name="index"),
     # path("db/", base.views.db, name="db"),
     path("admin/", admin.site.urls),

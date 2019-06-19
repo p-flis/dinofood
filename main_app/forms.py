@@ -34,6 +34,17 @@ class IngredientForm(forms.ModelForm):
 #             return [value.ingredient.id, value.quantity, value.unit.id]
 #         return [None,None,None]
 
+class Magic(forms.Form):
+    ingredients = [(ing.id, ing.name) for ing in Ingredient.objects.all()]
+    units = [(ing.id, ing.name) for ing in Unit.objects.all()]
+    ingredient = forms.CharField(
+        label='Ingredient',
+        widget=forms.Select(choices=ingredients))
+    quantity = forms.FloatField()
+    unit = forms.CharField(
+        label='Unit',
+        widget=forms.Select(choices=units))
+
 
 class RecipeForm(forms.ModelForm):
     class Meta:
