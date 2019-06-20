@@ -19,6 +19,9 @@ def recipe(request):
 def add_recipe(request):
     if request.method == 'GET':
         ingredients = Ingredient.objects.all().order_by('name')
+        #form = RecipeForm(initial={'recipe_ing':RecipeIngredient.objects.first()})
+        # todo Paweł, jak to odkomentujesz to tam do tego pola doda pierwszy (losowy) recipeingredient,
+        #  to tylko żeby sprawdzić widget
         form = RecipeForm()
         return render(request, "food/new_recipe_form.html", {"ingredients": ingredients, 'form': form})
     elif request.method == 'POST':
