@@ -9,6 +9,8 @@ $(document).ready(function(){
           $(stars[i]).addClass('selected');
         }
     }
+    mean = data.mean
+    $('#average_rating').html("<p>" + data.mean + "</p>");
 });
   /* 1. Visualizing things on Hover - See next part for action on click */
   $('#stars li').on('mouseover', function(){
@@ -35,17 +37,23 @@ $(document).ready(function(){
   $('#stars li').on('click', function(){
     var onStar = parseInt($(this).data('value'), 10); // The star currently selected
     var stars = $(this).parent().children('li.star');
-
-    for (i = 0; i < stars.length; i++) {
-      $(stars[i]).removeClass('selected');
-    }
-
-    for (i = 0; i < onStar; i++) {
-      $(stars[i]).addClass('selected');
-    }
     $.post($(location).attr('pathname') + '/rate', {
            rating: onStar,
            csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value
+       }, function(data){
+         if(data.mean!=null)
+         {
+           for (i = 0; i < stars.length; i++) {
+             $(stars[i]).removeClass('selected');
+           }
+
+           for (i = 0; i < onStar; i++) {
+             $(stars[i]).addClass('selected');
+           }
+           mean = data.mean
+           $('#average_rating').html("<p>" + data.mean + "</p>");
+         }
+
        });
   })
 })

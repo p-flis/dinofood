@@ -7,6 +7,7 @@ from main_app.models import *
 from accounts.models import *
 from main_app.views import displayFormErrors
 from django.core.mail import send_mail
+from django.contrib import messages
 import json
 
 def recipe(request):
@@ -76,36 +77,51 @@ def recipe_id(request, object_id):
         form.initial = {"ingredients": [ing.id for ing in request.user.ingredients.all()]}
     return render(request, "food/recipe_id_get.html", {"item": recipe_model,
                                                        "rating": rating,
-                                                       "form": form})
+                                                       "form": form,
+                                                       "average_rating": recipe_model.average_rating()})
 
-@login_required(login_url='/accounts/login')
 def recipe_id_rate(request, object_id):
-    print("start")
     if request.method == 'GET':
-        user = request.user
         recipe = Recipe.objects.get(id=object_id)
-        prev_rating = Rating.objects.filter(user=user, recipe=recipe)
-        if len(prev_rating)>1:
-            output_data={'rating': prev_rating[0].rating}
+        mean = recipe.average_rating()
+        if request.user.is_authenticated:
+            user = request.user
+            prev_rating = Rating.objects.filter(user=user, recipe=recipe)
+            if len(prev_rating)>0:
+                output_data={'rating': prev_rating[0].rating, 'mean': mean}
+            else:
+                output_data={'rating': None, 'mean': mean}
         else:
-            output_data={'rating': None}
+            output_data={'rating': None, 'mean': mean}
         return JsonResponse(output_data)
+
     elif request.method == 'POST':
+        if not request.user.is_authenticated:
+            #messages.error(request, "") TODO:change to reporting an error for stardisplayer to understand
+            output_data={'rating': None, 'mean': None}
+            return JsonResponse(output_data)
         data = request.POST.copy()
         user = request.user
         recipe = Recipe.objects.get(id=object_id)
         rating = data.get("rating")
         prev_rating = Rating.objects.filter(user=user, recipe=recipe)
-        if len(prev_rating)>1:
+        if len(prev_rating)>0:
             prev_rating = prev_rating[0]
+            recipe.sum_rating=recipe.sum_rating-prev_rating.rating+int(rating)
+            recipe.save()
             prev_rating.rating=rating
             prev_rating.save()
-            print("zmieniono poprzedni rating")
+            new_rating = prev_rating
         else:
             new_rating = Rating(user=user, recipe=recipe, rating=rating, favourite=False)
-            new_rating.save()
-            print("donano nowy rating")
-    print("done")
+            recipe.sum_rating=recipe.sum_rating+int(rating)
+            recipe.times_rated=recipe.times_rated+1
+
+        new_rating.save()
+        recipe.save()
+        mean = recipe.average_rating()
+        output_data={'rating': new_rating.rating, 'mean': mean}
+        return JsonResponse(output_data)
     return redirect('/recipe')
 
 @login_required(login_url='/accounts/login')

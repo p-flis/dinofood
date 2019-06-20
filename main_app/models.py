@@ -56,10 +56,13 @@ class Recipe(models.Model):
     owner = models.ForeignKey('accounts.User', on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
     accepted = models.BooleanField(default=False)
-    average_rating = models.FloatField(default=0)
+    sum_rating = models.IntegerField(default=0)
     times_rated = models.IntegerField(default=0)
     objects = models.Manager()
-
+    def average_rating(self):
+        if self.times_rated==0:
+            return 0
+        return float(self.sum_rating)/self.times_rated
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
