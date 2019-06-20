@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.conf import settings
 from main_app.forms import RecipeForm, RecipeIdIngredientsForm
 from main_app.models import *
@@ -8,7 +8,6 @@ from accounts.models import *
 from main_app.views import displayFormErrors
 from django.core.mail import send_mail
 import json
-
 
 def recipe(request):
     recipes = Recipe.objects.all()
@@ -79,6 +78,35 @@ def recipe_id(request, object_id):
                                                        "rating": rating,
                                                        "form": form})
 
+@login_required(login_url='/accounts/login')
+def recipe_id_rate(request, object_id):
+    print("start")
+    if request.method == 'GET':
+        user = request.user
+        recipe = Recipe.objects.get(id=object_id)
+        prev_rating = Rating.objects.filter(user=user, recipe=recipe)
+        if len(prev_rating)>1:
+            output_data={'rating': prev_rating[0].rating}
+        else:
+            output_data={'rating': None}
+        return JsonResponse(output_data)
+    elif request.method == 'POST':
+        data = request.POST.copy()
+        user = request.user
+        recipe = Recipe.objects.get(id=object_id)
+        rating = data.get("rating")
+        prev_rating = Rating.objects.filter(user=user, recipe=recipe)
+        if len(prev_rating)>1:
+            prev_rating = prev_rating[0]
+            prev_rating.rating=rating
+            prev_rating.save()
+            print("zmieniono poprzedni rating")
+        else:
+            new_rating = Rating(user=user, recipe=recipe, rating=rating, favourite=False)
+            new_rating.save()
+            print("donano nowy rating")
+    print("done")
+    return redirect('/recipe')
 
 @login_required(login_url='/accounts/login')
 def recipe_id_delete(request, object_id):

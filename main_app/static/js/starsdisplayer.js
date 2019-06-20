@@ -1,46 +1,51 @@
-function checkStars(starId){
-  var stars = document.getElementsByClassName('star');
-  for (i = 0; i < stars.length; i++) {
-    (stars[i]).classList.remove('selected');
-  }
-  for (i = 0; i < starId; i++) {
-    (stars[i]).classList.add('selected');
-  }
-}
+$(document).ready(function(){
 
-function hoverStars(starId){
-  var stars = document.getElementsByClassName('star');
-  for (i = 0; i < stars.length; i++) {
-    if(i<starId) {
-      (stars[i]).classList.add('hover');
+  $.get( $(location).attr('pathname') + '/rate', function( data ) {
+    onStar = data.rating
+    if(onStar!=null)
+    {
+      var stars = $('#stars li').parent().children('li.star');
+        for (i = 0; i < onStar; i++) {
+          $(stars[i]).addClass('selected');
+        }
     }
-    else {
-      (stars[i]).classList.remove('hover');
+});
+  /* 1. Visualizing things on Hover - See next part for action on click */
+  $('#stars li').on('mouseover', function(){
+    var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
+
+    // Now highlight all the stars that's not after the current hovered star
+    $(this).parent().children('li.star').each(function(e){
+      if (e < onStar) {
+        $(this).addClass('hover');
+      }
+      else {
+        $(this).removeClass('hover');
+      }
+    });
+
+  }).on('mouseout', function(){
+    $(this).parent().children('li.star').each(function(e){
+      $(this).removeClass('hover');
+    });
+  });
+
+
+  /* 2. Action to perform on click */
+  $('#stars li').on('click', function(){
+    var onStar = parseInt($(this).data('value'), 10); // The star currently selected
+    var stars = $(this).parent().children('li.star');
+
+    for (i = 0; i < stars.length; i++) {
+      $(stars[i]).removeClass('selected');
     }
-  }
-}
 
-function clearHoverStars(starId){
-  var stars = document.getElementsByClassName('star');
-  for (i = 0; i < stars.length; i++) {
-    (stars[i]).classList.remove('hover');
-  }
-}
-
-function checkFavourite(starId){
-  var heart = document.getElementsByClassName('heart')[0];
-  if(heart.classList.contains('selected'))
-    heart.classList.remove('selected');
-  else
-    heart.classList.add('selected');
-}
-
-function hoverFavourite(starId){
-  var heart = document.getElementsByClassName('heart')[0];
-  heart.classList.add('hover');
-}
-
-function clearHoverFavourite(starId){
-  var heart = document.getElementsByClassName('heart')[0];
-  heart.classList.remove('hover');
-}
+    for (i = 0; i < onStar; i++) {
+      $(stars[i]).addClass('selected');
+    }
+    $.post($(location).attr('pathname') + '/rate', {
+           rating: onStar,
+           csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value
+       });
+  })
+})
