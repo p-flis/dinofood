@@ -9,6 +9,9 @@ $(document).ready(function(){
           $(stars[i]).addClass('selected');
         }
     }
+    var hearts = $('#hearts li').parent().children('li.heart');
+    if(data.favourite==true)
+      $(hearts[0]).addClass('selected');
     mean = data.mean
     $('#average_rating').html("<p>" + data.mean + "</p>");
 });
@@ -25,13 +28,44 @@ $(document).ready(function(){
         $(this).removeClass('hover');
       }
     });
-
   }).on('mouseout', function(){
-    $(this).parent().children('li.star').each(function(e){
+      $(this).parent().children('li.star').each(function(e){
+        $(this).removeClass('hover');
+      });
+    });
+
+  $('#hearts li').on('mouseover', function(){
+    $(this).parent().children('li.heart').each(function(e){
+      $(this).addClass('hover');
+  })
+}).on('mouseout', function(){
+    $(this).parent().children('li.heart').each(function(e){
       $(this).removeClass('hover');
     });
   });
 
+$('#hearts li').on('click', function(){
+  heart = $(this).parent().children('li.heart')[0];
+  console.log("Edytuje sb favourite");
+  $.post($(location).attr('pathname') + '/rate', {
+         rating:0,
+         favourite: !heart.classList.contains('selected'),
+         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value
+     }, function(data){
+       if(data.favourite!=null)
+       {
+         if(heart.classList.contains('selected'))
+         {
+           heart.classList.remove('selected');
+
+         }
+         else
+         {
+           heart.classList.add('selected');
+         }
+       }
+     });
+})
 
   /* 2. Action to perform on click */
   $('#stars li').on('click', function(){

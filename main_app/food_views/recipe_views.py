@@ -88,11 +88,11 @@ def recipe_id_rate(request, object_id):
             user = request.user
             prev_rating = Rating.objects.filter(user=user, recipe=recipe)
             if len(prev_rating)>0:
-                output_data={'rating': prev_rating[0].rating, 'mean': mean}
+                output_data={'rating': prev_rating[0].rating, 'mean': mean, 'favourite': prev_rating[0].favourite}
             else:
-                output_data={'rating': None, 'mean': mean}
+                output_data={'rating': None, 'mean': mean, 'favourite': prev_rating[0].favourite}
         else:
-            output_data={'rating': None, 'mean': mean}
+            output_data={'rating': None, 'mean': mean, 'favourite': False}
         return JsonResponse(output_data)
 
     elif request.method == 'POST':
@@ -103,24 +103,33 @@ def recipe_id_rate(request, object_id):
         data = request.POST.copy()
         user = request.user
         recipe = Recipe.objects.get(id=object_id)
-        rating = data.get("rating")
+        rating = int(data.get("rating"))
         prev_rating = Rating.objects.filter(user=user, recipe=recipe)
-        if len(prev_rating)>0:
-            prev_rating = prev_rating[0]
-            recipe.sum_rating=recipe.sum_rating-prev_rating.rating+int(rating)
-            recipe.save()
-            prev_rating.rating=rating
-            prev_rating.save()
-            new_rating = prev_rating
+        if(rating==0):  #the heart has been clicked, we edit only favourite
+            if len(prev_rating)>0:
+                prev_rating = prev_rating[0]
+                prev_rating.favourite=(data.get("favourite")=='true');
+                prev_rating.save()
+                new_rating = prev_rating
+            else:
+                new_rating = Rating(user=user, recipe=recipe, rating=0, favourite=True)
         else:
-            new_rating = Rating(user=user, recipe=recipe, rating=rating, favourite=False)
-            recipe.sum_rating=recipe.sum_rating+int(rating)
-            recipe.times_rated=recipe.times_rated+1
+            if len(prev_rating)>0:
+                prev_rating = prev_rating[0]
+                if prev_rating==0:
+                    recipe.times_rated=recipe.times_rated+1
+                recipe.sum_rating=recipe.sum_rating-prev_rating.rating+rating
+                prev_rating.rating=rating
+                new_rating = prev_rating
+            else:
+                new_rating = Rating(user=user, recipe=recipe, rating=rating, favourite=False)
+                recipe.sum_rating=recipe.sum_rating+rating
+                recipe.times_rated=recipe.times_rated+1
 
         new_rating.save()
         recipe.save()
         mean = recipe.average_rating()
-        output_data={'rating': new_rating.rating, 'mean': mean}
+        output_data={'rating': new_rating.rating, 'mean': mean, 'favourite': new_rating.favourite}
         return JsonResponse(output_data)
     return redirect('/recipe')
 

@@ -4,6 +4,7 @@ from main_app.forms import SearchForm
 from django.http import Http404
 
 from main_app.models import *
+from accounts.models import *
 from main_app.views import displayFormErrors
 
 
@@ -61,7 +62,7 @@ def recipe_search(request):
                 .filter(ing_num=ingredients_in_recipe_len)
 
         if is_favourite and request.user.is_authenticated:
-            user_favourites_ids = [rating.recipe.id for rating in request.user.ratings.objects.filter(favourite=True)]
+            user_favourites_ids = [rating.recipe.id for rating in Rating.objects.filter(favourite=True, user=request.user)]
             search_result = search_result.filter(id__in=user_favourites_ids)
         if is_vegetarian:
             search_result = search_result.filter(ingredients__is_vegetarian=True)
