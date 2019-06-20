@@ -15,7 +15,7 @@
 
         position:relative;
         overflow: auto;
-        display:block;
+        //display:block;
         width:100%;
         height: auto;
         top:0;
