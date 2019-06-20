@@ -18,15 +18,18 @@ class IngredientForm(forms.ModelForm):
 
 
 class Magic(forms.Form):
-    ingredients = [(ing.id, ing.name) for ing in Ingredient.objects.all()]
-    units = [(ing.id, ing.name) for ing in Unit.objects.all()]
-    ingredient = forms.CharField(
-        label='Ingredient',
-        widget=forms.Select(choices=ingredients))
-    quantity = forms.FloatField()
-    unit = forms.CharField(
-        label='Unit',
-        widget=forms.Select(choices=units))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.ingredients = [(ing.id, ing.name) for ing in Ingredient.objects.all()]
+        self.units = [(ing.id, ing.name) for ing in Unit.objects.all()]
+        self.ingredient = forms.CharField(
+            label='Ingredient',
+            widget=forms.Select(choices=self.ingredients))
+        self.quantity = forms.FloatField()
+        self.unit = forms.CharField(
+            label='Unit',
+            widget=forms.Select(choices=self.units))
 
 
 class UnitForm(forms.ModelForm):
@@ -165,4 +168,3 @@ class RecipeForm(forms.ModelForm):
         #     required=False
         # )
         # todo to pole wystarczy załączyć raz - ono doda datalist, a wszystkie inputy mogą (powinny) korzystać z jednego
-
