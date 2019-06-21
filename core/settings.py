@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import django_heroku
+import logging
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -20,7 +21,6 @@ sentry_sdk.init(
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -34,11 +34,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'dinofoodnotification@gmail.com'
-EMAIL_HOST_PASSWORD = 'cebula1234'
+EMAIL_HOST = os.getenv("EMAIL_HOST")  # in heroku vars
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")  # in heroku vars
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # in heroku vars
 EMAIL_PORT = 587
-# Application definition
+SERVER_EMAIL = 'dinofoodnotification@gmail.com'
+DEFAULT_FROM_EMAIL = 'dinofoodnotification@gmail.com'
+
+ADMINS = [('Kuba', os.getenv("EMAIL_1"))]  # in heroku vars
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -82,7 +85,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -105,9 +107,6 @@ DATABASES = {
         'NAME': 'dinofood'
     }
 }
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -136,7 +135,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -145,5 +143,30 @@ STATIC_URL = "/static/"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+LOGGING_CONFIG = None
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s [%(asctime)s] %(module)s %(message)s'
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['mail_admins'],
+            'propagate': False,
+            'level': 'DEBUG'
+        },
+    }
+})
 
 django_heroku.settings(locals())
