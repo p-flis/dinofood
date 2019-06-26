@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.contrib import messages
 import json
 
+
 def recipe(request):
     recipes = Recipe.objects.all()
     return render(request, "food/recipe.html", {"list_items": recipes})
@@ -19,7 +20,7 @@ def recipe(request):
 def add_recipe(request):
     if request.method == 'GET':
         ingredients = Ingredient.objects.all().order_by('name')
-        #form = RecipeForm(initial={'recipe_ing':RecipeIngredient.objects.first()})
+        # form = RecipeForm(initial={'recipe_ing':RecipeIngredient.objects.first()})
         # todo Paweł, jak to odkomentujesz to tam do tego pola doda pierwszy (losowy) recipeingredient,
         #  to tylko żeby sprawdzić widget
         form = RecipeForm()
@@ -74,7 +75,7 @@ def recipe_id(request, object_id):
         rating = None
     if not recipe_model:
         raise Http404
-    recipe_model=recipe_model.first()
+    recipe_model = recipe_model.first()
     form = RecipeIdIngredientsForm(recipe=recipe_model)
     if request.user.is_authenticated:
         form.initial = {"ingredients": [ing.id for ing in request.user.ingredients.all()]}
@@ -83,6 +84,7 @@ def recipe_id(request, object_id):
                                                        "form": form,
                                                        "average_rating": recipe_model.average_rating()})
 
+
 def recipe_id_rate(request, object_id):
     if request.method == 'GET':
         recipe = Recipe.objects.get(id=object_id)
@@ -90,51 +92,52 @@ def recipe_id_rate(request, object_id):
         if request.user.is_authenticated:
             user = request.user
             prev_rating = Rating.objects.filter(user=user, recipe=recipe)
-            if len(prev_rating)>0:
-                output_data={'rating': prev_rating[0].rating, 'mean': mean, 'favourite': prev_rating[0].favourite}
+            if len(prev_rating) > 0:
+                output_data = {'rating': prev_rating[0].rating, 'mean': mean, 'favourite': prev_rating[0].favourite}
             else:
-                output_data={'rating': None, 'mean': mean, 'favourite': prev_rating[0].favourite}
+                output_data = {'rating': None, 'mean': mean, 'favourite': prev_rating[0].favourite}
         else:
-            output_data={'rating': None, 'mean': mean, 'favourite': False}
+            output_data = {'rating': None, 'mean': mean, 'favourite': False}
         return JsonResponse(output_data)
 
     elif request.method == 'POST':
         if not request.user.is_authenticated:
-            #messages.error(request, "") TODO:change to reporting an error for stardisplayer to understand
-            output_data={'rating': None, 'mean': None}
+            # messages.error(request, "") TODO:change to reporting an error for stardisplayer to understand
+            output_data = {'rating': None, 'mean': None}
             return JsonResponse(output_data)
         data = request.POST.copy()
         user = request.user
         recipe = Recipe.objects.get(id=object_id)
         rating = int(data.get("rating"))
         prev_rating = Rating.objects.filter(user=user, recipe=recipe)
-        if(rating==0):  #the heart has been clicked, we edit only favourite
-            if len(prev_rating)>0:
+        if (rating == 0):  # the heart has been clicked, we edit only favourite
+            if len(prev_rating) > 0:
                 prev_rating = prev_rating[0]
-                prev_rating.favourite=(data.get("favourite")=='true');
+                prev_rating.favourite = (data.get("favourite") == 'true');
                 prev_rating.save()
                 new_rating = prev_rating
             else:
                 new_rating = Rating(user=user, recipe=recipe, rating=0, favourite=True)
         else:
-            if len(prev_rating)>0:
+            if len(prev_rating) > 0:
                 prev_rating = prev_rating[0]
-                if prev_rating==0:
-                    recipe.times_rated=recipe.times_rated+1
-                recipe.sum_rating=recipe.sum_rating-prev_rating.rating+rating
-                prev_rating.rating=rating
+                if prev_rating == 0:
+                    recipe.times_rated = recipe.times_rated + 1
+                recipe.sum_rating = recipe.sum_rating - prev_rating.rating + rating
+                prev_rating.rating = rating
                 new_rating = prev_rating
             else:
                 new_rating = Rating(user=user, recipe=recipe, rating=rating, favourite=False)
-                recipe.sum_rating=recipe.sum_rating+rating
-                recipe.times_rated=recipe.times_rated+1
+                recipe.sum_rating = recipe.sum_rating + rating
+                recipe.times_rated = recipe.times_rated + 1
 
         new_rating.save()
         recipe.save()
         mean = recipe.average_rating()
-        output_data={'rating': new_rating.rating, 'mean': mean, 'favourite': new_rating.favourite}
+        output_data = {'rating': new_rating.rating, 'mean': mean, 'favourite': new_rating.favourite}
         return JsonResponse(output_data)
     return redirect('/recipe')
+
 
 @login_required(login_url='/accounts/login')
 def recipe_id_delete(request, object_id):

@@ -13,6 +13,7 @@ import logging
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from decouple import config
 
 sentry_sdk.init(
     dsn="https://7debbfc8fd2c4e8386dcf4b3d410a5f7@sentry.io/1459518",
@@ -26,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "CHANGE_ME!!!! (P.S. the SECRET_KEY environment variable will be used, if set, instead)."
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -34,14 +35,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = os.getenv("EMAIL_HOST")  # in heroku vars
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")  # in heroku vars
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # in heroku vars
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default='')
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default='')
 EMAIL_PORT = 587
 SERVER_EMAIL = 'dinofoodnotification@gmail.com'
 DEFAULT_FROM_EMAIL = 'dinofoodnotification@gmail.com'
 
-ADMINS = [('Kuba', os.getenv("EMAIL_1"))]  # in heroku vars
+ADMINS = [('Kuba', config("EMAIL_1", default=''))]  # in heroku vars
 
 INSTALLED_APPS = [
     "django.contrib.admin",
