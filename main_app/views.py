@@ -19,7 +19,7 @@ def displayFormErrors(form):
 
 def test_view(request):
     print('TEST')
-    IngredientFormSet = formset_factory(Magic, extra=2)
+    IngredientFormSet = formset_factory(Magic, extra=2, min_num=1, validate_min=True)
     if request.method == 'POST':
         formset = IngredientFormSet(request.POST, request.FILES)
         if formset.is_valid():
@@ -29,4 +29,15 @@ def test_view(request):
         formset = IngredientFormSet()
 
     return render(request, 'test.html', {'formset': formset})
+
+def search_units(request):
+    if request.method == 'POST':
+        search_text = request.POST['search_text']
+        form_id =  request.POST['form_id']
+    else:
+        search_text = ""
+        form_id = ""
+    unit_id = '#' + form_id[:form_id.rfind('-')+1] + 'unit'
+    ing = Ingredient.objects.filter(id=search_text).get()
+    return render(request, 'ajax_search.html', {"units": ing.units.all(), "unit_id": unit_id})
 

@@ -23,13 +23,15 @@ class Magic(forms.Form):
 
         self.ingredients = [(ing.id, ing.name) for ing in Ingredient.objects.all()]
         self.units = [(ing.id, ing.name) for ing in Unit.objects.all()]
-        self.ingredient = forms.CharField(
-            label='Ingredient',
-            widget=forms.Select(choices=self.ingredients))
-        self.quantity = forms.FloatField()
-        self.unit = forms.CharField(
-            label='Unit',
-            widget=forms.Select(choices=self.units))
+
+        self.fields['ingredient'] = forms.CharField(
+         label='Ingredient',
+         widget=forms.Select(choices=self.ingredients, attrs={"onchange": "happyFunction(event, this);"}))
+        self.fields['quantity'] = forms.FloatField()
+        self.fields['unit'] = forms.CharField(
+         label='Unit',
+         widget=forms.Select(choices=self.units))
+
 
 
 class UnitForm(forms.ModelForm):
