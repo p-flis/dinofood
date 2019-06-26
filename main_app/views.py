@@ -2,6 +2,7 @@ from django.shortcuts import render
 from main_app.forms import *
 from django.forms.formsets import formset_factory
 
+
 # Create your views here.
 def index(request):
     # return HttpResponse('base Karol!')
@@ -30,14 +31,14 @@ def test_view(request):
 
     return render(request, 'test.html', {'formset': formset})
 
+
 def search_units(request):
     if request.method == 'POST':
         search_text = request.POST['search_text']
-        form_id =  request.POST['form_id']
+        form_id = request.POST['form_id']
     else:
         search_text = ""
         form_id = ""
-    unit_id = '#' + form_id[:form_id.rfind('-')+1] + 'unit'
+    unit_id = '#' + form_id[:form_id.rfind('-') + 1] + 'unit'
     ing = Ingredient.objects.filter(id=search_text).get()
     return render(request, 'ajax_search.html', {"units": ing.units.all(), "unit_id": unit_id})
-

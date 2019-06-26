@@ -45,15 +45,15 @@ DEFAULT_FROM_EMAIL = 'dinofoodnotification@gmail.com'
 ADMINS = [('Kuba', config("EMAIL_1", default=''))]  # in heroku vars
 
 INSTALLED_APPS = [
+    "main_app",
+    "accounts",
+    "bug_report",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "main_app",
-    "accounts",
-    "bug_report",
 ]
 
 MIDDLEWARE = [
@@ -113,12 +113,12 @@ DATABASES = {
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    # },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    # {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    # {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
