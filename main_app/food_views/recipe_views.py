@@ -5,10 +5,13 @@ from django.conf import settings
 from main_app.forms import RecipeForm, RecipeIdIngredientsForm
 from main_app.models import *
 from accounts.models import *
+from main_app.forms import *
+from django.forms.formsets import formset_factory
 from main_app.views import displayFormErrors
 from django.core.mail import send_mail
 from django.contrib import messages
 import json
+
 
 
 def recipe(request):
@@ -18,28 +21,54 @@ def recipe(request):
 
 @login_required(login_url='/accounts/login')
 def add_recipe(request):
+    # print('TEST')
+    # IngredientFormSet = formset_factory(Magic, extra=2, min_num=1, validate_min=True)
+    # if request.method == 'POST':
+    #     formset = IngredientFormSet(request.POST, request.FILES)
+    #     if formset.is_valid():
+    #         # do something with the formset.cleaned_data
+    #         pass
+    # else:
+    #     formset = IngredientFormSet()
+    #
+    # return render(request, 'test.html', {'formset': formset})
+    print('TEST')
+    IngredientFormSet = formset_factory(Magic, extra=2, min_num=1, validate_min=True)
+
     if request.method == 'GET':
+        formset = IngredientFormSet()
         ingredients = Ingredient.objects.all().order_by('name')
         # form = RecipeForm(initial={'recipe_ing':RecipeIngredient.objects.first()})
         # todo Paweł, jak to odkomentujesz to tam do tego pola doda pierwszy (losowy) recipeingredient,
         #  to tylko żeby sprawdzić widget
         form = RecipeForm()
-        return render(request, "food/new_recipe_form.html", {"ingredients": ingredients, 'form': form})
+        return render(request, "food/new_recipe_form.html", {"ingredients": ingredients, 'form': form, 'formset': formset})
     elif request.method == 'POST':
-
+        formset = IngredientFormSet(request.POST, request.FILES)
+        i_list = []
+        q_list = []
+        u_list = []
+        if formset.is_valid():
+            for f in formset:
+                cd = f.cleaned_data
+                i_list.append(Ingredient.objects.get(id=cd.get('ingredient')))
+                q_list.append(cd.get('quantity'))
+                u_list.append(Unit.objects.get(id=cd.get('unit')))
+                print(q_list)
+            # do something with the formset.cleaned_data
         data = request.POST.copy()
         # needed only because of the ingredients not in form but in html
         form = RecipeForm(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
             recipe_model = form.save(commit=False)
             recipe_model.save()
-            i_list = [Ingredient.objects.get(name=ing) for ing in data.getlist("ingredients")]
-            q_list = data.getlist("quantities")
             for i in range(len(i_list)):
                 try:
                     q = int(q_list[i])
-                    recipe_model.ingredients.add(i_list[i], through_defaults={'quantity': q})
+                    u = u_list[i]
+                    recipe_model.ingredients.add(i_list[i], through_defaults={'quantity': q, 'unit': u})
                 except ValueError:
+                    print("what:")
                     pass
             recipe_model.owner = User.objects.get(username=request.user.username)
             if request.user.is_superuser:
@@ -59,7 +88,6 @@ def add_recipe(request):
             displayFormErrors(form)
         return redirect('/recipe')
     raise Http404
-
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def accept_recipes(request):

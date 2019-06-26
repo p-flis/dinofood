@@ -10,4 +10,3 @@ Lib/
 *.vs
 getting-started/*
 dinofood
-main_app/static/js/ajax.js

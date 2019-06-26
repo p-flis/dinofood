@@ -27,7 +27,7 @@ admin.autodiscover()
 
 urlpatterns = [
     path("test", main_app.views.test_view, name='test_view'),
-    path('ajax/recipe/ing_unit', main_app.views.search_units, name="ing_unit"),
+    path('recipe/ajax/recipe/ing_unit', main_app.views.search_units, name="ing_unit"),
     path("", main_app.views.index, name="index"),
     # path("db/", base.views.db, name="db"),
     path("admin/", admin.site.urls),

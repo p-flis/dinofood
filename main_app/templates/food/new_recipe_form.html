@@ -32,68 +32,41 @@
     <label>Narzędzia:</label>
     {{form.tools}}
   </p>
-  <p>
-    {{form.tools.errors}}
-    <label>Ings:</label>
-    {{form.ingredients}}
-  </p>
-</div>
-<div class="item">
-  <div >
-    <div id="row-template" class="ingredients-table">
-      <div class="col-2">
-        <label>Nowy składnik</label>
-      </div>
-      <div class="col-4">
-        <div class="input-group">
-          <label for="ingredient">Nazwa</label>
-          <input type="text" list="ingredient" />
-          <datalist id="ingredient" name="ingredients">
-            {% for ing in ingredients %}
-              <option>{{ ing.name }}</option>
-            {% endfor %}
-          </datalist>
-          <label for="quantity">Ilość</label>
-          <input id="quantity" type="number" name="quantities" step="0.1" min="0.1"
-	onkeydown="return event.keyCode !== 69" 	required />
-          <button ><a target="_blank" href="{% url 'add_ingredient' %}">Utwórz nowy</a></button>
-	<!-- onkeydown="return event.keyCode !== 69" skips e and E, as we don't want
-	scientific notation -->
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="input-group-delete">
-          <button class="delete-form-row" onclick="deleteRow(event,this,3);">-</button>
-        </div>
-      </div>
-    </div>
 
-    <div class="input-group-append">
-      <button class="add-form-row" onclick="addNew(event,this);">+</button>
-    </div>
-  </div>
+</div>
+<form method="post" action="">
+
+    {% csrf_token %}
+
+    {{ formset.management_form }}
+
+    {% for link_form in formset %}
+        <div class="link-formset">
+            {{ link_form.as_p}}
+
+        </div>
+    {% endfor %}
+
+    <input type="submit" value="Dodaj rpzeepis" class="button"/>
+</form>
 {% endblock %}
 
-
-
-
-
-  <div class="listitem-content">
-  </div>
 </div>
-  <!-- <div>
-    <label for="ingredients">Ingredients:</label>
-    <select id="ingredients" name="ingredients" multiple>
-    {% for ing in ingredients %}
-        <option>{{ ing.name }}</option>
-    {% endfor %}
-    </select>
-  </div> -->
 
 
 
-{% block submitclick %}submitAndDeleteTemplate(event);{% endblock %}
+
 
 {% block custom_js %}
-  <script src="{% static 'js/rowadder.js' %}?version=5"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+    $('.link-formset').formset({
+        addText: 'add ingredient',
+        deleteText: 'remove'
+    });
+</script>
+<script src="{% static 'js/rowadder.js' %}?version=5"></script>
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'js/ajax.js' %}"></script>
 {% endblock %}
