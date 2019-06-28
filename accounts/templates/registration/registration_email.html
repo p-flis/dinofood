@@ -1,0 +1,14 @@
+{% load i18n %}{% autoescape off %}
+    {% blocktrans %}You're receiving this email because you created new account at
+        {{ site_name }}.{% endblocktrans %}
+
+    {% trans "Please go to the following page and verify your email:" %}
+    {% block reset_link %}
+        {{ protocol }}://{{ domain }}{% url 'verify_account' uidb64=uid token=token %}
+    {% endblock %}
+
+
+    {% trans "Thanks for using our site!" %}
+    {% trans "The Dinofood team" %}
+
+{% endautoescape %}
