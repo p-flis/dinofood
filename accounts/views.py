@@ -1,14 +1,10 @@
 from accounts.forms import CustomUserCreationForm
 from accounts.models import User
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.shortcuts import render,redirect
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.decorators import method_decorator
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.cache import never_cache
-from django.utils.http import is_safe_url, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.http import Http404
@@ -24,19 +20,20 @@ class SignUp(generic.CreateView):
     success_url = reverse_lazy('index')
     template_name = 'signup.html'
 
-    def form_valid(self, form):
+    def form_valid(self, form: CustomUserCreationForm):
         result = super().form_valid(form)
 
-        # user = authenticate(
-        #     username=form.cleaned_data["username"],
-        #     password=form.cleaned_data["password1"]
-        # )
-        # login(self.request, user)
-
-        user: User = form.instance
-        user.is_active = False
-        user.save()
-        self.send_registration_email(self.request)
+        if form.cleaned_data['email_verification']:
+            user: User = form.instance
+            user.is_active = False
+            user.save()
+            self.send_registration_email(user)
+        else:
+            user = authenticate(
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password1"]
+            )
+            login(self.request, user)
 
         return result
 
@@ -88,7 +85,7 @@ def verify_account(request, uidb64, token):
                 user.save()
 
                 # todo: immediately log in user?
-                return render(request, 'registration/login.html')
+                return redirect(reverse('login'))
         else:
             if default_token_generator.check_token(user, token):
                 # Store the token in the session and redirect to the
