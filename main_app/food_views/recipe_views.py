@@ -123,7 +123,7 @@ def recipe_id_rate(request, object_id):
             if len(prev_rating) > 0:
                 output_data = {'rating': prev_rating[0].rating, 'mean': mean, 'favourite': prev_rating[0].favourite}
             else:
-                output_data = {'rating': None, 'mean': mean, 'favourite': prev_rating[0].favourite}
+                output_data = {'rating': None, 'mean': mean, 'favourite': False}
         else:
             output_data = {'rating': None, 'mean': mean, 'favourite': False}
         return JsonResponse(output_data)
