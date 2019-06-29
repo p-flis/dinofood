@@ -13,7 +13,7 @@ $(document).ready(function(){
     if(data.favourite==true)
       $(hearts[0]).addClass('selected');
     mean = data.mean
-    $('#average_rating').html("<p>" + data.mean + "</p>");
+    $('#average_rating').html("<p>" + data.mean.toFixed(1) + "</p>");
 });
   /* 1. Visualizing things on Hover - See next part for action on click */
   $('#stars li').on('mouseover', function(){
@@ -46,7 +46,6 @@ $(document).ready(function(){
 
 $('#hearts li').on('click', function(){
   heart = $(this).parent().children('li.heart')[0];
-  console.log("Edytuje sb favourite");
   $.post($(location).attr('pathname') + '/rate', {
          rating:0,
          favourite: !heart.classList.contains('selected'),
@@ -85,7 +84,7 @@ $('#hearts li').on('click', function(){
              $(stars[i]).addClass('selected');
            }
            mean = data.mean
-           $('#average_rating').html("<p>" + data.mean + "</p>");
+           $('#average_rating').html("<p>" + data.mean.toFixed(1) + "</p>");
          }
 
        });
