@@ -15,8 +15,10 @@ Przepis
 {% block head %}
 {{ block.super }}
 <link href="{% static 'css/StarsStyle.css' %}" rel="stylesheet" type="text/css">
+  {{ form.media }}
+  <!-- this is required when you use custom widget/form Media
+  (although it is not clearly stated in docs) -->
 {% endblock %}
-
 
 
 

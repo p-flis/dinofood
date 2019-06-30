@@ -2,7 +2,7 @@ from django import forms
 from .models import *
 from accounts.models import User
 from django.forms import widgets
-
+import json
 
 class IngredientForm(forms.ModelForm):
     class Meta:
@@ -74,12 +74,20 @@ class SearchForm(forms.Form):
     ingredients_in_fridge = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(), required=False)
     tools_in_kitchen = forms.ModelMultipleChoiceField(queryset=CookingTool.objects.all(), required=False)
     ingredients_in_recipe = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(), required=False)
+    #TODO: extra_money should be optional for a user
+    #I mean like checkbox "I'm poor"
     extra_money = forms.DecimalField(initial=999)
     is_vegetarian = forms.BooleanField(required=False)
     is_vegan = forms.BooleanField(required=False)
     is_gluten_free = forms.BooleanField(required=False)
     is_favourite = forms.BooleanField(required=False)
 
+class IngredientsCheckboxesWidget(widgets.CheckboxSelectMultiple):
+    def __init__(self, *args, **kwargs):
+        self.template_name = 'form/ingredientscheckboxes_widget.html'
+        super().__init__(*args, **kwargs)
+    class Media:
+        js = ('js/jquery-3.4.1.min.js', 'js/checkboxespricedisplayer.js',)
 
 class RecipeIdIngredientsForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -94,12 +102,17 @@ class RecipeIdIngredientsForm(forms.Form):
                 )
                 for obj in self.recipe.recipeingredient_set.all()
             ]
+        self.fields['ingredients'].widget.attrs['approximate_costs'] = json.dumps(\
+            {
+                obj.ingredient.id : int(obj.quantity * obj.unit.amount * obj.ingredient.price * 100) \
+                    for obj in self.recipe.recipeingredient_set.all()
+            })
+        print(self.fields['ingredients'].widget.media)
 
     ingredients = forms.MultipleChoiceField(choices={},
-                                            widget=widgets.CheckboxSelectMultiple,
+                                            widget=IngredientsCheckboxesWidget,
                                             required=False
                                             )
-
 
 class DatalistWidget(forms.HiddenInput):
     template_name = 'form/datalist_widget.html'
