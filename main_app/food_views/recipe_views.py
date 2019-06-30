@@ -109,8 +109,7 @@ def recipe_id(request, object_id):
         form.initial = {"ingredients": [ing.id for ing in request.user.ingredients.all()]}
     return render(request, "food/recipe_id_get.html", {"item": recipe_model,
                                                        "rating": rating,
-                                                       "form": form,
-                                                       "average_rating": recipe_model.average_rating()})
+                                                       "form": form,})
 
 
 def recipe_id_rate(request, object_id):
