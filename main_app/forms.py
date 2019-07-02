@@ -86,6 +86,10 @@ class IngredientsCheckboxesWidget(widgets.CheckboxSelectMultiple):
     def __init__(self, *args, **kwargs):
         self.template_name = 'form/ingredientscheckboxes_widget.html'
         super().__init__(*args, **kwargs)
+    def get_context(self, name, value, attrs):
+        ctx = super().get_context(name, value, attrs)
+        ctx.update(dict(approximate_costs=self.approximate_costs))
+        return ctx
     class Media:
         js = ('js/jquery-3.4.1.min.js', 'js/checkboxespricedisplayer.js',)
 
@@ -102,12 +106,11 @@ class RecipeIdIngredientsForm(forms.Form):
                 )
                 for obj in self.recipe.recipeingredient_set.all()
             ]
-        self.fields['ingredients'].widget.attrs['approximate_costs'] = json.dumps(\
+        self.fields['ingredients'].widget.approximate_costs = json.dumps(\
             {
                 obj.ingredient.id : int(obj.quantity * obj.unit.amount * obj.ingredient.price * 100) \
                     for obj in self.recipe.recipeingredient_set.all()
             })
-        print(self.fields['ingredients'].widget.media)
 
     ingredients = forms.MultipleChoiceField(choices={},
                                             widget=IngredientsCheckboxesWidget,
