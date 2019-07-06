@@ -132,27 +132,36 @@ def recipe_id_rate(request, object_id):
     elif request.method == 'POST':
         if not request.user.is_authenticated:
             # messages.error(request, "") TODO:change to reporting an error for stardisplayer to understand
-            output_data = {'rating': None, 'mean': None}
-            return JsonResponse(output_data)
+            return JsonResponse({'rating': None, 'mean': None, 'favourite':None})
         data = request.POST.copy()
+        if data is None:
+            return JsonResponse({'rating': None, 'mean': None, 'favourite':None})
+        rating = data.get("rating")
+        favourite = data.get("favourite")
+        if favourite is None \
+                or (favourite is False and rating is None) \
+                or rating not in [None,'1','2','3','4','5']:
+            return JsonResponse({'rating': None, 'mean': None, 'favourite':None})
         user = request.user
         recipe = Recipe.objects.get(id=object_id)
-        rating = int(data.get("rating"))
         prev_rating = Rating.objects.filter(user=user, recipe=recipe)
-        if (rating == 0):  # the heart has been clicked, we edit only favourite
+        if (rating == None):  # the heart has been clicked, we edit only favourite
             if len(prev_rating) > 0:
                 prev_rating = prev_rating[0]
                 prev_rating.favourite = (data.get("favourite") == 'true');
                 prev_rating.save()
                 new_rating = prev_rating
             else:
-                new_rating = Rating(user=user, recipe=recipe, rating=0, favourite=True)
+                new_rating = Rating(user=user, recipe=recipe, rating=None, favourite=True)
         else:
+            rating = int(rating)
             if len(prev_rating) > 0:
                 prev_rating = prev_rating[0]
-                if prev_rating == 0:
+                if prev_rating.rating is None:
                     recipe.times_rated = recipe.times_rated + 1
-                recipe.sum_rating = recipe.sum_rating - prev_rating.rating + rating
+                    recipe.sum_rating = recipe.sum_rating + rating
+                else:
+                    recipe.sum_rating = recipe.sum_rating - prev_rating.rating + rating
                 prev_rating.rating = rating
                 new_rating = prev_rating
             else:

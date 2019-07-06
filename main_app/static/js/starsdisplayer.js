@@ -47,7 +47,6 @@ $(document).ready(function(){
 $('#hearts li').on('click', function(){
   heart = $(this).parent().children('li.heart')[0];
   $.post($(location).attr('pathname') + '/rate', {
-         rating:0,
          favourite: !heart.classList.contains('selected'),
          csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value
      }, function(data){
@@ -72,6 +71,7 @@ $('#hearts li').on('click', function(){
     var stars = $(this).parent().children('li.star');
     $.post($(location).attr('pathname') + '/rate', {
            rating: onStar,
+           favourite: false,
            csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value
        }, function(data){
          if(data.mean!=null)
