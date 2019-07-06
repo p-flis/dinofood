@@ -15,7 +15,7 @@ import json
 
 
 def recipe(request):
-    recipes = Recipe.objects.all()
+    recipes = Recipe.objects.filter(accepted=True)
     return render(request, "food/recipe.html", {"list_items": recipes})
 
 
@@ -73,6 +73,8 @@ def add_recipe(request):
             recipe_model.owner = User.objects.get(username=request.user.username)
             if request.user.is_superuser:
                 recipe_model.accepted = True
+            else:
+                recipe_model.accepted = False
             recipe_model.save()
             recipe_model.save()
 

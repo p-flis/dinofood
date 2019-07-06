@@ -55,7 +55,7 @@ class Recipe(models.Model):
     tools = models.ManyToManyField(CookingTool)
     owner = models.ForeignKey('accounts.User', on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
-    accepted = models.BooleanField(default=False)
+    accepted = models.BooleanField(default=True)
     sum_rating = models.IntegerField(default=0)
     times_rated = models.IntegerField(default=0)
     objects = models.Manager()
