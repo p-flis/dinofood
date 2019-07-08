@@ -217,6 +217,75 @@ class RecipeIDViewTest(TestCase):  # todo logged user?
         self.assertContains(response, 'Woda')  # ingredient
         self.assertContains(response, 'Garnek')  # tool
 
+@tag('recipe', 'accept', 'super_user')
+class AcceptRecipeViewTestSuperUser(TestCaseSuperuser):
+
+    def test_view_new_recipe_is_accepted_super_user(self):
+        TestDatabase.create_default_test_database(ingredients=True, tools=True)
+
+        ingredients_list = ['Woda', 'Cytryna']
+        quantities_list = ['1', '1']
+        tools_list = [CookingTool.objects.first().id]
+        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+                                                    'description': 'Woda, ale słodka',
+                                                    'recipe_text': 'hahaha to jest wymagane',
+                                                    'ingredients': ingredients_list,
+                                                    'quantities': quantities_list,
+                                                    'tools': tools_list,
+                                                    'image': ''})
+        self.assertTrue(Recipe.objects.filter(name='Lemoniada')[0].accepted)
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/recipe/accept')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('accept_recipes'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('accept_recipes'))
+        self.assertTemplateUsed(response, 'food/recipe.html')
+
+    def test_view_recipe_id_accept(self):
+        TestDatabase.create_default_test_database(recipes=True)
+        item = Recipe.objects.filter(name='Lemoniada')[0]
+        item.accepted=False
+        item.save()
+        self.assertFalse(Recipe.objects.filter(name='Lemoniada')[0].accepted)
+        response = self.client.get('/recipe/{}/accept'.format(item.id))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Recipe.objects.filter(name='Lemoniada')[0].accepted)
+
+    def test_view_recipe_id_accept_id_not_exists(self):
+        response = self.client.get('/recipe/999/accept')
+        self.assertEqual(response.status_code, 404)
+
+
+@tag('recipe', 'accept', 'logged_user')
+class AcceptRecipeViewTestLoggedUser(TestCaseLoggedUser):
+    def test_view_new_recipe_normal_user(self):
+        TestDatabase.create_default_test_database(ingredients=True, tools=True)
+
+        ingredients_list = ['Woda', 'Cytryna']
+        quantities_list = ['1', '1']
+        tools_list = [CookingTool.objects.first().id]
+        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+                                                    'description': 'Woda, ale słodka',
+                                                    'recipe_text': 'hahaha to jest wymagane',
+                                                    'ingredients': ingredients_list,
+                                                    'quantities': quantities_list,
+                                                    'tools': tools_list,
+                                                    'image': ''})
+        self.assertFalse(Recipe.objects.filter(name='Lemoniada')[0].accepted)
+
+    def test_view_logged_user_is_redirected(self):
+        response = self.client.get('/recipe/accept')
+        self.assertEqual(response.status_code, 302)
+
+    def test_view_logged_user_is_redirected(self):
+        response = self.client.get('/recipe/999/accept')
+        self.assertEqual(response.status_code, 302)
 # endregion
 # region update
 # todo region update

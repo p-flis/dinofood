@@ -355,4 +355,47 @@ class UpdateIngredientViewTestNormalUser(TestCase):  # todo post
                              reverse('superuser_required') + "?next=" + reverse(
                                  'ingredient_update',
                                  kwargs={'object_id': item}))
+
+@tag('ingredient', 'fridge', 'logged_user')
+class FridgeViewTestLoggedUser(TestCaseLoggedUser):
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/fridge')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('fridge'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('fridge'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'client/fridge.html')
+
+    #WHY IT DOES NOT WORK?!
+    def test_view_regular_change(self):
+        TestDatabase.create_default_test_database(tools=True)
+        fridge = [x.id for x in Ingredient.objects.all()]
+        response = self.client.post('/fridge',
+                                    {'fridge': fridge})
+        request = response.wsgi_request
+        self.assertEqual(response.status_code, 302)
+        self.assertQuerysetEqual(request.user.ingredients.all(), Ingredient.objects.all(), transform=lambda x: x,
+                                 ordered=False)
+        self.assertEqual(response.url, '/recipe')
+
+@tag('ingedient', 'fridge', 'normal_user')
+class FridgeViewTestNormalUser(TestCase):
+    def test_view_correct_redirection_get(self):
+        response = self.client.get(reverse('fridge'), follow=True)
+        self.assertRedirects(response, reverse('login') + "?next=" + reverse('fridge'), status_code=302,
+                             target_status_code=200)
+
+    def test_view_correct_redirection_post(self):
+        TestDatabase.create_default_test_database(tools=True)
+        tools_list = [CookingTool.objects.first()]
+        response = self.client.post('/fridge',
+                                    {'fridge': tools_list},
+                                    follow=True)
+        self.assertRedirects(response, reverse('login') + "?next=" + reverse('fridge'), status_code=302,
+                             target_status_code=200)
 # endregion

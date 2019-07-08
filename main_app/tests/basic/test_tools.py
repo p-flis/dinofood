@@ -326,4 +326,46 @@ class UpdateIngredientViewTestNormalUser(TestCase):
                                  'cooking_tool_update',
                                  kwargs={'object_id': item}))
     # todo post?
+
+@tag('cooking_tool', 'kitchen_tools', 'logged_user')
+class KitchenCookingToolsViewTestLoggedUser(TestCaseLoggedUser):
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/tools')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('tools'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('tools'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'client/tools.html')
+
+    #WHY IT DOES NOT WORK?!
+    def test_view_regular_change(self):
+        TestDatabase.create_default_test_database(tools=True)
+        tools_list = [x .id for x in CookingTool.objects.all()]
+        response = self.client.post('/tools',
+                                    {'tools': tools_list})
+        request = response.wsgi_request
+        self.assertEqual(response.status_code, 302)
+        self.assertQuerysetEqual(request.user.tools.all(), CookingTool.objects.all(), transform=lambda x: x, ordered=False)
+        self.assertEqual(response.url, '/recipe')
+
+@tag('cooking_tool', 'kitchen_tools', 'normal_user')
+class KitchenCookingToolsViewTestNormalUser(TestCase):
+    def test_view_correct_redirection_get(self):
+        response = self.client.get(reverse('tools'), follow=True)
+        self.assertRedirects(response, reverse('login') + "?next=" + reverse('tools'), status_code=302,
+                             target_status_code=200)
+
+    def test_view_correct_redirection_post(self):
+        TestDatabase.create_default_test_database(tools=True)
+        tools_list = [CookingTool.objects.first()]
+        response = self.client.post('/tools',
+                                    {'tools': tools_list},
+                                    follow=True)
+        self.assertRedirects(response, reverse('login') + "?next=" + reverse('tools'), status_code=302,
+                             target_status_code=200)
 # endregion
