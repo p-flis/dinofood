@@ -1,9 +1,10 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
 from django.test import tag
-
+from django.forms.formsets import formset_factory
 from main_app.tests.TestSetupDatabase import *
-
+from accounts.models import *
+from main_app.forms import *
 
 # region add
 @tag('recipe', 'add', 'logged_user')
@@ -21,36 +22,42 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, 
         self.assertTemplateUsed(response, 'food/new_recipe_form.html')
 
     def test_view_adds_recipe(self):
-        TestDatabase.create_default_test_database(ingredients=True, tools=True)
-
-        ingredients_list = ['Woda', 'Cytryna']
-        quantities_list = ['1', '1']
+        TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
+        IngredientFormSet = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
         tools_list = [CookingTool.objects.first().id]
         response = self.client.post('/recipe/new', {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
-                                                    'ingredients': ingredients_list,
-                                                    'quantities': quantities_list,
+                                                    'form-TOTAL_FORMS': ['1'],
+                                                    'form-INITIAL_FORMS': ['0'],
+                                                    'form-MIN_NUM_FORMS': ['1'],
+                                                    'form-MAX_NUM_FORMS': ['1000'],
+                                                    'form-0-ingredient': ['1'],
+                                                    'form-0-quantity': ['122'],
+                                                    'form-0-unit': ['1'],
                                                     'tools': tools_list,
-                                                    'image': ''})
+                                                    'image': 'default.png'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
         self.assertEqual(response.url, '/recipe')
 
     def test_view_adds_recipe_redirect(self):
-        TestDatabase.create_default_test_database(ingredients=True, tools=True)
-
-        ingredients_list = ['Woda', 'Cytryna']
-        quantities_list = ['1', '1']
+        TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
+        IngredientFormSet = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
         tools_list = [CookingTool.objects.first().id]
-        response = self.client.post('/recipe/new',
-                                    {'name': 'Lemoniada',
-                                     'description': 'Woda, but sour',
-                                     'recipe_text': 'hahaha to jest wymagane',
-                                     'ingredients': ingredients_list,
-                                     'quantities': quantities_list,
-                                     'tools': tools_list},
-                                    follow=True)
+        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+                                                    'description': 'Woda, ale słodka',
+                                                    'recipe_text': 'hahaha to jest wymagane',
+                                                    'form-TOTAL_FORMS': ['1'],
+                                                    'form-INITIAL_FORMS': ['0'],
+                                                    'form-MIN_NUM_FORMS': ['1'],
+                                                    'form-MAX_NUM_FORMS': ['1000'],
+                                                    'form-0-ingredient': ['1'],
+                                                    'form-0-quantity': ['122'],
+                                                    'form-0-unit': ['1'],
+                                                    'tools': tools_list,
+                                                    'image': 'default.png'},
+                                                    follow=True)
         self.assertRedirects(response, reverse('recipe'), status_code=302, target_status_code=200)
 
 

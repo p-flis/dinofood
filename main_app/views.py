@@ -20,7 +20,7 @@ def displayFormErrors(form):
 
 def test_view(request):
     print('TEST')
-    IngredientFormSet = formset_factory(Magic, extra=2, min_num=1, validate_min=True)
+    IngredientFormSet = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
     if request.method == 'POST':
         formset = IngredientFormSet(request.POST, request.FILES)
         if formset.is_valid():

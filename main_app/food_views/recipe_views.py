@@ -21,20 +21,7 @@ def recipe(request):
 
 @login_required(login_url='/accounts/login')
 def add_recipe(request):
-    # print('TEST')
-    # IngredientFormSet = formset_factory(Magic, extra=2, min_num=1, validate_min=True)
-    # if request.method == 'POST':
-    #     formset = IngredientFormSet(request.POST, request.FILES)
-    #     if formset.is_valid():
-    #         # do something with the formset.cleaned_data
-    #         pass
-    # else:
-    #     formset = IngredientFormSet()
-    #
-    # return render(request, 'test.html', {'formset': formset})
-    print('TEST')
-    IngredientFormSet = formset_factory(Magic, extra=2, min_num=1, validate_min=True)
-
+    IngredientFormSet = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
     if request.method == 'GET':
         formset = IngredientFormSet()
         ingredients = Ingredient.objects.all().order_by('name')
@@ -54,9 +41,6 @@ def add_recipe(request):
                 i_list.append(Ingredient.objects.get(id=cd.get('ingredient')))
                 q_list.append(cd.get('quantity'))
                 u_list.append(Unit.objects.get(id=cd.get('unit')))
-                print(q_list)
-            # do something with the formset.cleaned_data
-        data = request.POST.copy()
         # needed only because of the ingredients not in form but in html
         form = RecipeForm(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
@@ -71,13 +55,8 @@ def add_recipe(request):
                     print("what:")
                     pass
             recipe_model.owner = User.objects.get(username=request.user.username)
-            if request.user.is_superuser:
-                recipe_model.accepted = True
-            else:
-                recipe_model.accepted = False
+            recipe_model.accepted = request.user.is_superuser
             recipe_model.save()
-            recipe_model.save()
-
             if Recipe.objects.filter(accepted=False).count() == 1:
                 send_mail(
                     'Unaccepted recipes',
