@@ -3,6 +3,43 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from main_app.forms import IngredientForm
 from main_app.models import *
+import django.views.generic as generic
+import main_app.custom_mixins as custom_mixins
+
+
+class IngredientList(custom_mixins.SuperuserRequiredMixin, generic.ListView):
+    model = Ingredient
+    context_object_name = "list_items"
+    template_name = "food/ingredients.html"
+
+
+class AddIngredient(custom_mixins.SuperuserRequiredMixin, generic.CreateView):
+    model = Ingredient
+    template_name = "food/new_ingredient_form.html"
+    success_url = '/ingredient'
+    fields = '__all__'
+
+
+class IngredientId(custom_mixins.SuperuserRequiredMixin, generic.DetailView):
+    model = Ingredient
+    pk_url_kwarg = 'object_id'
+    context_object_name = "item"
+    template_name = "food/ingredient_id_get.html"
+
+
+class IngredientDelete(custom_mixins.SuperuserRequiredMixin, generic.DeleteView):
+    model = Ingredient
+    pk_url_kwarg = 'object_id'
+    success_url = '/ingredient'
+    template_name = 'food/ingredient_confirm_delete.html'
+
+
+class IngredientUpdate(custom_mixins.SuperuserRequiredMixin, generic.UpdateView):
+    model = Ingredient
+    fields = '__all__'
+    pk_url_kwarg = 'object_id'
+    success_url = '/ingredient'
+    template_name = 'food/new_ingredient_form.html'
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
@@ -56,7 +93,7 @@ def ingredient_id_update(request, object_id):
         return render(request, "food/new_ingredient_form.html", args)
     elif request.method == 'POST':
         instance = Ingredient.objects.get(id=object_id)
-        form = IngredientForm(instance=instance,data=request.POST)
+        form = IngredientForm(instance=instance, data=request.POST)
         if form.is_valid():
             form.save()
         # else:

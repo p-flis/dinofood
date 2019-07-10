@@ -1,6 +1,7 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
 from django.test import tag
+from unittest import skip
 
 from main_app.tests.TestSetupDatabase import *
 
@@ -86,6 +87,7 @@ class AddIngredientViewTestLoggedUser(TestCaseLoggedUser):
 # endregion
 # region delete
 
+@skip
 @tag('ingredient', 'delete', 'superuser')
 class DeleteIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
@@ -245,6 +247,7 @@ class IngredientIDViewTestLoggedUser(TestCaseLoggedUser):
 # region update
 
 
+@skip
 @tag('ingredient', 'update', 'superuser')
 class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):

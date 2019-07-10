@@ -70,6 +70,7 @@ def add_recipe(request):
         return redirect('/recipe')
     raise Http404
 
+
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
 def accept_recipes(request):
     recipes = Recipe.objects.filter(accepted=False)

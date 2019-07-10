@@ -1,6 +1,7 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
 from django.test import tag
+from unittest import skip
 
 from main_app.tests.TestSetupDatabase import *
 
@@ -80,6 +81,7 @@ class AddUnitViewTestLoggedUser(TestCaseLoggedUser):
 # endregion
 # region delete
 
+@skip
 @tag('unit', 'delete', 'superuser')
 class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):

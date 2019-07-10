@@ -1,6 +1,7 @@
 from django.urls import reverse
 from main_app.tests.TestCaseSpecialUser import *
 from django.test import tag
+from unittest import skip
 
 from main_app.tests.TestSetupDatabase import *
 
@@ -79,6 +80,7 @@ class AddCookingToolViewTestLoggedUser(TestCaseLoggedUser):
 # region delete
 
 @tag('cooking_tool', 'delete', 'superuser')
+@skip
 class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
         response = self.client.get('/cooking_tool/999/delete')
@@ -327,6 +329,7 @@ class UpdateIngredientViewTestNormalUser(TestCase):
                                  kwargs={'object_id': item}))
     # todo post?
 
+
 @tag('cooking_tool', 'kitchen_tools', 'logged_user')
 class KitchenCookingToolsViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_url_exists_at_desired_location(self):
@@ -342,16 +345,18 @@ class KitchenCookingToolsViewTestLoggedUser(TestCaseLoggedUser):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/tools.html')
 
-    #WHY IT DOES NOT WORK?!
+    # WHY IT DOES NOT WORK?!
     def test_view_regular_change(self):
         TestDatabase.create_default_test_database(tools=True)
-        tools_list = [x .id for x in CookingTool.objects.all()]
+        tools_list = [x.id for x in CookingTool.objects.all()]
         response = self.client.post('/tools',
                                     {'tools': tools_list})
         request = response.wsgi_request
         self.assertEqual(response.status_code, 302)
-        self.assertQuerysetEqual(request.user.tools.all(), CookingTool.objects.all(), transform=lambda x: x, ordered=False)
+        self.assertQuerysetEqual(request.user.tools.all(), CookingTool.objects.all(), transform=lambda x: x,
+                                 ordered=False)
         self.assertEqual(response.url, '/recipe')
+
 
 @tag('cooking_tool', 'kitchen_tools', 'normal_user')
 class KitchenCookingToolsViewTestNormalUser(TestCase):

@@ -3,7 +3,43 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from main_app.forms import UnitForm
 from main_app.models import *
-import json
+import django.views.generic as generic
+import main_app.custom_mixins as custom_mixins
+
+
+class UnitList(custom_mixins.SuperuserRequiredMixin, generic.ListView):
+    model = Unit
+    context_object_name = "list_items"
+    template_name = "food/units.html"
+
+
+class AddUnit(custom_mixins.SuperuserRequiredMixin, generic.CreateView):
+    model = Unit
+    template_name = "food/new_unit_form.html"
+    success_url = '/unit'
+    fields = '__all__'
+
+
+class UnitId(custom_mixins.SuperuserRequiredMixin, generic.DetailView):
+    model = Unit
+    pk_url_kwarg = 'object_id'
+    context_object_name = "item"
+    template_name = "food/unit_id_get.html"
+
+
+class UnitDelete(custom_mixins.SuperuserRequiredMixin, generic.DeleteView):
+    model = Unit
+    pk_url_kwarg = 'object_id'
+    success_url = '/unit'
+    template_name = 'food/unit_confirm_delete.html'
+
+
+class UnitUpdate(custom_mixins.SuperuserRequiredMixin, generic.UpdateView):
+    model = Unit
+    fields = '__all__'
+    pk_url_kwarg = 'object_id'
+    success_url = '/unit'
+    template_name = 'food/new_unit_form.html'
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
