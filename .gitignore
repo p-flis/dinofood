@@ -11,3 +11,4 @@ Lib/
 getting-started/*
 dinofood
 .coverage
+htmlcov/*
