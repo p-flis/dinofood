@@ -46,7 +46,7 @@ urlpatterns = [
     path("recipe/<int:object_id>/accept", recipe_views.recipe_id_accept, name="recipe_accept"),
     path("recipe/<int:object_id>/rate", recipe_views.recipe_id_rate, name="recipe_rate"),
 
-    path("recipe/search", search_views.recipe_search, name="search_recipe"),
+    path("recipe/search", search_views.RecipeSearch.as_view(), name="search_recipe"),
 
     path("ingredient/", ingredient_views.IngredientList.as_view(), name="ingredient"),
     path("ingredient/new", ingredient_views.AddIngredient.as_view(), name="add_ingredient"),
