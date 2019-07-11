@@ -10,7 +10,7 @@ from main_app.forms import *
 @tag('recipe', 'add', 'logged_user')
 class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, zdjęcie, pola w bd
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get('/recipe/new')
+        response = self.client.get(reverse('add_recipe'))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -24,7 +24,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, 
     def test_view_adds_recipe(self):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
         tools_list = [CookingTool.objects.first().id]
-        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+        response = self.client.post(reverse('add_recipe'), {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
                                                     'form-TOTAL_FORMS': ['1'],
@@ -43,7 +43,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, 
     def test_view_adds_recipe_redirect(self):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
         tools_list = [CookingTool.objects.first().id]
-        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+        response = self.client.post(reverse('add_recipe'), {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
                                                     'form-TOTAL_FORMS': ['1'],
@@ -69,7 +69,7 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
     def test_view_correct_redirection_post(self):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
         tools_list = [CookingTool.objects.first().id]
-        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+        response = self.client.post(reverse('add_recipe'), {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
                                                     'form-TOTAL_FORMS': ['1'],
@@ -97,12 +97,12 @@ class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
         TestDatabase.create_default_test_database(recipes=True, ingredients=True, units=True, tools=True)
 
     def test_view_doesnt_exists(self):
-        response = self.client.get('/recipe/999/delete')
+        response = self.client.get(reverse('recipe_delete', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view(self):
         item = Recipe.objects.only('id').get(name='Lemoniada').id
-        response = self.client.get('/recipe/{}/delete'.format(item))
+        response = self.client.get(reverse('recipe_delete', args=[item]))
         self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
@@ -129,7 +129,7 @@ class DeleteRecipeViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_deletes_owner(self):  # todo dodać przez bazę danych, nie przez post
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
         tools_list = [CookingTool.objects.first().id]
-        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+        response = self.client.post(reverse('add_recipe'), {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
                                                     'form-TOTAL_FORMS': ['1'],
@@ -199,12 +199,12 @@ class RecipeIDViewTest(TestCase):  # todo logged user?
         TestDatabase.create_default_test_database(ingredients=True, units=True, recipes=True, tools=True)
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/recipe/999')
+        response = self.client.get(reverse('recipe_id', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         item = Recipe.objects.only('id').get(name='Lemoniada').id
-        response = self.client.get('/recipe/{}'.format(item))
+        response = self.client.get(reverse('recipe_id', args=[item]))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -232,7 +232,7 @@ class AcceptRecipeViewTestSuperUser(TestCaseSuperuser):
     def test_view_new_recipe_is_accepted_super_user(self):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
         tools_list = [CookingTool.objects.first().id]
-        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+        response = self.client.post(reverse('add_recipe'), {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
                                                     'form-TOTAL_FORMS': ['1'],
@@ -248,7 +248,7 @@ class AcceptRecipeViewTestSuperUser(TestCaseSuperuser):
         self.assertTrue(Recipe.objects.filter(name='Lemoniada')[0].accepted)
 
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get('/recipe/accept')
+        response = self.client.get(reverse('accept_recipes'))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -265,12 +265,12 @@ class AcceptRecipeViewTestSuperUser(TestCaseSuperuser):
         item.accepted=False
         item.save()
         self.assertFalse(Recipe.objects.filter(name='Lemoniada')[0].accepted)
-        response = self.client.get('/recipe/{}/accept'.format(item.id))
+        response = self.client.get(reverse('recipe_accept', args=[item.id]))
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada')[0].accepted)
 
     def test_view_recipe_id_accept_id_not_exists(self):
-        response = self.client.get('/recipe/999/accept')
+        response = self.client.get(reverse('recipe_accept', args=[999]))
         self.assertEqual(response.status_code, 404)
 
 
@@ -279,7 +279,7 @@ class AcceptRecipeViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_new_recipe_normal_user(self):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
         tools_list = [CookingTool.objects.first().id]
-        response = self.client.post('/recipe/new', {'name': 'Lemoniada',
+        response = self.client.post(reverse('add_recipe'), {'name': 'Lemoniada',
                                                     'description': 'Woda, ale słodka',
                                                     'recipe_text': 'hahaha to jest wymagane',
                                                     'form-TOTAL_FORMS': ['1'],
@@ -295,11 +295,11 @@ class AcceptRecipeViewTestLoggedUser(TestCaseLoggedUser):
         self.assertFalse(Recipe.objects.filter(name='Lemoniada')[0].accepted)
 
     def test_view_logged_user_is_redirected(self):
-        response = self.client.get('/recipe/accept')
+        response = self.client.get(reverse('accept_recipes'))
         self.assertEqual(response.status_code, 302)
 
     def test_view_logged_user_is_redirected(self):
-        response = self.client.get('/recipe/999/accept')
+        response = self.client.get(reverse('recipe_accept', args=[999]))
         self.assertEqual(response.status_code, 302)
 
 # not sure about image tests
@@ -315,12 +315,12 @@ class AcceptRecipeViewTestLoggedUser(TestCaseLoggedUser):
 #         TestDatabase.create_default_test_database()
 #
 #     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-#         response = self.client.get('/recipe/999/update')
+#         response = self.client.get(reverse('recipe_update', args=[999]))
 #         self.assertEqual(response.status_code, 404)
 #
 #     def test_view_url_exists_at_desired_location_id_exists(self):
 #         item = Recipe.objects.only('id').get(name='Lemoniada').id
-#         response = self.client.get('/recipe/{}/update'.format(item))
+#         response = self.client.get(reverse('recipe_update', args=[item]))
 #         self.assertEqual(response.status_code, 200)
 #
 #     def test_view_url_accessible_by_name(self):

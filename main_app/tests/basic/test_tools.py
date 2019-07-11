@@ -11,7 +11,7 @@ from main_app.tests.TestSetupDatabase import *
 @tag('cooking_tool', 'add', 'superuser')
 class AddCookingToolViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get('/cooking_tool/new')
+        response = self.client.get(reverse('add_cooking_tool'))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -24,14 +24,14 @@ class AddCookingToolViewTestSuperuser(TestCaseSuperuser):
         self.assertTemplateUsed(response, 'food/new_cooking_tool_form.html')
 
     def test_view_regular_add(self):
-        response = self.client.post('/cooking_tool/new',
+        response = self.client.post(reverse('add_cooking_tool'),
                                     {'name': 'Garnek'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(CookingTool.objects.filter(name='Garnek').exists())
         self.assertEqual(response.url, '/cooking_tool')
 
     def test_view_correct_redirection(self):
-        response = self.client.post('/cooking_tool/new',
+        response = self.client.post(reverse('add_cooking_tool'),
                                     {'name': 'Garnek'},
                                     follow=True)
         self.assertRedirects(response,
@@ -83,13 +83,13 @@ class AddCookingToolViewTestLoggedUser(TestCaseLoggedUser):
 @skip
 class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/cooking_tool/999/delete')
+        response = self.client.get(reverse('cooking_tool_delete', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(tools=True)
         item = CookingTool.objects.only('id').get(name='Garnek').id
-        response = self.client.get('/cooking_tool/{}/delete'.format(item))
+        response = self.client.get(reverse('cooking_tool_delete', args=[item]))
         self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
@@ -168,12 +168,12 @@ class CookingToolIDViewTest(TestCaseSuperuser):
         TestDatabase.create_default_test_database(tools=True)
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/cooking_tool/999')
+        response = self.client.get(reverse('cooking_tool_id', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         item = CookingTool.objects.only('id').get(name='Garnek').id
-        response = self.client.get('/cooking_tool/{}'.format(item))
+        response = self.client.get(reverse('cooking_tool_id', args=[item]))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -239,13 +239,13 @@ class CookingToolIDViewTestLoggedUser(TestCaseLoggedUser):
 @tag('cooking_tool', 'update', 'superuser')
 class UpdateCookingToolCookingToolViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/cooking_tool/999/update')
+        response = self.client.get(reverse('cooking_tool_update', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(tools=True)
         item = CookingTool.objects.only('id').get(name='Garnek').id
-        response = self.client.get('/cooking_tool/{}/update'.format(item))
+        response = self.client.get(reverse('cooking_tool_update', args=[item]))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -333,7 +333,7 @@ class UpdateIngredientViewTestNormalUser(TestCase):
 @tag('cooking_tool', 'kitchen_tools', 'logged_user')
 class KitchenCookingToolsViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get('/tools')
+        response = self.client.get(reverse('tools'))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -368,7 +368,7 @@ class KitchenCookingToolsViewTestNormalUser(TestCase):
     def test_view_correct_redirection_post(self):
         TestDatabase.create_default_test_database(tools=True)
         tools_list = [CookingTool.objects.first()]
-        response = self.client.post('/tools',
+        response = self.client.post(reverse('tools'),
                                     {'tools': tools_list},
                                     follow=True)
         self.assertRedirects(response, reverse('login') + "?next=" + reverse('tools'), status_code=302,

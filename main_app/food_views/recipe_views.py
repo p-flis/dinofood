@@ -11,6 +11,7 @@ from main_app.views import displayFormErrors
 from django.core.mail import send_mail
 from django.contrib import messages
 import json
+from django.urls import reverse
 
 
 
@@ -174,4 +175,4 @@ def recipe_id_accept(request, object_id):
     recipe_model = Recipe.objects.filter(id=object_id).update(accepted=True)
     if not recipe_model:
         raise Http404
-    return redirect('/recipe/accept')
+    return redirect(reverse('accept_recipes'))

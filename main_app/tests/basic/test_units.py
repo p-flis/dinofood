@@ -11,7 +11,7 @@ from main_app.tests.TestSetupDatabase import *
 @tag('unit', 'add', 'superuser')
 class AddUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get('/unit/new')
+        response = self.client.get(reverse('add_unit'))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -24,7 +24,7 @@ class AddUnitViewTestSuperuser(TestCaseSuperuser):
         self.assertTemplateUsed(response, 'food/new_unit_form.html')
 
     def test_view_regular_add(self):
-        response = self.client.post('/unit/new',
+        response = self.client.post(reverse('add_unit'),
                                     {'name': 'Gram',
                                      'amount': 100})
         self.assertEqual(response.status_code, 302)
@@ -32,7 +32,7 @@ class AddUnitViewTestSuperuser(TestCaseSuperuser):
         self.assertEqual(response.url, '/unit')
 
     def test_view_correct_redirection(self):
-        response = self.client.post('/unit/new',
+        response = self.client.post(reverse('add_unit'),
                                     {'name': 'Gram',
                                      'amount': 100},
                                     follow=True)
@@ -85,13 +85,13 @@ class AddUnitViewTestLoggedUser(TestCaseLoggedUser):
 @tag('unit', 'delete', 'superuser')
 class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/unit/999/delete')
+        response = self.client.get(reverse('unit_delete', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get('/unit/{}/delete'.format(item))
+        response = self.client.get(reverse('unit_delete', args=[item.id]))
         self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
@@ -171,12 +171,12 @@ class UnitIDViewTest(TestCaseSuperuser):
         TestDatabase.create_default_test_database(units=True)
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/unit/999')
+        response = self.client.get(reverse('unit_id', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get('/unit/{}'.format(item))
+        response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -243,13 +243,13 @@ class UnitIDViewTestLoggedUser(TestCaseLoggedUser):
 @tag('unit', 'update', 'superuser')
 class UpdateUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get('/unit/999/update')
+        response = self.client.get(reverse('unit_update', args=[999]))
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get('/unit/{}/update'.format(item))
+        response = self.client.get(reverse('unit_update', args=[item]))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
