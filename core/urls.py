@@ -69,8 +69,8 @@ urlpatterns = [
     path("cooking_tool/<int:object_id>/update", cookingtools_views.CookingToolUpdate.as_view(),
          name="cooking_tool_update"),
 
-    path("fridge", cient_equipment_views.modify_fridge, name="fridge"),
-    path("tools", cient_equipment_views.modify_tools, name="tools"),
+    path("fridge", cient_equipment_views.ModifyFridge.as_view(), name="fridge"),
+    path("tools", cient_equipment_views.ModifyTools.as_view(), name="tools"),
 
     path("test/empty", main_app.tests.test_views.test_empty_database, name="test_empty_database"),
     path("test/default", main_app.tests.test_views.test_default_database, name="test_default_database"),

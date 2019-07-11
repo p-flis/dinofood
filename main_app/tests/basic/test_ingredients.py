@@ -359,6 +359,7 @@ class UpdateIngredientViewTestNormalUser(TestCase):  # todo post
                                  'ingredient_update',
                                  kwargs={'object_id': item}))
 
+
 @tag('ingredient', 'fridge', 'logged_user')
 class FridgeViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_url_exists_at_desired_location(self):
@@ -374,17 +375,17 @@ class FridgeViewTestLoggedUser(TestCaseLoggedUser):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/fridge.html')
 
-    #WHY IT DOES NOT WORK?!
     def test_view_regular_change(self):
-        TestDatabase.create_default_test_database(tools=True)
+        TestDatabase.create_default_test_database(ingredients=True)
         fridge = [x.id for x in Ingredient.objects.all()]
         response = self.client.post('/fridge',
-                                    {'fridge': fridge})
+                                    {'ingredients': fridge})
         request = response.wsgi_request
         self.assertEqual(response.status_code, 302)
         self.assertQuerysetEqual(request.user.ingredients.all(), Ingredient.objects.all(), transform=lambda x: x,
                                  ordered=False)
         self.assertEqual(response.url, '/recipe')
+
 
 @tag('ingedient', 'fridge', 'normal_user')
 class FridgeViewTestNormalUser(TestCase):
