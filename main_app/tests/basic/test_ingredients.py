@@ -23,7 +23,7 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
         self.assertTemplateUsed(response, 'food/new_ingredient_form.html')
 
     def test_view_adds_ingredient(self):
-        response = self.client.post('/ingredient/new',
+        response = self.client.post(reverse('add_ingredient'),
                                     {'name': 'water',
                                      'price': '2',
                                      'is_vegetarian': 'false',
@@ -32,10 +32,10 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
                                      'units': []})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Ingredient.objects.filter(name='water').exists())
-        self.assertEqual(response.url, '/ingredient')
+        self.assertEqual(response.url, '/ingredient/')
 
     def test_view_adds_ingredient_redirect(self):
-        response = self.client.post('/ingredient/new',
+        response = self.client.post(reverse('add_ingredient'),
                                     {'name': 'water',
                                      'price': '2',
                                      'is_vegetarian': 'false',
@@ -58,7 +58,7 @@ class AddIngredientViewTestNormalUser(TestCase):
                              target_status_code=200)
 
     def test_view_correct_redirection_post(self):
-        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2'}, follow=True)
+        response = self.client.post(reverse('add_ingredient'), {'name': 'water', 'price': '2'}, follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('add_ingredient'),
                              status_code=302,
@@ -76,7 +76,7 @@ class AddIngredientViewTestLoggedUser(TestCaseLoggedUser):
                              target_status_code=200)
 
     def test_view_correct_redirection_post(self):
-        response = self.client.post('/ingredient/new', {'name': 'water', 'price': '2'}, follow=True)
+        response = self.client.post(reverse('add_ingredient'), {'name': 'water', 'price': '2'}, follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse('add_ingredient'),
                              status_code=302,
@@ -97,7 +97,7 @@ class DeleteIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(ingredients=True)
         item = Ingredient.objects.only('id').get(name='Woda').id
-        response = self.client.get('/ingredient/{}/delete'.format(item))
+        response = self.client.get('/ingredient/' + str(item) + '/delete')
         self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
@@ -183,7 +183,7 @@ class IngredientIDViewTest(TestCaseSuperuser):
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         item = Ingredient.objects.only('id').get(name='Woda').id
-        response = self.client.get('/ingredient/{}'.format(item))
+        response = self.client.get('/ingredient/' + str(item))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -257,7 +257,7 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(ingredients=True)
         item = Ingredient.objects.only('id').get(name='Woda').id
-        response = self.client.get('/ingredient/{}/update'.format(item))
+        response = self.client.get('/ingredient/' + str(item) + '/update')
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -325,7 +325,7 @@ class UpdateIngredientViewTestSuperuser(TestCaseSuperuser):
 @tag('ingredient', 'update', 'logged_user')
 class UpdateIngredientViewTestLoggedUser(TestCaseLoggedUser):  # todo post
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get(reverse('ingredient_update', kwargs={'object_id': 999}), follow=True)
+        response = self.client.get('/ingredient/999/update', follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
                                  'ingredient_update',
@@ -334,7 +334,7 @@ class UpdateIngredientViewTestLoggedUser(TestCaseLoggedUser):  # todo post
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(ingredients=True)
         item = Ingredient.objects.only('id').get(name='Woda').id
-        response = self.client.get(reverse('ingredient_update', kwargs={'object_id': item}), follow=True)
+        response = self.client.get('/ingredient/'+str(item)+'/update', follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
                                  'ingredient_update',
@@ -344,7 +344,7 @@ class UpdateIngredientViewTestLoggedUser(TestCaseLoggedUser):  # todo post
 @tag('ingredient', 'update', 'normal_user')
 class UpdateIngredientViewTestNormalUser(TestCase):  # todo post
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get(reverse('ingredient_update', kwargs={'object_id': 999}), follow=True)
+        response = self.client.get('/ingredient/999/update', follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
                                  'ingredient_update',
@@ -353,12 +353,11 @@ class UpdateIngredientViewTestNormalUser(TestCase):  # todo post
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(ingredients=True)
         item = Ingredient.objects.only('id').get(name='Woda').id
-        response = self.client.get(reverse('ingredient_update', kwargs={'object_id': item}), follow=True)
+        response = self.client.get('/ingredient/'+str(item)+'/update', follow=True)
         self.assertRedirects(response,
                              reverse('superuser_required') + "?next=" + reverse(
                                  'ingredient_update',
                                  kwargs={'object_id': item}))
-
 
 @tag('ingredient', 'fridge', 'logged_user')
 class FridgeViewTestLoggedUser(TestCaseLoggedUser):
@@ -375,17 +374,17 @@ class FridgeViewTestLoggedUser(TestCaseLoggedUser):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/fridge.html')
 
+    #WHY IT DOES NOT WORK?!
     def test_view_regular_change(self):
-        TestDatabase.create_default_test_database(ingredients=True)
+        TestDatabase.create_default_test_database(tools=True)
         fridge = [x.id for x in Ingredient.objects.all()]
-        response = self.client.post('/fridge',
-                                    {'ingredients': fridge})
+        response = self.client.post(reverse('fridge'),
+                                    {'fridge': fridge})
         request = response.wsgi_request
         self.assertEqual(response.status_code, 302)
         self.assertQuerysetEqual(request.user.ingredients.all(), Ingredient.objects.all(), transform=lambda x: x,
                                  ordered=False)
-        self.assertEqual(response.url, '/recipe')
-
+        self.assertEqual(response.url, '/recipe/')
 
 @tag('ingedient', 'fridge', 'normal_user')
 class FridgeViewTestNormalUser(TestCase):
@@ -397,7 +396,7 @@ class FridgeViewTestNormalUser(TestCase):
     def test_view_correct_redirection_post(self):
         TestDatabase.create_default_test_database(tools=True)
         tools_list = [CookingTool.objects.first()]
-        response = self.client.post('/fridge',
+        response = self.client.post(reverse('fridge'),
                                     {'fridge': tools_list},
                                     follow=True)
         self.assertRedirects(response, reverse('login') + "?next=" + reverse('fridge'), status_code=302,

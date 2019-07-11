@@ -24,15 +24,15 @@ class AddUnitViewTestSuperuser(TestCaseSuperuser):
         self.assertTemplateUsed(response, 'food/new_unit_form.html')
 
     def test_view_regular_add(self):
-        response = self.client.post('/unit/new',
+        response = self.client.post(reverse('add_unit'),
                                     {'name': 'Gram',
                                      'amount': 100})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Unit.objects.filter(name='Gram').exists())
-        self.assertEqual(response.url, '/unit')
+        self.assertEqual(response.url, '/unit/')
 
     def test_view_correct_redirection(self):
-        response = self.client.post('/unit/new',
+        response = self.client.post(reverse('add_unit'),
                                     {'name': 'Gram',
                                      'amount': 100},
                                     follow=True)
@@ -91,7 +91,7 @@ class DeleteUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get('/unit/{}/delete'.format(item))
+        response = self.client.get('/unit/'+str(item.id)+'/delete')
         self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
@@ -176,7 +176,7 @@ class UnitIDViewTest(TestCaseSuperuser):
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         item = Unit.objects.only('id').get(name='Gram').id
-        response = self.client.get('/unit/{}'.format(item))
+        response = self.client.get('/unit/' + str(item))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -249,7 +249,7 @@ class UpdateUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_url_exists_at_desired_location_id_exists(self):
         TestDatabase.create_default_test_database(units=True)
         item = Unit.objects.only('id').get(name='Kilogram').id
-        response = self.client.get('/unit/{}/update'.format(item))
+        response = self.client.get('/unit/'+str(item)+'/update')
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):

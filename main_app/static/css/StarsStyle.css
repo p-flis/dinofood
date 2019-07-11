@@ -6,6 +6,13 @@
   -moz-user-select:none;
   -webkit-user-select:none;
 }
+.rating-hearts ul {
+  list-style-type:none;
+  padding:0;
+
+  -moz-user-select:none;
+  -webkit-user-select:none;
+}
 .rating-stars ul > li.star {
   display:inline-block;
 

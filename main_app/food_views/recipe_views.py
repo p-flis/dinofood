@@ -11,6 +11,7 @@ from main_app.views import displayFormErrors
 from django.core.mail import send_mail
 from django.contrib import messages
 import json
+from django.urls import reverse
 
 
 
@@ -67,7 +68,7 @@ def add_recipe(request):
                 )
         else:
             displayFormErrors(form)
-        return redirect('/recipe')
+        return redirect(reverse('recipe'))
     raise Http404
 
 
@@ -154,7 +155,7 @@ def recipe_id_rate(request, object_id):
         mean = recipe.average_rating()
         output_data = {'rating': new_rating.rating, 'mean': mean, 'favourite': new_rating.favourite}
         return JsonResponse(output_data)
-    return redirect('/recipe')
+    return redirect(reverse('recipe'))
 
 
 @login_required(login_url='/accounts/login')
@@ -166,7 +167,7 @@ def recipe_id_delete(request, object_id):
         # I'm pretty sure this is not very secure
         return redirect('/accounts/login/?next=' + request.path)
     recipe_model.delete()
-    return redirect('/recipe')
+    return redirect(reverse('recipe'))
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
@@ -174,4 +175,4 @@ def recipe_id_accept(request, object_id):
     recipe_model = Recipe.objects.filter(id=object_id).update(accepted=True)
     if not recipe_model:
         raise Http404
-    return redirect('/recipe/accept')
+    return redirect(reverse('accept_recipes'))
