@@ -1,13 +1,11 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from main_app.forms import FridgeUserForm, ToolsUserForm
 import django.views.generic as generic
 import django.contrib.auth.mixins as mixins
-from accounts.models import User
+from django.urls import reverse_lazy
 
 
 class ModifyFridge(mixins.LoginRequiredMixin, generic.UpdateView):
-    success_url = '/recipe'
+    success_url = reverse_lazy('recipe')
     template_name = 'client/fridge.html'
     form_class = FridgeUserForm
 
@@ -16,7 +14,7 @@ class ModifyFridge(mixins.LoginRequiredMixin, generic.UpdateView):
 
 
 class ModifyTools(mixins.LoginRequiredMixin, generic.UpdateView):
-    success_url = '/recipe'
+    success_url = reverse_lazy('recipe')
     template_name = 'client/tools.html'
     form_class = ToolsUserForm
 
