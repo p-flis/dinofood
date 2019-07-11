@@ -10,7 +10,7 @@ from main_app.forms import *
 @tag('recipe', 'add', 'logged_user')
 class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, zdjęcie, pola w bd
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get(reverse('add_recipe'))
+        response = self.client.get('/recipe/new')
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):
@@ -38,7 +38,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, 
                                                     'image': 'default.png'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Recipe.objects.filter(name='Lemoniada').exists())
-        self.assertEqual(response.url, '/recipe')
+        self.assertEqual(response.url, '/recipe/')
 
     def test_view_adds_recipe_redirect(self):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
@@ -199,12 +199,12 @@ class RecipeIDViewTest(TestCase):  # todo logged user?
         TestDatabase.create_default_test_database(ingredients=True, units=True, recipes=True, tools=True)
 
     def test_view_url_exists_at_desired_location_id_doesnt_exists(self):
-        response = self.client.get(reverse('recipe_id', args=[999]))
+        response = self.client.get('/recipe/999')
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_exists_at_desired_location_id_exists(self):
         item = Recipe.objects.only('id').get(name='Lemoniada').id
-        response = self.client.get(reverse('recipe_id', args=[item]))
+        response = self.client.get('/recipe/'+str(item))
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):

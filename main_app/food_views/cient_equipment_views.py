@@ -5,7 +5,7 @@ from main_app.forms import FridgeUserForm, ToolsUserForm
 from main_app.models import *
 from main_app.views import displayFormErrors
 import json
-
+from django.urls import reverse_lazy
 
 @login_required(login_url='/accounts/login')
 def modify_fridge(request):
@@ -22,7 +22,7 @@ def modify_fridge(request):
         # else:
         #     displayFormErrors(form)
 
-        return redirect('/recipe')
+        return redirect(reverse_lazy('recipe'))
 
 
 @login_required(login_url='/accounts/login')
@@ -40,4 +40,4 @@ def modify_tools(request):
         # else:
         #     displayFormErrors(form)
 
-        return redirect('/recipe')
+        return redirect(reverse_lazy('recipe'))
