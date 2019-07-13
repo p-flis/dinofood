@@ -13,6 +13,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.template import loader
+# from django.contrib.auth import views as auth_views
 
 
 class SignUp(generic.CreateView):
@@ -60,12 +61,25 @@ class SignUp(generic.CreateView):
         user.email_user(subject, body, "dinofoodnotification@gmail.com")
 
 
-def superuser_required(request):
-    return render(request, "superuser_required.html")
+class SuperuserRequired(generic.TemplateView):
+    template_name = "superuser_required.html"
 
 
 INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 INTERNAL_RESET_URL_TOKEN = 'set-password'
+
+
+# todo can't login to mail
+# class VerifyAccount(auth_views.PasswordResetConfirmView):
+#     form_class = None
+#     token_generator = default_token_generator
+#     success_url = reverse_lazy('login')
+#
+#     def get(self, request, *args, **kwargs):
+#         if self.validlink:
+#             self.user.is_active = True
+#             self.user.save()
+#         return super().get(request, *args, **kwargs)
 
 
 def verify_account(request, uidb64, token):

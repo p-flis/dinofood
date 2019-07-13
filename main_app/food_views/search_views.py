@@ -5,7 +5,7 @@ from django.http import Http404
 
 from main_app.models import *
 from accounts.models import *
-from main_app.views import displayFormErrors
+from main_app.views import display_form_errors
 import django.views.generic as generic
 import main_app.custom_mixins as custom_mixins
 

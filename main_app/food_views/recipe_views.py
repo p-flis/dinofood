@@ -2,18 +2,71 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404, JsonResponse
 from django.conf import settings
-from main_app.forms import RecipeForm, RecipeIdIngredientsForm
-from main_app.models import *
 from accounts.models import *
 from main_app.forms import *
 from django.forms.formsets import formset_factory
-from main_app.views import displayFormErrors
+from main_app.views import display_form_errors
 from django.core.mail import send_mail
-from django.contrib import messages
-import json
 from django.urls import reverse
+import django.views.generic as generic
+import main_app.custom_mixins as custom_mixins
+from django.urls import reverse_lazy
+import django.contrib.auth.mixins as mixins
 
 
+# class RecipeList(generic.ListView):
+#     queryset = Recipe.objects.filter(accepted=True)
+#     context_object_name = "list_items"
+#     template_name = "food/recipe.html"
+#
+#
+# class AddRecipe(mixins.LoginRequiredMixin, generic.CreateView):
+#     model = Recipe
+#     template_name = "food/new_recipe_form.html"
+#     success_url = reverse_lazy('recipe')
+#     fields = [
+#         "name",
+#         'description',
+#         'recipe_text',
+#         'image',
+#         'tools'
+#     ]
+#     ingredient_form_set = None
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         self.ingredient_form_set = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
+#         super().dispatch(request, *args, **kwargs)
+#
+#     def get(self, request, *args, **kwargs):
+#         formset = self.ingredient_form_set()
+#         ingredients = Ingredient.objects.all().order_by('name')
+#         self.extra_context = {
+#             "ingredients": ingredients,
+#             'formset': formset
+#         }
+#         return super().get(request, *args, **kwargs)
+#
+#
+# class IngredientId(custom_mixins.SuperuserRequiredMixin, generic.DetailView):
+#     model = Ingredient
+#     pk_url_kwarg = 'object_id'
+#     context_object_name = "item"
+#     template_name = "food/ingredient_id_get.html"
+#
+#
+# class IngredientDelete(custom_mixins.SuperuserRequiredMixin, generic.DeleteView):
+#     model = Ingredient
+#     pk_url_kwarg = 'object_id'
+#     success_url = reverse_lazy('ingredient')
+#     template_name = 'food/ingredient_confirm_delete.html'
+#
+#
+# class IngredientUpdate(custom_mixins.SuperuserRequiredMixin, generic.UpdateView):
+#     model = Ingredient
+#     fields = '__all__'
+#     pk_url_kwarg = 'object_id'
+#     success_url = reverse_lazy('ingredient')
+#     template_name = 'food/new_ingredient_form.html'
 
 def recipe(request):
     recipes = Recipe.objects.filter(accepted=True)
@@ -30,7 +83,8 @@ def add_recipe(request):
         # todo Paweł, jak to odkomentujesz to tam do tego pola doda pierwszy (losowy) recipeingredient,
         #  to tylko żeby sprawdzić widget
         form = RecipeForm()
-        return render(request, "food/new_recipe_form.html", {"ingredients": ingredients, 'form': form, 'formset': formset})
+        return render(request, "food/new_recipe_form.html",
+                      {"ingredients": ingredients, 'form': form, 'formset': formset})
     elif request.method == 'POST':
         formset = IngredientFormSet(request.POST, request.FILES)
         i_list = []
@@ -67,7 +121,7 @@ def add_recipe(request):
                     fail_silently=False,
                 )
         else:
-            displayFormErrors(form)
+            display_form_errors(form)
         return redirect(reverse('recipe'))
     raise Http404
 
@@ -92,7 +146,7 @@ def recipe_id(request, object_id):
         form.initial = {"ingredients": [ing.id for ing in request.user.ingredients.all()]}
     return render(request, "food/recipe_id_get.html", {"item": recipe_model,
                                                        "rating": rating,
-                                                       "form": form,})
+                                                       "form": form, })
 
 
 def recipe_id_rate(request, object_id):
@@ -113,16 +167,16 @@ def recipe_id_rate(request, object_id):
     elif request.method == 'POST':
         if not request.user.is_authenticated:
             # messages.error(request, "") TODO:change to reporting an error for stardisplayer to understand
-            return JsonResponse({'rating': None, 'mean': None, 'favourite':None})
+            return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
         data = request.POST.copy()
         if data is None:
-            return JsonResponse({'rating': None, 'mean': None, 'favourite':None})
+            return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
         rating = data.get("rating")
         favourite = data.get("favourite")
         if favourite is None \
                 or (favourite is False and rating is None) \
-                or rating not in [None,'1','2','3','4','5']:
-            return JsonResponse({'rating': None, 'mean': None, 'favourite':None})
+                or rating not in [None, '1', '2', '3', '4', '5']:
+            return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
         user = request.user
         recipe = Recipe.objects.get(id=object_id)
         prev_rating = Rating.objects.filter(user=user, recipe=recipe)

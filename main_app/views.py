@@ -1,15 +1,14 @@
 from django.shortcuts import render
 from main_app.forms import *
 from django.forms.formsets import formset_factory
+import django.views.generic as generic
 
 
-# Create your views here.
-def index(request):
-    # return HttpResponse('base Karol!')
-    return render(request, "home.html")
+class Index(generic.TemplateView):
+    template_name = "home.html"
 
 
-def displayFormErrors(form):
+def display_form_errors(form):
     print('Invalid form')
     print('reasons: ')
     for reason in form.errors:
@@ -20,25 +19,34 @@ def displayFormErrors(form):
 
 def test_view(request):
     print('TEST')
-    IngredientFormSet = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
+    ingredient_form_set = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
     if request.method == 'POST':
-        formset = IngredientFormSet(request.POST, request.FILES)
+        formset = ingredient_form_set(request.POST, request.FILES)
         if formset.is_valid():
             # do something with the formset.cleaned_data
             pass
     else:
-        formset = IngredientFormSet()
+        formset = ingredient_form_set()
 
     return render(request, 'test.html', {'formset': formset})
 
 
-def search_units(request):
-    if request.method == 'POST':
+class SearchUnits(generic.TemplateView):
+    template_name = 'ajax_search.html'
+    http_method_names = ['get', 'post']
+
+    def prepare_units(self, search_text, form_id):
+        unit_id = '#' + form_id[:form_id.rfind('-') + 1] + 'unit'
+        ing = Ingredient.objects.filter(id=search_text).get()
+        self.extra_context = {"units": ing.units.all(), "unit_id": unit_id}
+
+    def post(self, request, *args, **kwargs):
         search_text = request.POST['search_text']
         form_id = request.POST['form_id']
-    else:
-        search_text = ""
-        form_id = ""
-    unit_id = '#' + form_id[:form_id.rfind('-') + 1] + 'unit'
-    ing = Ingredient.objects.filter(id=search_text).get()
-    return render(request, 'ajax_search.html', {"units": ing.units.all(), "unit_id": unit_id})
+        self.prepare_units(search_text, form_id)
+        return super().get(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.prepare_units("", "")
+        return super().get(request, *args, **kwargs)
+

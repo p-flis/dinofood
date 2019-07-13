@@ -27,16 +27,15 @@ admin.autodiscover()
 
 urlpatterns = [
     path("test", main_app.views.test_view, name='test_view'),
-    path('recipe/ajax/recipe/ing_unit', main_app.views.search_units, name="ing_unit"),
-    path("", main_app.views.index, name="index"),
-    # path("db/", base.views.db, name="db"),
+    path('recipe/ajax/recipe/ing_unit', main_app.views.SearchUnits.as_view(), name="ing_unit"),
+    path("", main_app.views.Index.as_view(), name="index"),
     path("admin/", admin.site.urls),
 
     path('accounts/', include('accounts.urls')),  # first search in accounts app
     path('accounts/', include('django.contrib.auth.urls')),  # then in built in auth
 
     path("report", bug_report.views.bug_report, name="bug_report"),
-    path("report/successful", bug_report.views.report_successful, name="report_successful"),
+    path("report/successful", bug_report.views.ReportSuccessful.as_view(), name="report_successful"),
 
     path("recipe/", recipe_views.recipe, name="recipe"),
     path("recipe/new", recipe_views.add_recipe, name="add_recipe"),
@@ -72,9 +71,9 @@ urlpatterns = [
     path("fridge", cient_equipment_views.ModifyFridge.as_view(), name="fridge"),
     path("tools", cient_equipment_views.ModifyTools.as_view(), name="tools"),
 
-    path("test/empty", main_app.tests.test_views.test_empty_database, name="test_empty_database"),
-    path("test/default", main_app.tests.test_views.test_default_database, name="test_default_database"),
-    path("test/save", main_app.tests.test_views.save_database_to_default, name="save_db_to_default"),
+    path("test/empty", main_app.tests.test_views.TestEmptyDatabase.as_view(), name="test_empty_database"),
+    path("test/default", main_app.tests.test_views.TestDefaultDatabase.as_view(), name="test_default_database"),
+    path("test/save", main_app.tests.test_views.SaveDatabaseToJson.as_view(), name="save_db_to_default"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

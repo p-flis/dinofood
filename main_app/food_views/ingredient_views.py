@@ -3,6 +3,7 @@ import django.views.generic as generic
 import main_app.custom_mixins as custom_mixins
 from django.urls import reverse_lazy
 
+
 class IngredientList(custom_mixins.SuperuserRequiredMixin, generic.ListView):
     model = Ingredient
     context_object_name = "list_items"
