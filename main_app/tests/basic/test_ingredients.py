@@ -376,10 +376,10 @@ class FridgeViewTestLoggedUser(TestCaseLoggedUser):
 
     #WHY IT DOES NOT WORK?!
     def test_view_regular_change(self):
-        TestDatabase.create_default_test_database(tools=True)
+        TestDatabase.create_default_test_database(ingredients=True)
         fridge = [x.id for x in Ingredient.objects.all()]
         response = self.client.post(reverse('fridge'),
-                                    {'fridge': fridge})
+                                    {'ingredients': fridge})
         request = response.wsgi_request
         self.assertEqual(response.status_code, 302)
         self.assertQuerysetEqual(request.user.ingredients.all(), Ingredient.objects.all(), transform=lambda x: x,

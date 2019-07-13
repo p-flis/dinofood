@@ -213,5 +213,6 @@ class RecipeIdAccept(custom_mixins.SuperuserRequiredMixin, generic.detail.Single
 
     def get(self, request, *args, **kwargs):
         recipe_model = self.get_object()
-        recipe_model.update(accepted=True)
+        recipe_model.accepted = True
+        recipe_model.save()
         return super().get(request, *args, **kwargs)

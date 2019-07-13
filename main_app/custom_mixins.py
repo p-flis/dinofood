@@ -10,4 +10,4 @@ class SuperuserRequiredMixin(mixins.UserPassesTestMixin):
         return self.request.user.is_superuser
 
     def handle_no_permission(self):
-        return redirect(self.login_url + '/?next=' + self.request.path)
+        return redirect(self.login_url + '?next=' + self.request.path)
