@@ -34,16 +34,17 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),  # first search in accounts app
     path('accounts/', include('django.contrib.auth.urls')),  # then in built in auth
 
+    # todo include bug_report.urls
     path("report", bug_report.views.bug_report, name="bug_report"),
     path("report/successful", bug_report.views.ReportSuccessful.as_view(), name="report_successful"),
 
-    path("recipe/", recipe_views.recipe, name="recipe"),
-    path("recipe/new", recipe_views.add_recipe, name="add_recipe"),
-    path("recipe/accept", recipe_views.accept_recipes, name="accept_recipes"),
-    path("recipe/<int:object_id>", recipe_views.recipe_id, name="recipe_id"),
-    path("recipe/<int:object_id>/delete", recipe_views.recipe_id_delete, name="recipe_delete"),
-    path("recipe/<int:object_id>/accept", recipe_views.recipe_id_accept, name="recipe_accept"),
-    path("recipe/<int:object_id>/rate", recipe_views.recipe_id_rate, name="recipe_rate"),
+    path("recipe/", recipe_views.RecipeList.as_view(), name="recipe"),
+    path("recipe/new", recipe_views.AddRecipe.as_view(), name="add_recipe"),
+    path("recipe/accept", recipe_views.AcceptRecipe.as_view(), name="accept_recipes"),
+    path("recipe/<int:object_id>", recipe_views.RecipeId.as_view(), name="recipe_id"),
+    path("recipe/<int:object_id>/delete", recipe_views.RecipeDelete.as_view(), name="recipe_delete"),
+    path("recipe/<int:object_id>/accept", recipe_views.RecipeIdAccept.as_view(), name="recipe_accept"),
+    path("recipe/<int:object_id>/rate", recipe_views.RecipeIdRate.as_view(), name="recipe_rate"),
 
     path("recipe/search", search_views.RecipeSearch.as_view(), name="search_recipe"),
 

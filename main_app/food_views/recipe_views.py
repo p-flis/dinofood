@@ -14,157 +14,152 @@ from django.urls import reverse_lazy
 import django.contrib.auth.mixins as mixins
 
 
-# class RecipeList(generic.ListView):
-#     queryset = Recipe.objects.filter(accepted=True)
-#     context_object_name = "list_items"
-#     template_name = "food/recipe.html"
-#
-#
-# class AddRecipe(mixins.LoginRequiredMixin, generic.CreateView):
-#     model = Recipe
-#     template_name = "food/new_recipe_form.html"
-#     success_url = reverse_lazy('recipe')
-#     fields = [
-#         "name",
-#         'description',
-#         'recipe_text',
-#         'image',
-#         'tools'
-#     ]
-#     ingredient_form_set = None
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         self.ingredient_form_set = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
-#         super().dispatch(request, *args, **kwargs)
-#
-#     def get(self, request, *args, **kwargs):
-#         formset = self.ingredient_form_set()
-#         ingredients = Ingredient.objects.all().order_by('name')
-#         self.extra_context = {
-#             "ingredients": ingredients,
-#             'formset': formset
-#         }
-#         return super().get(request, *args, **kwargs)
-#
-#
-# class IngredientId(custom_mixins.SuperuserRequiredMixin, generic.DetailView):
-#     model = Ingredient
-#     pk_url_kwarg = 'object_id'
-#     context_object_name = "item"
-#     template_name = "food/ingredient_id_get.html"
-#
-#
-# class IngredientDelete(custom_mixins.SuperuserRequiredMixin, generic.DeleteView):
-#     model = Ingredient
-#     pk_url_kwarg = 'object_id'
-#     success_url = reverse_lazy('ingredient')
-#     template_name = 'food/ingredient_confirm_delete.html'
-#
-#
-# class IngredientUpdate(custom_mixins.SuperuserRequiredMixin, generic.UpdateView):
-#     model = Ingredient
-#     fields = '__all__'
-#     pk_url_kwarg = 'object_id'
-#     success_url = reverse_lazy('ingredient')
-#     template_name = 'food/new_ingredient_form.html'
-
-def recipe(request):
-    recipes = Recipe.objects.filter(accepted=True)
-    return render(request, "food/recipe.html", {"list_items": recipes})
+class RecipeList(generic.ListView):
+    queryset = Recipe.objects.filter(accepted=True)
+    context_object_name = "list_items"
+    template_name = "food/recipe.html"
 
 
-@login_required(login_url='/accounts/login')
-def add_recipe(request):
-    IngredientFormSet = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
-    if request.method == 'GET':
-        formset = IngredientFormSet()
+class AddRecipe(mixins.LoginRequiredMixin, generic.CreateView):
+    model = Recipe
+    template_name = "food/new_recipe_form.html"
+    success_url = reverse_lazy('recipe')
+    fields = [
+        "name",
+        'description',
+        'recipe_text',
+        'image',
+        'tools'
+    ]
+    ingredient_form_set = None
+    http_method_names = ['get', 'post']
+
+    def dispatch(self, request, *args, **kwargs):
+        self.ingredient_form_set = formset_factory(IngredientOptionForm, extra=2, min_num=1, validate_min=True)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        formset = self.ingredient_form_set()
         ingredients = Ingredient.objects.all().order_by('name')
-        # form = RecipeForm(initial={'recipe_ing':RecipeIngredient.objects.first()})
-        # todo Paweł, jak to odkomentujesz to tam do tego pola doda pierwszy (losowy) recipeingredient,
-        #  to tylko żeby sprawdzić widget
-        form = RecipeForm()
-        return render(request, "food/new_recipe_form.html",
-                      {"ingredients": ingredients, 'form': form, 'formset': formset})
-    elif request.method == 'POST':
-        formset = IngredientFormSet(request.POST, request.FILES)
+        self.extra_context = {
+            "ingredients": ingredients,
+            'formset': formset
+        }
+        return super().get(request, *args, **kwargs)
+
+    # todo: too long function. Make mixin for formset?
+    def form_valid(self, form):
+        formset = self.ingredient_form_set(self.request.POST, self.request.FILES)
+        if not formset.is_valid():
+            return super().form_invalid(form)
+
         i_list = []
         q_list = []
         u_list = []
-        if formset.is_valid():
-            for f in formset:
-                cd = f.cleaned_data
-                i_list.append(Ingredient.objects.get(id=cd.get('ingredient')))
-                q_list.append(cd.get('quantity'))
-                u_list.append(Unit.objects.get(id=cd.get('unit')))
-        # needed only because of the ingredients not in form but in html
-        form = RecipeForm(data=request.POST or None, files=request.FILES or None)
-        if form.is_valid():
-            recipe_model = form.save(commit=False)
-            recipe_model.save()
-            for i in range(len(i_list)):
-                try:
-                    q = int(q_list[i])
-                    u = u_list[i]
-                    recipe_model.ingredients.add(i_list[i], through_defaults={'quantity': q, 'unit': u})
-                except ValueError:
-                    print("what:")
-                    pass
-            recipe_model.owner = User.objects.get(username=request.user.username)
-            recipe_model.accepted = request.user.is_superuser
-            recipe_model.save()
-            if Recipe.objects.filter(accepted=False).count() == 1:
-                send_mail(
-                    'Unaccepted recipes',
-                    'Sth happened.',
-                    settings.EMAIL_HOST_USER,
-                    [settings.EMAIL_HOST_USER],
-                    fail_silently=False,
-                )
+        for f in formset:
+            cd = f.cleaned_data
+            i_list.append(Ingredient.objects.get(id=cd.get('ingredient')))
+            q_list.append(cd.get('quantity'))
+            u_list.append(Unit.objects.get(id=cd.get('unit')))
+
+        response = super().form_valid(form)  # save model
+
+        recipe_model = form.instance
+        for i in range(len(i_list)):
+            try:
+                q = int(q_list[i])
+                u = u_list[i]
+                recipe_model.ingredients.add(i_list[i], through_defaults={'quantity': q, 'unit': u})
+            except ValueError:
+                print("what:")
+                pass
+        recipe_model.owner = self.request.user
+        recipe_model.accepted = self.request.user.is_superuser
+        recipe_model.save()
+
+        # todo - move to models.py, auto after create
+        if Recipe.objects.filter(accepted=False).count() == 1:
+            send_mail(
+                'Unaccepted recipes',
+                'Sth happened.',
+                settings.EMAIL_HOST_USER,
+                [settings.EMAIL_HOST_USER],
+                fail_silently=False,
+            )
+
+        return response
+
+
+class RecipeId(generic.DetailView):
+    model = Recipe
+    pk_url_kwarg = 'object_id'
+    context_object_name = "item"
+    template_name = "food/recipe_id_get.html"
+
+    def get_context_data(self, **kwargs):
+        form = RecipeIdIngredientsForm(recipe=self.object)
+        if self.request.user.is_authenticated:
+            form.initial = {"ingredients": [ing.id for ing in self.request.user.ingredients.all()]}
+            rating = Rating.objects.filter(recipe=self.object, user=self.request.user)
         else:
-            display_form_errors(form)
-        return redirect(reverse('recipe'))
-    raise Http404
+            rating = None
+        self.extra_context = {
+            "rating": rating,
+            "form": form
+        }
+        return super().get_context_data(**kwargs)
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
-def accept_recipes(request):
-    recipes = Recipe.objects.filter(accepted=False)
-    return render(request, "food/recipe.html", {"list_items": recipes})
+class RecipeDelete(mixins.LoginRequiredMixin, generic.DeleteView):
+    model = Recipe
+    pk_url_kwarg = 'object_id'
+    success_url = reverse_lazy('recipe')
+    template_name = 'food/recipe_confirm_delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        if self.get_object().owner != request.user and not request.user.is_superuser:
+            # I'm pretty sure this is not very secure
+            return redirect('/accounts/login/?next=' + request.path)
+        return super().delete(request, *args, **kwargs)
 
 
-def recipe_id(request, object_id):
-    recipe_model = Recipe.objects.filter(id=object_id)
-    if request.user.is_authenticated:
-        rating = Rating.objects.filter(recipe=recipe_model.first(), user=request.user)
-    else:
-        rating = None
-    if not recipe_model:
-        raise Http404
-    recipe_model = recipe_model.first()
-    form = RecipeIdIngredientsForm(recipe=recipe_model)
-    if request.user.is_authenticated:
-        form.initial = {"ingredients": [ing.id for ing in request.user.ingredients.all()]}
-    return render(request, "food/recipe_id_get.html", {"item": recipe_model,
-                                                       "rating": rating,
-                                                       "form": form, })
+class AcceptRecipe(custom_mixins.SuperuserRequiredMixin, generic.ListView):
+    queryset = Recipe.objects.filter(accepted=False)
+    template_name = "food/recipe.html"
+    context_object_name = "list_items"
 
 
-def recipe_id_rate(request, object_id):
-    if request.method == 'GET':
-        recipe = Recipe.objects.get(id=object_id)
-        mean = recipe.average_rating()
-        if request.user.is_authenticated:
-            user = request.user
-            prev_rating = Rating.objects.filter(user=user, recipe=recipe)
+class RecipeIdRate(generic.detail.BaseDetailView):
+    model = Recipe
+    pk_url_kwarg = 'object_id'
+    http_method_names = ['get', 'post']
+
+    # todo: why too much data is bad?
+    # todo: method like 'only' for dictionary?
+    def render_to_response(self, context):
+        context = {
+            'rating': context['rating'],
+            'mean': context['mean'],
+            'favourite': context['favourite']
+        }
+        return JsonResponse(context)
+
+    def get_context_data(self, **kwargs):
+        mean = self.object.average_rating()
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            prev_rating = Rating.objects.filter(user=user, recipe=self.object)
             if len(prev_rating) > 0:
-                output_data = {'rating': prev_rating[0].rating, 'mean': mean, 'favourite': prev_rating[0].favourite}
+                self.extra_context = {'rating': prev_rating[0].rating, 'mean': mean,
+                                      'favourite': prev_rating[0].favourite}
             else:
-                output_data = {'rating': None, 'mean': mean, 'favourite': False}
+                self.extra_context = {'rating': None, 'mean': mean, 'favourite': False}
         else:
-            output_data = {'rating': None, 'mean': mean, 'favourite': False}
-        return JsonResponse(output_data)
+            self.extra_context = {'rating': None, 'mean': mean, 'favourite': False}
+        return super().get_context_data(**kwargs)
 
-    elif request.method == 'POST':
+    # todo: cleanup!!
+    def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             # messages.error(request, "") TODO:change to reporting an error for stardisplayer to understand
             return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
@@ -178,12 +173,12 @@ def recipe_id_rate(request, object_id):
                 or rating not in [None, '1', '2', '3', '4', '5']:
             return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
         user = request.user
-        recipe = Recipe.objects.get(id=object_id)
+        recipe = self.get_object()
         prev_rating = Rating.objects.filter(user=user, recipe=recipe)
-        if (rating == None):  # the heart has been clicked, we edit only favourite
+        if rating is None:  # the heart has been clicked, we edit only favourite
             if len(prev_rating) > 0:
                 prev_rating = prev_rating[0]
-                prev_rating.favourite = (data.get("favourite") == 'true');
+                prev_rating.favourite = (data.get("favourite") == 'true')
                 prev_rating.save()
                 new_rating = prev_rating
             else:
@@ -209,24 +204,14 @@ def recipe_id_rate(request, object_id):
         mean = recipe.average_rating()
         output_data = {'rating': new_rating.rating, 'mean': mean, 'favourite': new_rating.favourite}
         return JsonResponse(output_data)
-    return redirect(reverse('recipe'))
 
 
-@login_required(login_url='/accounts/login')
-def recipe_id_delete(request, object_id):
-    recipe_model = Recipe.objects.filter(id=object_id)
-    if not recipe_model:
-        raise Http404
-    if recipe_model.get().owner != request.user and not request.user.is_superuser:
-        # I'm pretty sure this is not very secure
-        return redirect('/accounts/login/?next=' + request.path)
-    recipe_model.delete()
-    return redirect(reverse('recipe'))
+class RecipeIdAccept(custom_mixins.SuperuserRequiredMixin, generic.detail.SingleObjectMixin, generic.RedirectView):
+    model = Recipe
+    pk_url_kwarg = 'object_id'
+    url = reverse_lazy('accept_recipes')
 
-
-@user_passes_test(lambda u: u.is_superuser, login_url='/accounts/superuser_required')
-def recipe_id_accept(request, object_id):
-    recipe_model = Recipe.objects.filter(id=object_id).update(accepted=True)
-    if not recipe_model:
-        raise Http404
-    return redirect(reverse('accept_recipes'))
+    def get(self, request, *args, **kwargs):
+        recipe_model = self.get_object()
+        recipe_model.update(accepted=True)
+        return super().get(request, *args, **kwargs)

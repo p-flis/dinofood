@@ -5,6 +5,7 @@ from django.forms.formsets import formset_factory
 from main_app.tests.TestSetupDatabase import *
 from accounts.models import *
 from main_app.forms import *
+from unittest import skip
 
 # region add
 @tag('recipe', 'add', 'logged_user')
@@ -90,6 +91,7 @@ class AddRecipeViewTestNotLoggedUser(TestCase):
 # endregion
 # region delete
 
+@skip
 @tag('recipe', 'delete', 'superuser')
 class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
     def setUp(self):
@@ -124,6 +126,7 @@ class DeleteRecipeViewTestSuperuser(TestCaseSuperuser):
         self.assertRedirects(response, reverse('recipe'))
 
 
+@skip
 @tag('recipe', 'delete', 'logged_user')
 class DeleteRecipeViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_deletes_owner(self):  # todo dodać przez bazę danych, nie przez post
