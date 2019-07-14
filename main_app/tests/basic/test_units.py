@@ -21,7 +21,7 @@ class AddUnitViewTestSuperuser(TestCaseSuperuser):
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('add_unit'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'food/new_unit_form.html')
+        self.assertTemplateUsed(response, 'main_app/unit_form.html')
 
     def test_view_regular_add(self):
         response = self.client.post(reverse('add_unit'),
@@ -187,7 +187,7 @@ class UnitIDViewTest(TestCaseSuperuser):
     def test_view_uses_correct_template(self):
         item = Unit.objects.only('id').get(name='Gram').id
         response = self.client.get(reverse('unit_id', kwargs={'object_id': item}))
-        self.assertTemplateUsed(response, 'food/unit_id_get.html')
+        self.assertTemplateUsed(response, 'main_app/unit_detail.html')
 
     def test_view_correct_texts(self):
         item = Unit.objects.only('id').get(name='Kilogram').id

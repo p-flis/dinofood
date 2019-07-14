@@ -21,7 +21,7 @@ class AddCookingToolViewTestSuperuser(TestCaseSuperuser):
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('add_cooking_tool'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'food/new_cooking_tool_form.html')
+        self.assertTemplateUsed(response, 'main_app/cookingtool_form.html')
 
     def test_view_regular_add(self):
         response = self.client.post(reverse('add_cooking_tool'),
@@ -184,7 +184,7 @@ class CookingToolIDViewTest(TestCaseSuperuser):
     def test_view_uses_correct_template(self):
         item = CookingTool.objects.only('id').get(name='Garnek').id
         response = self.client.get(reverse('cooking_tool_id', kwargs={'object_id': item}))
-        self.assertTemplateUsed(response, 'food/cooking_tool_id_get.html')
+        self.assertTemplateUsed(response, 'main_app/cookingtool_detail.html')
 
     def test_view_correct_texts(self):
         item = CookingTool.objects.only('id').get(name='Garnek').id

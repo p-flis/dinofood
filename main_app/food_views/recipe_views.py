@@ -17,12 +17,10 @@ import django.contrib.auth.mixins as mixins
 class RecipeList(generic.ListView):
     queryset = Recipe.objects.filter(accepted=True)
     context_object_name = "list_items"
-    template_name = "food/recipe.html"
 
 
 class AddRecipe(mixins.LoginRequiredMixin, generic.CreateView):
     model = Recipe
-    template_name = "food/new_recipe_form.html"
     success_url = reverse_lazy('recipe')
     fields = [
         "name",
@@ -94,7 +92,6 @@ class RecipeId(generic.DetailView):
     model = Recipe
     pk_url_kwarg = 'object_id'
     context_object_name = "item"
-    template_name = "food/recipe_id_get.html"
 
     def get_context_data(self, **kwargs):
         form = RecipeIdIngredientsForm(recipe=self.object)
@@ -114,7 +111,6 @@ class RecipeDelete(mixins.LoginRequiredMixin, generic.DeleteView):
     model = Recipe
     pk_url_kwarg = 'object_id'
     success_url = reverse_lazy('recipe')
-    template_name = 'food/recipe_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         if self.get_object().owner != request.user and not request.user.is_superuser:
@@ -125,7 +121,6 @@ class RecipeDelete(mixins.LoginRequiredMixin, generic.DeleteView):
 
 class AcceptRecipe(custom_mixins.SuperuserRequiredMixin, generic.ListView):
     queryset = Recipe.objects.filter(accepted=False)
-    template_name = "food/recipe.html"
     context_object_name = "list_items"
 
 

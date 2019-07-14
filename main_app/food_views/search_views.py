@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.db.models import Count, Sum, F, FloatField, Case, When, Value
 from main_app.forms import SearchForm
 from django.http import Http404
+from django.urls import reverse_lazy
+
 
 from main_app.models import *
 from accounts.models import *
@@ -15,8 +17,8 @@ import main_app.custom_mixins as custom_mixins
 
 class RecipeSearch(generic.FormView):
     form_class = SearchForm
-    template_name = "food/search_recipe.html"
-    success_url = "food/recipe.html"
+    template_name = "main_app/recipe_search.html"
+    success_url = "main_app/recipe_list.html"
 
     def get_initial(self):
         initial = {"extra_money": 999}

@@ -9,7 +9,7 @@ from unittest import skip
 
 # region add
 @tag('recipe', 'add', 'logged_user')
-class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, zdjęcie, pola w bd
+class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/recipe/new')
         self.assertEqual(response.status_code, 200)
@@ -20,7 +20,7 @@ class AddRecipeViewTestLoggedUser(TestCaseLoggedUser):  # todo sprawdzic owner, 
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('add_recipe'))
-        self.assertTemplateUsed(response, 'food/new_recipe_form.html')
+        self.assertTemplateUsed(response, 'main_app/recipe_form.html')
 
     def test_view_adds_recipe(self):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
@@ -218,7 +218,7 @@ class RecipeIDViewTest(TestCase):  # todo logged user?
     def test_view_uses_correct_template(self):
         item = Recipe.objects.only('id').get(name='Lemoniada').id
         response = self.client.get(reverse('recipe_id', kwargs={'object_id': item}))
-        self.assertTemplateUsed(response, 'food/recipe_id_get.html')
+        self.assertTemplateUsed(response, 'main_app/recipe_detail.html')
 
     def test_view_displays_everything(self):
         item = Recipe.objects.only('id').get(name='Lemoniada').id
@@ -260,7 +260,7 @@ class AcceptRecipeViewTestSuperUser(TestCaseSuperuser):
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('accept_recipes'))
-        self.assertTemplateUsed(response, 'food/recipe.html')
+        self.assertTemplateUsed(response, 'main_app/recipe_list.html')
 
     def test_view_recipe_id_accept(self):
         TestDatabase.create_default_test_database(recipes=True)

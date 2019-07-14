@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
-import bug_report.views
 import main_app.views
 import main_app.food_views.ingredient_views as ingredient_views
 import main_app.food_views.cookingtools_views as cookingtools_views
@@ -34,9 +33,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),  # first search in accounts app
     path('accounts/', include('django.contrib.auth.urls')),  # then in built in auth
 
-    # todo include bug_report.urls
-    path("report", bug_report.views.bug_report, name="bug_report"),
-    path("report/successful", bug_report.views.ReportSuccessful.as_view(), name="report_successful"),
+    path('bug_report/', include('bug_report.urls')),
 
     path("recipe/", recipe_views.RecipeList.as_view(), name="recipe"),
     path("recipe/new", recipe_views.AddRecipe.as_view(), name="add_recipe"),

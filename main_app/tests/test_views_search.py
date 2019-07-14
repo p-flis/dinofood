@@ -48,7 +48,7 @@ class RecipeSearchViewTest(TestCase):
 
     def test_view_uses_correct_template_get(self):
         response = self.client.get(reverse('search_recipe'))
-        self.assertTemplateUsed(response, 'food/search_recipe.html')
+        self.assertTemplateUsed(response, 'main_app/recipe_search.html')
 
     def test_view_uses_correct_template_post(self):
         ingredients_list = Ingredient.objects.filter(name__in=["Woda"]).all()
@@ -61,7 +61,7 @@ class RecipeSearchViewTest(TestCase):
                                      "is_vegan": False,
                                      "is_gluten_free": False,
                                      "is_favourite": False})
-        self.assertTemplateUsed(response, 'food/recipe.html')
+        self.assertTemplateUsed(response, 'main_app/recipe_list.html')
 
     def test_view_finds_single_recipe_from_fridge(self):
         ingredients_list = Ingredient.objects.filter(name__in=['Woda', 'Cytryna']).all()

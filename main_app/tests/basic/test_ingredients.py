@@ -20,7 +20,7 @@ class AddIngredientViewTestSuperuser(TestCaseSuperuser):
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('add_ingredient'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'food/new_ingredient_form.html')
+        self.assertTemplateUsed(response, 'main_app/ingredient_form.html')
 
     def test_view_adds_ingredient(self):
         response = self.client.post(reverse('add_ingredient'),
@@ -194,7 +194,7 @@ class IngredientIDViewTest(TestCaseSuperuser):
     def test_view_uses_correct_template(self):
         item = Ingredient.objects.only('id').get(name='Woda').id
         response = self.client.get(reverse('ingredient_id', kwargs={'object_id': item}))
-        self.assertTemplateUsed(response, 'food/ingredient_id_get.html')
+        self.assertTemplateUsed(response, 'main_app/ingredient_detail.html')
 
     def test_view_correct_texts(self):
         item = Ingredient.objects.only('id').get(name='Woda').id
