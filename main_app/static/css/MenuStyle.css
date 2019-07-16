@@ -2,10 +2,12 @@
 
 .navbar {
   overflow: hidden;
-  background-color: #333;
+  background-color: #f1b434;
+  height: 136px;
 }
 
     .navbar a {
+
         float: left;
         font-size: 16px;
         color: white;
@@ -13,13 +15,36 @@
         padding: 14px 16px;
         text-decoration: none;
         text-anchor: middle;
-        
+
     }
 
 
+    .navbar input[type=text] {
 
+      padding: 6px;
+      border: none;
+
+      margin-left: 10px;
+      font-size: 17px;
+        margin-top: 90px;
+    }
+    .navbar .search-container button {
+      float: right;
+      padding: 6px 10px;
+      margin-top: 8px;
+      margin-right: 16px;
+      background: #ddd;
+      font-size: 17px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .navbar .search-container button:hover {
+      background: #ccc;
+    }
 .subnav {
   float: left;
+    margin-top: 90px;
   /*overflow: hidden;*/
 }
     .subnav .subnavbtn {
@@ -34,9 +59,12 @@
         display: inline-block;
     }
 
+
+
 .logo {
-    margin-left: auto;
-    margin-right: auto;
+    position: absolute;
+    left: 40% ;
+
 }
 
 .logo:link {
@@ -56,7 +84,7 @@
 }
 
 .logo:hover {
-    color: #333;
+    color: #f1b434;
     background-color: white !important;
 }
 
@@ -74,7 +102,7 @@
     min-width: 160px;
     /*width: 100%;*/
     z-index: 1;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(16,0,0,0.2);
 }
 
     .subnav-content a {
@@ -89,7 +117,7 @@
         .subnav-content a:hover {
             background-color: #ddd;
             /*shape-margin: 0;*/
-            color: black;
+            color: #f1b434;
             visibility:inherit;
             resize: inherit;
         }
@@ -109,10 +137,11 @@ background-color: #188C00;
     border: 0px solid white;
     -webkit-box-sizing: border-box;
     margin:0px;
-    background-color:#333;
+    background-color: #f1b434;
 
 }
 
 a.right{
   float: right;
+    margin-top:  90px;
 }

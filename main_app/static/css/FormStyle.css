@@ -26,7 +26,7 @@
         align-items: center;
         font-family: "Garamond";
         font-weight: 400;
-        background-color:pearl;
+        background-color: white;
         float:left;
 
       }
@@ -58,5 +58,5 @@
         overflow: auto;
         display:block;
         width:100%;
-        height: 400;
+        height: 400px;
       }

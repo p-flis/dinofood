@@ -16,9 +16,13 @@
 </head>
 <body>
 
+
+
+
   <div class="navbar">
-    <a class="logo" href="{% url 'index' %}" >DINOFOOD</a>
-    <div class="subnav">
+      <a class="logo" href="{% url 'index' %}" > <img src="{{STATIC_URL}}media/dinofoo.png" alt="logo" width="150 px" ></a>
+
+      <div class="subnav">
       <button class="subnavbtn">Przepisy <i class="fa fa-caret-down"></i></button>
       <div class="subnav-content">
         <a href="{% url 'recipe' %}" style="display:block;">Pokaż wszystkie</a>
@@ -31,6 +35,7 @@
         <a href="{% url 'search_recipe' %}">Wyszukaj</a>
       </div>
     </div>
+
     <div class="subnav">
       <button class="subnavbtn">Kuchnia <i class="fa fa-caret-down"></i></button>
       <div class="subnav-content">
@@ -38,7 +43,9 @@
         <a href="{% url 'tools' %}" style="display:block;">Sprzęty</a>
       </div>
     </div>
-    {% if user.is_superuser %}
+    <input type="text" placeholder="Search..">
+   <button type="submit"><i class="fa fa-search"></i></button>
+     {% if user.is_superuser %}
       <div class="subnav">
         <button class="subnavbtn">Składniki<i class="fa fa-caret-down"></i></button>
         <div class="subnav-content">
@@ -46,6 +53,7 @@
           <a href="{% url 'add_ingredient' %}">Utwórz nowy</a>
         </div>
       </div>
+
       <div class="subnav">
         <button class="subnavbtn">Narzędzia<i class="fa fa-caret-down"></i></button>
         <div class="subnav-content">
