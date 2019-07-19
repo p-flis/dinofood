@@ -2,8 +2,9 @@
 function searchSuccess(data, textStatus, jqXHR, thisNode)
 {
     var tmp = data.split('\n');
-//    window.alert(data);
-    $(tmp[0]).html(data);
+    var options = data.substr(data.indexOf('\n')+1);
+    //window.alert(options);
+    $(tmp[0]).html(options);
 }
 
 function happyFunction(e, thisNode) {
