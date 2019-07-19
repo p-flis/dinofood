@@ -23,7 +23,10 @@ class IngredientOptionForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         self.ingredients = [(ing.id, ing.name) for ing in Ingredient.objects.all()]
-        self.units = [(unit.id, unit.name) for unit in Ingredient.objects.get(id=self.ingredients[0][0]).units.all()]
+        if(len(self.ingredients)==0):
+            self.units = []
+        else:
+            self.units = [(unit.id, unit.name) for unit in Ingredient.objects.get(id=self.ingredients[0][0]).units.all()]
 
         self.fields['ingredient'] = forms.CharField(
             label='Ingredient',

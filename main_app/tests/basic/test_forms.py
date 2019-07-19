@@ -69,3 +69,29 @@ class CookingToolFormTest(TestCase):
     def test_form_invalid_empty(self):
         form = CookingToolForm()
         self.assertFalse(form.is_valid())
+
+@tag('ingredient', 'option', 'form')
+class IngredientOptionFormTest(TestCase):
+    def setUpTestData():
+        TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
+
+    def test_form_empty(self):
+        form = IngredientOptionForm(data={})
+        self.assertFalse(form.is_valid())
+
+    def test_form_valid(self):
+        ing = Ingredient.objects.all()[0]
+        unit = ing.units.all()[0]
+        quan = 100
+        form = IngredientOptionForm(data= \
+            {'ingredient':ing.id, 'unit':unit.id, 'quantity':quan})
+        self.assertTrue(form.is_valid())
+
+    def test_form_unit_not_matching_ingredient(self):
+        ing = Ingredient.objects.all()[0]
+        ing_units_ids = [x.id for x in ing.units.all()]
+        unit = Unit.objects.exclude(id__in = ing_units_ids)[0]
+        quan = 100
+        form = IngredientOptionForm(data= \
+            {'ingredient':ing.id, 'unit':unit.id, 'quantity':quan})
+        self.assertFalse(form.is_valid())
