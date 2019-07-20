@@ -19,6 +19,6 @@ and you get a list of recipes prepared for you
 
 ## Approach
 
-* Test-Driven Development
 * Scrum (fortnightly sprint)
+* currently 85% test coverage (using Coverage)
 * we are students, this is a proof of concept and record of our learning progress
