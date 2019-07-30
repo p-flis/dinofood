@@ -11,6 +11,72 @@ from django.urls import reverse_lazy
 import django.contrib.auth.mixins as mixins
 
 
+class RecipeUpdate(mixins.LoginRequiredMixin, generic.UpdateView):
+    model = Recipe
+    success_url = reverse_lazy('recipe')
+    fields = [
+        "name",
+        'description',
+        'recipe_text',
+        'image',
+        'tools'
+    ]
+    pk_url_kwarg = 'object_id'
+    ingredient_form_set = None
+    context_object_name = 'post'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.ingredient_form_set = formset_factory(IngredientOptionForm, extra=0, min_num=1, validate_min=True)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        ings = RecipeIngredient.objects.filter(recipe=self.get_object())
+        formset = self.ingredient_form_set(
+            initial=[{'quantity': ing.quantity,
+                      'unit': ing.unit.pk,
+                      'ingredient': ing.ingredient.pk}
+                     for ing in ings]
+        )
+        ingredients = Ingredient.objects.all().order_by('name')
+        self.extra_context = {
+            "ingredients": ingredients,
+            'formset': formset
+        }
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        #It is a copy of AddRecipe (temporary).
+
+        formset = self.ingredient_form_set(self.request.POST, self.request.FILES)
+        if not formset.is_valid():
+            return super().form_invalid(form)
+
+        i_list = []
+        q_list = []
+        u_list = []
+        for f in formset:
+            cd = f.cleaned_data
+            i_list.append(Ingredient.objects.get(id=cd.get('ingredient')))
+            q_list.append(cd.get('quantity'))
+            u_list.append(Unit.objects.get(id=cd.get('unit')))
+
+        for tmp in RecipeIngredient.objects.filter(recipe=self.get_object()):
+            tmp.delete()
+
+        for i in range(len(i_list)):
+            try:
+                q = int(q_list[i])
+                u = u_list[i]
+                self.get_object().ingredients.add(i_list[i], through_defaults={'quantity': q, 'unit': u})
+            except ValueError:
+                print("what:")
+                pass
+
+        post = form.save(commit=False)
+        post.save()
+        return redirect('/recipe/')
+
 class RecipeList(generic.ListView):
     queryset = Recipe.objects.filter(accepted=True)
     context_object_name = "list_items"

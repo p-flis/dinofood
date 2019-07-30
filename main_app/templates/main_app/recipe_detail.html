@@ -12,6 +12,10 @@ Przepis
 {% url 'recipe_accept' item.id %}
 {% endblock %}
 
+{% block updatelink %}
+{% url 'recipe_update' item.id %}
+{% endblock %}
+
 {% block head %}
 {{ block.super }}
 <link href="{% static 'css/StarsStyle.css' %}" rel="stylesheet" type="text/css">
@@ -77,6 +81,11 @@ Przepis
         <img src="/media/default.png" style="height: 200px; width: 200px;">
     {% endif %}
 
+    <div class="mt-3">
+    <a href="{% url 'recipe_update' item.id %}"
+       class="btn btn-primary btn-sm"
+       role="button">Edit</a>
+    </div>
 
 {% endblock %}
 {% block custom_js %}
