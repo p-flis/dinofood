@@ -59,10 +59,12 @@ class Recipe(models.Model):
     sum_rating = models.IntegerField(default=0)
     times_rated = models.IntegerField(default=0)
     objects = models.Manager()
+
     def average_rating(self):
-        if self.times_rated==0:
+        if self.times_rated == 0:
             return 0
-        return float(self.sum_rating)/self.times_rated
+        return float(self.sum_rating) / self.times_rated
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)

@@ -1,18 +1,81 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import Http404, JsonResponse
+from django.shortcuts import redirect
+from django.http import JsonResponse
 from django.conf import settings
 from accounts.models import *
 from main_app.forms import *
 from django.forms.formsets import formset_factory
-from main_app.views import display_form_errors
 from django.core.mail import send_mail
-from django.urls import reverse
 import django.views.generic as generic
 import main_app.custom_mixins as custom_mixins
 from django.urls import reverse_lazy
 import django.contrib.auth.mixins as mixins
 
+
+class RecipeUpdate(mixins.LoginRequiredMixin, generic.UpdateView):
+    model = Recipe
+    success_url = reverse_lazy('recipe')
+    fields = [
+        "name",
+        'description',
+        'recipe_text',
+        'image',
+        'tools'
+    ]
+    pk_url_kwarg = 'object_id'
+    ingredient_form_set = None
+    context_object_name = 'post'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.ingredient_form_set = formset_factory(IngredientOptionForm, extra=0, min_num=1, validate_min=True)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        ings = RecipeIngredient.objects.filter(recipe=self.get_object())
+        formset = self.ingredient_form_set(
+            initial=[{'quantity': ing.quantity,
+                      'unit': ing.unit.pk,
+                      'ingredient': ing.ingredient.pk}
+                     for ing in ings]
+        )
+        ingredients = Ingredient.objects.all().order_by('name')
+        self.extra_context = {
+            "ingredients": ingredients,
+            'formset': formset
+        }
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        #It is a copy of AddRecipe (temporary).
+
+        formset = self.ingredient_form_set(self.request.POST, self.request.FILES)
+        if not formset.is_valid():
+            return super().form_invalid(form)
+
+        i_list = []
+        q_list = []
+        u_list = []
+        for f in formset:
+            cd = f.cleaned_data
+            i_list.append(Ingredient.objects.get(id=cd.get('ingredient')))
+            q_list.append(cd.get('quantity'))
+            u_list.append(Unit.objects.get(id=cd.get('unit')))
+
+        for tmp in RecipeIngredient.objects.filter(recipe=self.get_object()):
+            tmp.delete()
+
+        for i in range(len(i_list)):
+            try:
+                q = int(q_list[i])
+                u = u_list[i]
+                self.get_object().ingredients.add(i_list[i], through_defaults={'quantity': q, 'unit': u})
+            except ValueError:
+                print("what:")
+                pass
+
+        post = form.save(commit=False)
+        post.save()
+        return redirect('/recipe/')
 
 class RecipeList(generic.ListView):
     queryset = Recipe.objects.filter(accepted=True)
@@ -128,45 +191,46 @@ class RecipeIdRate(generic.detail.BaseDetailView):
     model = Recipe
     pk_url_kwarg = 'object_id'
     http_method_names = ['get', 'post']
+    object = None
 
     # todo: why too much data is bad?
     # todo: method like 'only' for dictionary?
     def render_to_response(self, context):
         context = {
-            'rating': context['rating'],
-            'mean': context['mean'],
-            'favourite': context['favourite']
+            'rating': context.get('rating', None),
+            'mean': context.get('mean', None),
+            'favourite': context.get('favourite', None)
         }
         return JsonResponse(context)
 
-    def get_context_data(self, **kwargs):
+    def get(self, request, *args, **kwargs):
         mean = self.object.average_rating()
+        self.extra_context = {'mean': mean}
         if self.request.user.is_authenticated:
             user = self.request.user
             prev_rating = Rating.objects.filter(user=user, recipe=self.object)
             if len(prev_rating) > 0:
-                self.extra_context = {'rating': prev_rating[0].rating, 'mean': mean,
-                                      'favourite': prev_rating[0].favourite}
-            else:
-                self.extra_context = {'rating': None, 'mean': mean, 'favourite': False}
-        else:
-            self.extra_context = {'rating': None, 'mean': mean, 'favourite': False}
-        return super().get_context_data(**kwargs)
+                self.extra_context['rating'] = prev_rating[0].rating
+                self.extra_context['favourite'] = prev_rating[0].favourite
+        return super().get(request, *args, **kwargs)
 
     # todo: cleanup!!
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             # messages.error(request, "") TODO:change to reporting an error for stardisplayer to understand
-            return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
+            context = self.get_context_data()
+            return self.render_to_response(context)
         data = request.POST.copy()
         if data is None:
-            return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
+            context = self.get_context_data()
+            return self.render_to_response(context)
         rating = data.get("rating")
         favourite = data.get("favourite")
         if favourite is None \
                 or (favourite is False and rating is None) \
                 or rating not in [None, '1', '2', '3', '4', '5']:
-            return JsonResponse({'rating': None, 'mean': None, 'favourite': None})
+            context = self.get_context_data()
+            return self.render_to_response(context)
         user = request.user
         recipe = self.get_object()
         prev_rating = Rating.objects.filter(user=user, recipe=recipe)
@@ -197,8 +261,9 @@ class RecipeIdRate(generic.detail.BaseDetailView):
         new_rating.save()
         recipe.save()
         mean = recipe.average_rating()
-        output_data = {'rating': new_rating.rating, 'mean': mean, 'favourite': new_rating.favourite}
-        return JsonResponse(output_data)
+        self.extra_context = {'rating': new_rating.rating, 'mean': mean, 'favourite': new_rating.favourite}
+        context = self.get_context_data()
+        return self.render_to_response(context)
 
 
 class RecipeIdAccept(custom_mixins.SuperuserRequiredMixin, generic.detail.SingleObjectMixin, generic.RedirectView):
