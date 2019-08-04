@@ -72,7 +72,8 @@ class CookingToolFormTest(TestCase):
 
 @tag('ingredient', 'option', 'form')
 class IngredientOptionFormTest(TestCase):
-    def setUpTestData():
+    @classmethod
+    def setUpTestData(cls):
         TestDatabase.create_default_test_database(ingredients=True, tools=True, units=True)
 
     def test_form_empty(self):
