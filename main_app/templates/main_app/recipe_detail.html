@@ -1,0 +1,97 @@
+{% extends "baseitem.html" %}
+{% load staticfiles %}
+{% block smalltitle %}
+Przepis
+{% endblock %}
+
+{% block deletelink %}
+{% url 'recipe_delete' item.id %}
+{% endblock %}
+
+{% block acceptlink %}
+{% url 'recipe_accept' item.id %}
+{% endblock %}
+
+{% block updatelink %}
+{% url 'recipe_update' item.id %}
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<link href="{% static 'css/StarsStyle.css' %}" rel="stylesheet" type="text/css">
+  {{ form.media }}
+  <!-- this is required when you use custom widget/form Media
+  (although it is not clearly stated in docs) -->
+{% endblock %}
+
+
+
+{% block itemcontent %}
+{% csrf_token %}
+<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+<section class='rating-widget'>
+
+  <!-- Rating Stars Box -->
+  <div class='rating-stars text-center'>
+      <ul id='stars'>
+        <li class='star' title='Poor' data-value='1'>
+          <i class='fa fa-star fa-fw'></i>
+        </li>
+        <li class='star' title='Fair' data-value='2'>
+          <i class='fa fa-star fa-fw'></i>
+        </li>
+        <li class='star' title='Good' data-value='3'>
+          <i class='fa fa-star fa-fw'></i>
+        </li>
+        <li class='star' title='Excellent' data-value='4'>
+          <i class='fa fa-star fa-fw'></i>
+        </li>
+        <li class='star' title='WOW!!!' data-value='5'>
+          <i class='fa fa-star fa-fw'></i>
+        </li>
+      </ul>
+    </div>
+    <div class='rating-hearts text-center'>
+      <ul id='hearts' align='right'>
+          <li class='heart' title='Favourites' data-value='0'>
+            <i class="fa fa-heart fa-fw"></i>
+          </li>
+      </ul>
+    </div>
+</section>
+    <h4>Rating:</h4>
+    <p class="tab" id='average_rating'>0.0</p>
+
+    <h4>Description:</h4>
+    <p class="tab">{{ item.description }}</p>
+
+    <h4>Recipe:</h4>
+    <p class="tab">{{ item.recipe_text|linebreaksbr }}</p>
+    {{ form.as_p }}
+    <h4>Tools:</h4>
+    <ul>
+    {% for tool in item.tools.all %}
+        <li>{{ tool.name }}</li>
+    {% endfor %}
+    </ul>
+    <h4>Photo:</h4>
+    {% if item.image %}
+        <img src="{{item.image.url}}" style="height: 200px; width: 200px;">
+    {% else %}
+        <img src="/media/default.png" style="height: 200px; width: 200px;">
+    {% endif %}
+
+    <div class="mt-3">
+    <a href="{% url 'recipe_update' item.id %}"
+       class="btn btn-primary btn-sm"
+       role="button">Edit</a>
+    </div>
+
+{% endblock %}
+{% block custom_js %}
+<script src="{% static 'js/starsdisplayer.js' %}" type="text/javascript"></script>
+
+
+<script src="{% static 'js/ajax.js' %}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+{% endblock %}

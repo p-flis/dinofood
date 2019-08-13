@@ -8,7 +8,9 @@ class Unit(models.Model):
     amount = models.DecimalField(default=0, max_digits=6, decimal_places=2)  # grams everywhere
 
     objects = models.Manager()
-
+    
+    def __str__(self):
+        return self.name
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=80, unique=True)
@@ -55,10 +57,15 @@ class Recipe(models.Model):
     tools = models.ManyToManyField(CookingTool)
     owner = models.ForeignKey('accounts.User', on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
-    accepted = models.BooleanField(default=False)
-    average_rating = models.FloatField(default=0)
+    accepted = models.BooleanField(default=True)
+    sum_rating = models.IntegerField(default=0)
     times_rated = models.IntegerField(default=0)
     objects = models.Manager()
+
+    def average_rating(self):
+        if self.times_rated == 0:
+            return 0
+        return float(self.sum_rating) / self.times_rated
 
 
 class RecipeIngredient(models.Model):
