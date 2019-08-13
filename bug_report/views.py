@@ -1,17 +1,13 @@
+from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.conf import settings
-import django.views.generic as generic
-from django.urls import reverse_lazy
-import bug_report.forms
-
-
-class BugReport(generic.FormView):
-    form_class = bug_report.forms.BugReportForm
-    success_url = reverse_lazy('bug_report_successful')
-
-    def form_valid(self, form):
-        msg = form.cleaned_data['message']
-        if msg != "":
+from django.http import Http404
+# Create your views here.
+def bug_report(request):
+    # return HttpResponse('base Karol!')
+    if request.method == "POST":
+        msg = request.POST.get("message")
+        if msg!= "":
             send_mail(
                 'Bug Reported',
                 msg,
@@ -19,9 +15,9 @@ class BugReport(generic.FormView):
                 [settings.EMAIL_HOST_USER],
                 fail_silently=False,
             )
-        return super().form_valid(form)
+            return redirect('report/successful')
+    return render(request, "bug_report.html")
 
-
-class ReportSuccessful(generic.TemplateView):
-    template_name = "report_successful.html"
-
+def report_successful(request):
+    # return HttpResponse('base Karol!')
+    return render(request, "report_successful.html")

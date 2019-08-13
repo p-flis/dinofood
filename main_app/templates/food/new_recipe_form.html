@@ -1,0 +1,99 @@
+{% extends "baseform.html" %}
+{% load staticfiles %}
+
+{% block head %}
+  {{ block.super }}
+  <link href="{% static 'css/RecipeFormStyle.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block smalltitle %}
+  Nowy przepis
+{% endblock %}
+
+{% block itemcontent %}
+<div class="formulagrid">
+  <p>
+    {{form.name.errors}}
+    <label>Nazwa:</label>
+    {{form.name}}
+  </p>
+  <p>
+    {{form.description.errors}}
+    <label>Opis:</label>
+    {{form.description}}
+  </p>
+  <p>
+    {{form.recipe_text.errors}}
+    <label>Przepis:</label>
+    {{form.recipe_text}}
+  </p>
+  <p>
+    {{form.tools.errors}}
+    <label>Narzędzia:</label>
+    {{form.tools}}
+  </p>
+  <p>
+    {{form.tools.errors}}
+    <label>Ings:</label>
+    {{form.ingredients}}
+  </p>
+</div>
+<div class="item">
+  <div >
+    <div id="row-template" class="ingredients-table">
+      <div class="col-2">
+        <label>Nowy składnik</label>
+      </div>
+      <div class="col-4">
+        <div class="input-group">
+          <label for="ingredient">Nazwa</label>
+          <input type="text" list="ingredient" />
+          <datalist id="ingredient" name="ingredients">
+            {% for ing in ingredients %}
+              <option>{{ ing.name }}</option>
+            {% endfor %}
+          </datalist>
+          <label for="quantity">Ilość</label>
+          <input id="quantity" type="number" name="quantities" step="0.1" min="0.1"
+	onkeydown="return event.keyCode !== 69" 	required />
+          <button ><a target="_blank" href="{% url 'add_ingredient' %}">Utwórz nowy</a></button>
+	<!-- onkeydown="return event.keyCode !== 69" skips e and E, as we don't want
+	scientific notation -->
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="input-group-delete">
+          <button class="delete-form-row" onclick="deleteRow(event,this,3);">-</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group-append">
+      <button class="add-form-row" onclick="addNew(event,this);">+</button>
+    </div>
+  </div>
+{% endblock %}
+
+
+
+
+
+  <div class="listitem-content">
+  </div>
+</div>
+  <!-- <div>
+    <label for="ingredients">Ingredients:</label>
+    <select id="ingredients" name="ingredients" multiple>
+    {% for ing in ingredients %}
+        <option>{{ ing.name }}</option>
+    {% endfor %}
+    </select>
+  </div> -->
+
+
+
+{% block submitclick %}submitAndDeleteTemplate(event);{% endblock %}
+
+{% block custom_js %}
+  <script src="{% static 'js/rowadder.js' %}?version=5"></script>
+{% endblock %}
