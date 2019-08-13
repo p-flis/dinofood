@@ -1,0 +1,5 @@
+<datalist id="{{ widget.attrs.list_name }}__list">
+    {% for object in widget.attrs.list %}
+    <option>{{ object }}</option>
+    {% endfor %}
+</datalist>
