@@ -1,0 +1,20 @@
+{% extends "baseitem.html" %}
+{% load staticfiles %}
+
+{% block smalltitle %}
+Usuwanie składnika
+{% endblock %}
+
+{% block itemcontent %}
+Na pewno chcesz usunąć składnik?
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Zatwierdź</button>
+</form>
+
+{% endblock %}
+
+
+
+
