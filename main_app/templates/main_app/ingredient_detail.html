@@ -1,0 +1,31 @@
+{% extends "baseitem.html" %}
+{% load staticfiles %}
+
+{% block smalltitle %}
+Składnik
+{% endblock %}
+
+{% block deletelink %}
+{% url 'ingredient_delete' item.id %}
+{% endblock %}
+
+{% block updatelink %}
+{% url 'ingredient_update' item.id %}
+{% endblock %}
+
+
+{% block itemcontent %}
+  <p>Price: {{item.price}}</p>
+  {% if item.is_vegetarian %}
+    <p>Vegetarian!</p>
+  {% endif %}
+  {% if item.is_vegan %}
+    <p>Vegan!</p>
+  {% endif %}
+  {% if item.is_gluten_free %}
+    <p>Totally gluten-free!</p>
+  {% endif %}
+  {% for unit in item.units.all %}
+        <li>{{ unit.name }}, {{unit.amount}}</li>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,12 @@
+[report]
+show_missing = True
+omit =
+    venv/*
+    staticfiles/*
+    dinofood
+    *.json
+    *.txt
+    Procfile
+    Procfile.windows
+    .idea/*
+    __pycache__/*

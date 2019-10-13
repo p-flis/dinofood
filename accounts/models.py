@@ -24,3 +24,4 @@ class Rating(models.Model):
     rating = models.IntegerField(blank=True, null=True)
     favourite = models.BooleanField(default=False)
     objects = models.Manager()
+    # TODO: change recipe sum_rating and times_rated on delete

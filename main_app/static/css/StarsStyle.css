@@ -6,6 +6,13 @@
   -moz-user-select:none;
   -webkit-user-select:none;
 }
+.rating-hearts ul {
+  list-style-type:none;
+  padding:0;
+
+  -moz-user-select:none;
+  -webkit-user-select:none;
+}
 .rating-stars ul > li.star {
   display:inline-block;
 
@@ -32,16 +39,16 @@
 }
 
 /* Hover state of the stars */
-.rating-stars ul > li.heart.hover > i.fa {
+.rating-hearts ul > li.heart.hover > i.fa {
   color:#FF69B4;
 }
 
 /* Selected state of the stars */
-.rating-stars ul > li.heart.selected > i.fa {
+.rating-hearts ul > li.heart.selected > i.fa {
   color:#FF1493;
 }
 
-.rating-stars ul > li.heart > i.fa {
+.rating-hearts ul > li.heart > i.fa {
   font-size:5em; /* Change the size of the heart */
   color:#ccc; /* Color on idle state */
 }
