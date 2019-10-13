@@ -139,11 +139,7 @@ class TestDatabase:
                 },
                 {
                     'name': "Kilogram",
-                    'amount': 10 #what
-                },
-                {
-                    'name': "Funt",
-                    'amount': 454.59
+                    'amount': 10
                 }
             ]
         else:
@@ -237,53 +233,3 @@ class TestDatabase:
                                         tools_data=tools_data,
                                         ingredients_data=ingredients_data,
                                         recipes_data=recipes_data)
-
-    @classmethod
-    def create_database_with_two_recipes(cls):
-        recipes_data = [
-            {
-                'name': "Lemoniada",
-                'description': "Woda, ale słodka",
-                'recipe': "Domyśl się",
-                'ingredients': [
-                    {
-                        'name': "Woda",
-                        'quantity': 1,
-                        'unit': "Gram"
-                    },
-                    {
-                        'name': "Cytryna",
-                        'quantity': 2,
-                        'unit': "Kilogram"
-                    }
-                ],
-                'tools': [
-                    {
-                        'name': "Garnek"
-                    }
-                ]
-            },
-            {
-                'name': "Oranżada",
-                'description': "Woda, ale słodka",
-                'recipe': "siedze na ławce patrze na słońce",
-                'ingredients': [
-                    {
-                        'name': "Woda",
-                        'quantity': 1,
-                        'unit': "Gram"
-                    },
-                    {
-                        'name': "Cytryna",
-                        'quantity': 2,
-                        'unit': "Kilogram"
-                    }
-                ],
-                'tools': [
-                    {
-                        'name': "Garnek"
-                    }
-                ]
-            }
-        ]
-        cls.create_custom_test_database(recipes_data=recipes_data)
