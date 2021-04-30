@@ -3,6 +3,6 @@ django-heroku==0.3.1
 gunicorn==19.9.0
 psycopg2==2.8.2
 sentry-sdk==0.7.14
-urllib3==1.25.2
+urllib3==1.25.8
 Pillow
 python-decouple==3.1
